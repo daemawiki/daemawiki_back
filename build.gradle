@@ -32,6 +32,8 @@ dependencies {
     implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
     implementation 'org.eclipse.collections:eclipse-collections:11.1.0'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
