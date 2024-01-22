@@ -7,6 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    PASSWORD_MISMATCH(401, "비밀번호가 일치하지 않습니다."),
+
     TEST(400, "TEST");
 
     private final int httpStatus;
