@@ -18,7 +18,7 @@ public class MailVerify {
         this.codeRepository = authCodeRepository;
     }
 
-    public Mono<Boolean> verify(AuthCodeVerifyRequest request) {
+    public Mono<Boolean> execute(AuthCodeVerifyRequest request) {
         return getAuthCode(request.mail(), request.authCode())
                 .flatMap(authCode -> mailRepository.save(AuthMail.builder()
                                 .mail(request.mail())
