@@ -19,13 +19,19 @@ public class MailVerify {
     }
 
     public Mono<Boolean> execute(AuthCodeVerifyRequest request) {
-        return getAuthCode(request.mail(), request.authCode())
-                .flatMap(authCode -> mailRepository.save(AuthMail.builder()
-                                .mail(request.mail())
-                                .build())
+        String mail = request.mail();
+
+        return getAuthCode(mail, request.authCode())
+                .flatMap(authCode -> save(mail)
                         .then(codeRepository.delete(authCode))
                         .thenReturn(true))
                 .switchIfEmpty(Mono.just(false));
+    }
+
+    private Mono<AuthMail> save(String mail) {
+        return mailRepository.save(AuthMail.builder()
+                .mail(mail)
+                .build());
     }
 
     private Mono<AuthCode> getAuthCode(String mail, String authCode) {
