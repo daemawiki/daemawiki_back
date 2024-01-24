@@ -25,7 +25,7 @@ public class MailVerify {
                 .flatMap(authCode -> save(mail)
                         .then(codeRepository.delete(authCode))
                         .thenReturn(true))
-                .switchIfEmpty(Mono.just(false));
+                .switchIfEmpty(Mono.defer(() -> Mono.just(false)));
     }
 
     private Mono<AuthMail> save(String mail) {
