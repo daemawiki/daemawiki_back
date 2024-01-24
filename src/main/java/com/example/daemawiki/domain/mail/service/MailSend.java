@@ -3,7 +3,6 @@ package com.example.daemawiki.domain.mail.service;
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
-import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
