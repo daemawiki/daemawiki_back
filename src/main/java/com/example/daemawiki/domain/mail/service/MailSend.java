@@ -3,6 +3,8 @@ package com.example.daemawiki.domain.mail.service;
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
+import com.example.daemawiki.global.exception.MailSendFailedException;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 @Service
@@ -30,32 +33,41 @@ public class MailSend {
     private static final Random rand = new Random();
 
     public Mono<Void> execute(AuthCodeRequest request) {
-        return sendMail(request.mail())
+        String authCode = getRandomCode();
+        String mail = request.mail();
+
+        return sendMail(mail, authCode)
                 .doOnNext(mailSender::send)
+                .then(saveAuthCode(mail, authCode))
                 .then();
     }
 
-    private Mono<MimeMessage> sendMail(String to) {
-        String authCode = getRandomCode();
-
+    private Mono<MimeMessage> sendMail(String to, String authCode) {
         return Mono.fromCallable(() -> {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setTo(to);
-            helper.setSubject("DSM 메일 인증");
+                helper.setTo(to);
+                helper.setSubject("DSM 메일 인증");
 
-            String mail = getMailTemplate(authCode);
+                String mail = getMailTemplate(authCode);
 
-            helper.setText(mail);
-            helper.setFrom(new InternetAddress(admin, "DSM-MAIL-AUTH"));
+                helper.setText(mail);
+                helper.setFrom(new InternetAddress(admin, "DSM-MAIL-AUTH"));
 
-            return message;
-        }).subscribeOn(Schedulers.boundedElastic())
-                .flatMap(message -> codeRepository.save(AuthCode.builder()
-                        .mail(to)
-                        .code(authCode).build())
-                .thenReturn(message));
+                return message;
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                throw MailSendFailedException.EXCEPTION;
+            }
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Mono<AuthCode> saveAuthCode(String to, String authCode) {
+        return codeRepository.save(AuthCode.builder()
+                .mail(to)
+                .code(authCode)
+                .build());
     }
 
     private String getMailTemplate(String key) {
