@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Random;
 
@@ -50,7 +51,8 @@ public class MailSend {
             helper.setFrom(new InternetAddress(admin, "DSM-MAIL-AUTH"));
 
             return message;
-        }).flatMap(message -> codeRepository.save(AuthCode.builder()
+        }).subscribeOn(Schedulers.boundedElastic())
+                .flatMap(message -> codeRepository.save(AuthCode.builder()
                         .mail(to)
                         .code(authCode).build())
                 .thenReturn(message));
