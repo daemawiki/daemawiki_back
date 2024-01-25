@@ -28,7 +28,7 @@ public class MailSend {
     }
 
     @Value("${admin.mail}")
-    private static String admin;
+    private String admin;
 
     private static final Random rand = new Random();
 

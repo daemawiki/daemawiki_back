@@ -19,7 +19,7 @@ import java.util.Date;
 public class Tokenizer {
 
     @Value("${jwt.secret}")
-    private static String SECRET;
+    private String SECRET;
 
     public String createToken(String user) {
         return tokenize(user, "access");

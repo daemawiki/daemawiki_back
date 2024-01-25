@@ -15,7 +15,7 @@ public class RedisConfig {
 
     @Primary
     @Bean
-    ReactiveRedisOperations<String, String> redisOperations(ReactiveRedisConnectionFactory factory) {
+    public ReactiveRedisOperations<String, String> redisOperations(ReactiveRedisConnectionFactory factory) {
         RedisSerializer<String> serializer = new StringRedisSerializer();
         RedisSerializationContext<String, String> serializationContext = RedisSerializationContext
                 .<String, String>newSerializationContext()
