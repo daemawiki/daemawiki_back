@@ -5,10 +5,7 @@ import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyRequest;
 import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
 import com.example.daemawiki.domain.mail.service.MailSend;
 import com.example.daemawiki.domain.mail.service.MailVerify;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController

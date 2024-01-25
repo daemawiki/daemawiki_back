@@ -41,14 +41,15 @@ public class MailVerify {
                 .build();
     }
 
-    private Mono<AuthMail> save(String mail) {
+    private Mono<Void> save(String mail) {
         return mailRepository.save(AuthMail.builder()
                 .mail(mail)
                 .build());
     }
 
     private Mono<AuthCode> getAuthCode(String mail, String authCode) {
-        return codeRepository.findByMailAndCode(mail, authCode);
+        return codeRepository.findByMail(mail)
+                .filter(a -> a.getCode().equals(authCode));
     }
 
 }
