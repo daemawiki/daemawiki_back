@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.mail.api;
 
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyRequest;
+import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
 import com.example.daemawiki.domain.mail.service.MailSend;
 import com.example.daemawiki.domain.mail.service.MailVerify;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class MailController {
     }
 
     @PostMapping("/verify")
-    public Mono<Boolean> verify(@RequestBody AuthCodeVerifyRequest request) {
+    public Mono<AuthCodeVerifyResponse> verify(@RequestBody AuthCodeVerifyRequest request) {
         return mailVerify.execute(request);
     }
 
