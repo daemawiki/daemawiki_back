@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -40,6 +41,17 @@ public class MailSend {
                 .doOnNext(mailSender::send)
                 .then(saveAuthCode(mail, authCode))
                 .then();
+    }
+
+    public Mono<Void> reissue(AuthCodeRequest request) {
+        return getAuthCode(request.mail())
+                .flatMap(authCode -> codeRepository.delete(authCode)
+                        .then(execute(request)))
+                .switchIfEmpty(execute(request));
+    }
+
+    private Mono<AuthCode> getAuthCode(String mail) {
+        return codeRepository.findByMail(mail);
     }
 
     private Mono<MimeMessage> sendMail(String to, String authCode) {
