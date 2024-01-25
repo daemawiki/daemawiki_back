@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface AuthCodeRepository extends ReactiveCrudRepository<AuthCode, String> {
     Mono<AuthCode> findByMailAndCode(String mail, String code);
+    Mono<AuthCode> findByMail(String mail);
 }
