@@ -27,7 +27,8 @@ public class JwtWebFilter implements WebFilter {
                     } else {
                         return chain.filter(exchange);
                     }
-                });
+                })
+                .switchIfEmpty(chain.filter(exchange));
     }
 
     private Mono<String> resolveToken(ServerHttpRequest request) {

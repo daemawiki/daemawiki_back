@@ -36,11 +36,13 @@ public class MailSend {
         String authCode = getRandomCode();
         String mail = request.mail();
 
-        return sendMail(mail, authCode)
-                .doOnNext(mailSender::send)
-                .then(saveAuthCode(mail, authCode))
-                .then();
+        Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(Schedulers.boundedElastic());
+        Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(Schedulers.boundedElastic());
+
+        return Mono.when(sendMailMono,
+                saveAuthCodeMono);
     }
+
 
     public Mono<Void> reissue(AuthCodeRequest request) {
         return getAuthCode(request.mail())
@@ -53,8 +55,8 @@ public class MailSend {
         return codeRepository.findByMail(mail);
     }
 
-    private Mono<MimeMessage> sendMail(String to, String authCode) {
-        return Mono.fromCallable(() -> {
+    private Mono<Void> sendMail(String to, String authCode) {
+        return Mono.fromRunnable(() -> {
             try {
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -64,17 +66,18 @@ public class MailSend {
 
                 String mail = getMailTemplate(authCode);
 
-                helper.setText(mail);
+                helper.setText(mail, true);
                 helper.setFrom(new InternetAddress(admin, "DSM-MAIL-AUTH"));
 
-                return message;
+                mailSender.send(message);
             } catch (MessagingException | UnsupportedEncodingException e) {
                 throw MailSendFailedException.EXCEPTION;
             }
-        }).subscribeOn(Schedulers.boundedElastic());
+        });
     }
 
-    private Mono<AuthCode> saveAuthCode(String to, String authCode) {
+
+    private Mono<Void> saveAuthCode(String to, String authCode) {
         return codeRepository.save(AuthCode.builder()
                 .mail(to)
                 .code(authCode)

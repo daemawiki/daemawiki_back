@@ -27,27 +27,17 @@ public class AuthCodeRepository {
                         .code(value).build());
     }
 
-    public Mono<AuthCode> delete(AuthCode authCode) {
+    public Mono<Void> delete(AuthCode authCode) {
         return redisOperations.delete(AUTHCODE + authCode.getMail())
-                .map(deleted -> {
-                    if (deleted == 1) {
-                        return authCode;
-                    }
-                    return null;
-                });
+                .then();
     }
 
-    public Mono<AuthCode> save(AuthCode authCode) {
+    public Mono<Void> save(AuthCode authCode) {
         return redisOperations.opsForValue()
                 .set(AUTHCODE + authCode.getMail(),
                         authCode.getCode(),
                         Duration.ofHours(3))
-                .map(result -> {
-                    if (result) {
-                        return authCode;
-                    }
-                    return null;
-                });
+                .then();
     }
 
 
