@@ -1,9 +1,7 @@
 package com.example.daemawiki.domain.mail.repository;
 
 import com.example.daemawiki.domain.mail.model.AuthCode;
-import com.example.daemawiki.domain.mail.model.AuthMail;
 import com.example.daemawiki.domain.mail.type.RedisKey;
-import io.lettuce.core.api.reactive.RedisReactiveCommands;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
