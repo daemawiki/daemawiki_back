@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -19,26 +21,25 @@ import java.util.Date;
 public class Tokenizer {
 
     @Value("${jwt.secret}")
-    private String SECRET;
+    private String secret;
 
-    public String createToken(String user) {
-        return tokenize(user, "access");
+    public Mono<String> createToken(String user) {
+        return Mono.fromCallable(() -> tokenize(user));
     }
 
-    private String tokenize(String user, String type) {
+    private String tokenize(String user) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 2);
         Date expiresAt = calendar.getTime();
 
         Claims claims = Jwts.claims()
                 .setSubject(user);
-        claims.put("type", type);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuer("url")
                 .setExpiration(expiresAt)
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -52,7 +53,7 @@ public class Tokenizer {
     }
 
     private Jws<Claims> parse(String token) {
-        return Jwts.parser().setSigningKey(SECRET)
+        return Jwts.parser().setSigningKey(secret)
                 .parseClaimsJws(token);
     }
 
