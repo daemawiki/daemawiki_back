@@ -32,11 +32,11 @@ public class MailVerify {
     private static final String SUCCESS = "인증에 성공했습니다.";
     private static final String FAIL = "인증에 실패했습니다.";
 
-    private AuthCodeVerifyResponse getResponse(Boolean bool) {
-        String message = bool ? SUCCESS : FAIL;
+    private AuthCodeVerifyResponse getResponse(Boolean isVerify) {
+        String message = isVerify ? SUCCESS : FAIL;
 
         return AuthCodeVerifyResponse.builder()
-                .isSuccess(bool)
+                .isSuccess(isVerify)
                 .message(message)
                 .build();
     }
