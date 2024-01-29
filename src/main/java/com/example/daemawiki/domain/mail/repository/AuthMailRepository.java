@@ -29,4 +29,10 @@ public class AuthMailRepository {
                 .then();
     }
 
+    public Mono<Boolean> findByMail(String mail) {
+        return redisOperations.opsForValue()
+                .get(AUTHMAIL + mail)
+                .hasElement();
+    }
+
 }
