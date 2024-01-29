@@ -12,7 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
+import reactor.core.scheduler.Scheduler;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
@@ -21,10 +21,12 @@ import java.util.Random;
 public class MailSend {
     private final AuthCodeRepository codeRepository;
     private final JavaMailSender mailSender;
+    private final Scheduler scheduler;
 
-    public MailSend(AuthCodeRepository authCodeRepository, JavaMailSender javaMailSender) {
+    public MailSend(AuthCodeRepository authCodeRepository, JavaMailSender javaMailSender, Scheduler scheduler) {
         this.codeRepository = authCodeRepository;
         this.mailSender = javaMailSender;
+        this.scheduler = scheduler;
     }
 
     @Value("${admin.mail}")
@@ -36,8 +38,8 @@ public class MailSend {
         String authCode = getRandomCode();
         String mail = request.mail();
 
-        Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(Schedulers.boundedElastic());
-        Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(Schedulers.boundedElastic());
+        Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(scheduler);
+        Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(scheduler);
 
         return Mono.when(sendMailMono,
                 saveAuthCodeMono);
