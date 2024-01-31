@@ -7,10 +7,8 @@ import com.example.daemawiki.domain.auth.dto.SignupRequest;
 import com.example.daemawiki.domain.auth.service.Login;
 import com.example.daemawiki.domain.auth.service.Signup;
 import com.example.daemawiki.global.security.Tokenizer;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -32,6 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<Void> signup(@RequestBody SignupRequest request) {
         return signupService.execute(request);
     }
