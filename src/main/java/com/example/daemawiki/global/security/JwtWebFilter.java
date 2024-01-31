@@ -24,11 +24,9 @@ public class JwtWebFilter implements WebFilter {
                         Authentication authentication = tokenizer.getAuthentication(token);
                         return chain.filter(exchange)
                                 .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
-                    } else {
-                        return chain.filter(exchange);
                     }
-                });
-                //.switchIfEmpty(chain.filter(exchange));
+                    return chain.filter(exchange);
+                }).switchIfEmpty(chain.filter(exchange));
     }
 
     private Mono<String> resolveToken(ServerHttpRequest request) {
