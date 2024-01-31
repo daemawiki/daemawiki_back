@@ -3,7 +3,7 @@ package com.example.daemawiki.domain.mail.service;
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
-import com.example.daemawiki.global.exception.MailSendFailedException;
+import com.example.daemawiki.global.exception.H500.MailSendFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
