@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.auth.service;
 
 import com.example.daemawiki.domain.auth.dto.LoginRequest;
-import com.example.daemawiki.domain.auth.dto.LoginResponse;
+import com.example.daemawiki.domain.auth.dto.TokenResponse;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.PasswordMismatchException;
 import com.example.daemawiki.global.exception.UserNotFoundException;
@@ -22,14 +22,14 @@ public class Login {
         this.tokenizer = tokenizer;
     }
 
-    public Mono<LoginResponse> execute(LoginRequest request) {
+    public Mono<TokenResponse> execute(LoginRequest request) {
         return userRepository.findByEmail(request.email())
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                 .flatMap(user -> Mono.just(user)
-                        .filter(u -> passwordEncoder.matches(u.getPassword(), request.password()))
+                        .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
                         .switchIfEmpty(Mono.error(PasswordMismatchException.EXCEPTION))
                         .flatMap(u -> tokenizer.createToken(u.getEmail())
-                                .map(token -> LoginResponse.builder()
+                                .map(token -> TokenResponse.builder()
                                         .token(token)
                                         .build())));
     }

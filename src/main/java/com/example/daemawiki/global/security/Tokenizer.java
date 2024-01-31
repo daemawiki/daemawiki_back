@@ -1,9 +1,9 @@
 package com.example.daemawiki.global.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.daemawiki.domain.auth.dto.ReissueRequest;
+import com.example.daemawiki.domain.auth.dto.TokenResponse;
+import com.example.daemawiki.global.exception.InvalidTokenException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,7 +28,7 @@ public class Tokenizer {
 
     private String tokenize(String user) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, 2);
+        calendar.add(Calendar.HOUR, 3);
         Date expiresAt = calendar.getTime();
 
         Claims claims = Jwts.claims()
@@ -70,6 +70,27 @@ public class Tokenizer {
         UserDetails details = createAuthenticatedUserFromClaims(claims);
         return new UsernamePasswordAuthenticationToken(
                 details, null, details.getAuthorities());
+    }
+
+    public Mono<TokenResponse> reissue(ReissueRequest request) {
+        try {
+            Claims claims = parseClaims(request.token());
+            String user = claims.getSubject();
+            String newToken = tokenize(user);
+
+            return Mono.just(TokenResponse.builder()
+                    .token(newToken)
+                    .build());
+        } catch (ExpiredJwtException e) {
+            String user = e.getClaims().getSubject();
+            String newToken = tokenize(user);
+
+            return Mono.just(TokenResponse.builder()
+                    .token(newToken)
+                    .build());
+        } catch (JwtException e) {
+            throw InvalidTokenException.EXCEPTION;
+        }
     }
 
 }
