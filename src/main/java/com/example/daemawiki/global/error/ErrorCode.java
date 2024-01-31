@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    INVALID_DATA(400, "잘못된 데이터입니다."),
+    INVALID_TOKEN(400, "유효하지 않은 토큰입니다."),
 
     PASSWORD_MISMATCH(401, "비밀번호가 일치하지 않습니다."),
 
