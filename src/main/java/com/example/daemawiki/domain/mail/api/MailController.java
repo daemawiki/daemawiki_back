@@ -5,6 +5,7 @@ import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyRequest;
 import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
 import com.example.daemawiki.domain.mail.service.MailSend;
 import com.example.daemawiki.domain.mail.service.MailVerify;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +21,7 @@ public class MailController {
     }
 
     @PostMapping("/send")
-    public Mono<Void> send(@RequestBody AuthCodeRequest request) {
+    public Mono<Void> send(@Valid @RequestBody AuthCodeRequest request) {
         return mailSend.execute(request);
     }
 
@@ -30,7 +31,7 @@ public class MailController {
     }
 
     @PostMapping("/reissue")
-    public Mono<Void> reissue(@RequestBody AuthCodeRequest request) {
+    public Mono<Void> reissue(@Valid @RequestBody AuthCodeRequest request) {
         return mailSend.reissue(request);
     }
 
