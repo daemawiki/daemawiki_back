@@ -1,7 +1,7 @@
 package com.example.daemawiki.global.security;
 
-import com.example.daemawiki.domain.auth.dto.ReissueRequest;
-import com.example.daemawiki.domain.auth.dto.TokenResponse;
+import com.example.daemawiki.domain.auth.dto.request.ReissueRequest;
+import com.example.daemawiki.domain.auth.dto.response.TokenResponse;
 import com.example.daemawiki.global.exception.H400.InvalidTokenException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
