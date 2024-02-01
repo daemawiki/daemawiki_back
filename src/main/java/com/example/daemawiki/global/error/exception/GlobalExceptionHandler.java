@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
 @RestControllerAdvice
@@ -20,8 +21,8 @@ public class GlobalExceptionHandler {
                 .body(errorResponse));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleValidException(MethodArgumentNotValidException e) {
+    @ExceptionHandler(WebExchangeBindException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleValidException(WebExchangeBindException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
         int status = HttpStatus.BAD_REQUEST.value();
         String message = fieldError != null ? fieldError.getDefaultMessage() : "Bad Request";
