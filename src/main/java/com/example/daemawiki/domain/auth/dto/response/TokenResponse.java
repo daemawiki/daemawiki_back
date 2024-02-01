@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.auth.dto;
+package com.example.daemawiki.domain.auth.dto.response;
 
 import lombok.Builder;
 

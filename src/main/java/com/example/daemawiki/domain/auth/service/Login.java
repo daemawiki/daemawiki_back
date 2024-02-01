@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.auth.service;
 
-import com.example.daemawiki.domain.auth.dto.LoginRequest;
-import com.example.daemawiki.domain.auth.dto.TokenResponse;
+import com.example.daemawiki.domain.auth.dto.request.LoginRequest;
+import com.example.daemawiki.domain.auth.dto.response.TokenResponse;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.H401.PasswordMismatchException;
 import com.example.daemawiki.global.exception.H404.UserNotFoundException;

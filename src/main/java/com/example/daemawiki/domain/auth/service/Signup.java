@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.auth.service;
 
-import com.example.daemawiki.domain.auth.dto.SignupRequest;
+import com.example.daemawiki.domain.auth.dto.request.SignupRequest;
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
