@@ -26,13 +26,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Mono<TokenResponse> login(@RequestBody LoginRequest request) {
+    public Mono<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
         return loginService.execute(request);
     }
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Void> signup(@RequestBody SignupRequest request) {
+    public Mono<Void> signup(@Valid @RequestBody SignupRequest request) {
         return signupService.execute(request);
     }
 
