@@ -1,9 +1,9 @@
 package com.example.daemawiki.domain.auth.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record ReissueRequest(
-        @NotNull(message = "데이터가 비어있습니다.")
+        @NotBlank(message = "토큰이 비어있습니다.")
         String token
 ) {
 }
