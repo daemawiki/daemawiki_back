@@ -26,7 +26,7 @@ public class MailController {
     }
 
     @PostMapping("/verify")
-    public Mono<AuthCodeVerifyResponse> verify(@RequestBody AuthCodeVerifyRequest request) {
+    public Mono<AuthCodeVerifyResponse> verify(@Valid @RequestBody AuthCodeVerifyRequest request) {
         return mailVerify.execute(request);
     }
 
