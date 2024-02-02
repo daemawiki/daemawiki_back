@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.mail.model.AuthCode;
 import com.example.daemawiki.domain.mail.model.AuthMail;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -19,14 +20,16 @@ public class MailVerify {
         this.codeRepository = authCodeRepository;
     }
 
-    public Mono<AuthCodeVerifyResponse> execute(AuthCodeVerifyRequest request) {
+    public Mono<ResponseEntity<AuthCodeVerifyResponse>> execute(AuthCodeVerifyRequest request) {
         String mail = request.mail();
 
         return getAuthCode(mail, request.authCode())
                 .flatMap(authCode -> save(mail)
                         .then(codeRepository.delete(authCode))
-                        .thenReturn(getResponse(true)))
-                .switchIfEmpty(Mono.defer(() -> Mono.just(getResponse(false))));
+                        .thenReturn(ResponseEntity.status(200)
+                                .body(getResponse(true))))
+                .switchIfEmpty(Mono.defer(() -> Mono.just(ResponseEntity.status(400)
+                                .body(getResponse(false)))));
     }
 
     private static final String SUCCESS = "인증에 성공했습니다.";

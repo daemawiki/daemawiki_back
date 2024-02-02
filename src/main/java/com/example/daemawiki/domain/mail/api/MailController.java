@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
 import com.example.daemawiki.domain.mail.service.MailSend;
 import com.example.daemawiki.domain.mail.service.MailVerify;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -26,7 +27,7 @@ public class MailController {
     }
 
     @PostMapping("/verify")
-    public Mono<AuthCodeVerifyResponse> verify(@Valid @RequestBody AuthCodeVerifyRequest request) {
+    public Mono<ResponseEntity<AuthCodeVerifyResponse>> verify(@Valid @RequestBody AuthCodeVerifyRequest request) {
         return mailVerify.execute(request);
     }
 
