@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 public record SignupRequest(
         @Size(max = 10, min = 1, message = "닉네임은 1자 이상 10자 이하로 설정해야 합니다.")
         String nickname,
+        @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(dsm\\.hs\\.kr)$",
+                message = "메일 형식이 올바르지 않습니다.")
         @NotBlank(message = "이메일을 입력해주세요.")
         String email,
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()-=_+]*$",
