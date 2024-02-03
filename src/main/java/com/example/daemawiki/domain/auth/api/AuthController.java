@@ -5,8 +5,8 @@ import com.example.daemawiki.domain.auth.dto.request.ReissueRequest;
 import com.example.daemawiki.domain.auth.dto.response.TokenResponse;
 import com.example.daemawiki.domain.auth.dto.request.SignupRequest;
 import com.example.daemawiki.domain.auth.service.Login;
+import com.example.daemawiki.domain.auth.service.Reissue;
 import com.example.daemawiki.domain.auth.service.Signup;
-import com.example.daemawiki.global.security.Tokenizer;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +17,12 @@ import reactor.core.publisher.Mono;
 public class AuthController {
     private final Login loginService;
     private final Signup signupService;
-    private final Tokenizer tokenizer;
+    private final Reissue reissue;
 
-    public AuthController(Login loginService, Signup signupService, Tokenizer tokenizer) {
+    public AuthController(Login loginService, Signup signupService, Reissue reissue) {
         this.loginService = loginService;
         this.signupService = signupService;
-        this.tokenizer = tokenizer;
+        this.reissue = reissue;
     }
 
     @PostMapping("/login")
@@ -38,7 +38,7 @@ public class AuthController {
 
     @PostMapping("/reissue")
     public Mono<TokenResponse> reissue(@Valid @RequestBody ReissueRequest request) {
-        return tokenizer.reissue(request);
+        return reissue.execute(request);
     }
 
 }

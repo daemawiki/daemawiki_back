@@ -72,22 +72,18 @@ public class Tokenizer {
                 details, null, details.getAuthorities());
     }
 
-    public Mono<TokenResponse> reissue(ReissueRequest request) {
+    public Mono<String> reissue(String token) {
         try {
-            Claims claims = parseClaims(request.token());
+            Claims claims = parseClaims(token);
             String user = claims.getSubject();
             String newToken = tokenize(user);
 
-            return Mono.just(TokenResponse.builder()
-                    .token(newToken)
-                    .build());
+            return Mono.justOrEmpty(newToken);
         } catch (ExpiredJwtException e) {
             String user = e.getClaims().getSubject();
             String newToken = tokenize(user);
 
-            return Mono.just(TokenResponse.builder()
-                    .token(newToken)
-                    .build());
+            return Mono.justOrEmpty(newToken);
         } catch (JwtException e) {
             throw InvalidTokenException.EXCEPTION;
         }
