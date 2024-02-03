@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.mail.type;
+package com.example.daemawiki.global.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

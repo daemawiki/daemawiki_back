@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.mail.repository;
 
 import com.example.daemawiki.domain.mail.model.AuthCode;
-import com.example.daemawiki.domain.mail.type.RedisKey;
+import com.example.daemawiki.global.type.RedisKey;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
