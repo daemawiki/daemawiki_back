@@ -50,8 +50,12 @@ public class Tokenizer {
     }
 
     private Jws<Claims> parse(String token) {
-        return Jwts.parser().setSigningKey(secret)
-                .parseClaimsJws(token);
+        try {
+            return Jwts.parser().setSigningKey(secret)
+                    .parseClaimsJws(token);
+        } catch (JwtException e) {
+            throw InvalidTokenException.EXCEPTION;
+        }
     }
 
     private Claims parseClaims(String token) {
