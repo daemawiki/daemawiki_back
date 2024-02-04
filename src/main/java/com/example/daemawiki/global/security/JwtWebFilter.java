@@ -38,7 +38,7 @@ public class JwtWebFilter implements WebFilter {
 
     private String resolveToken(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (token.startsWith("Bearer ")) {
+        if (token != null && token.startsWith("Bearer ")) {
             return token.substring(7);
         } else {
             return null;
