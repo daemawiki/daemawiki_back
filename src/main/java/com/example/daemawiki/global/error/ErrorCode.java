@@ -19,7 +19,6 @@ public enum ErrorCode {
     STUDENT_INFO_NOT_FOUND(404, "해당 학생 정보를 찾지 못했습니다."),
 
     ALREADY_EXISTS_EMAIL(409, "이 이메일을 사용 중인 유저가 존재합니다."),
-    ALREADY_EXISTS_TITLE(409, "이미 사용 중인 문서 제목 입니다."),
 
     MAIL_CONFIRM_FAILED(500, "메일 전송 실패 (서버 오류)"),
     TOKEN_REISSUE_FAILED(500, "토큰 재발급 실패"),
