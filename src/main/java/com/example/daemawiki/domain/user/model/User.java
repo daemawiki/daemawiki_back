@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class User {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @Builder
