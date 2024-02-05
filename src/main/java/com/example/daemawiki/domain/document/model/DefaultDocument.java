@@ -47,4 +47,9 @@ public class DefaultDocument {
         return this.getGroups().contains(group);
     }
 
+    public void update(String title, DocumentType type) {
+        this.title = title;
+        this.type = type;
+    }
+
 }
