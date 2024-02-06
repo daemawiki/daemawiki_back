@@ -3,7 +3,6 @@ package com.example.daemawiki.domain.document.service;
 import com.example.daemawiki.domain.document.dto.request.CreateDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentEditor;
-import com.example.daemawiki.domain.document.model.type.DocumentType;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;

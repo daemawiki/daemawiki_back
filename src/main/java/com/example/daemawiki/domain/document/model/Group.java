@@ -6,7 +6,7 @@ import java.util.List;
 
 @Builder
 public record Group(
-        String root,
+        String title,
         List<String> classes
 ) {
 }

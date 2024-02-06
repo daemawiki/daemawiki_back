@@ -10,6 +10,8 @@ import com.example.daemawiki.global.exception.H404.DocumentGroupNotFoundExceptio
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Collectors;
+
 @Service
 public class DeleteDocumentGroup {
     private final DocumentRepository documentRepository;
@@ -29,7 +31,7 @@ public class DeleteDocumentGroup {
                 .zipWith(dateTimeFacade.getKor(), (document, now) -> userFacade.currentUser()
                         .flatMap(user -> {
                             Group groupToRemove = Group.builder()
-                                    .root(request.groups().get(0))
+                                    .title(String.join("/", request.groups()))
                                     .classes(request.groups())
                                     .build();
 

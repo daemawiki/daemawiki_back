@@ -9,6 +9,8 @@ import com.example.daemawiki.global.dateTime.facade.DateTimeFacade;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Collectors;
+
 @Service
 public class AddDocumentGroup {
     private final DocumentRepository documentRepository;
@@ -28,7 +30,7 @@ public class AddDocumentGroup {
                 .zipWith(dateTimeFacade.getKor(), (document, now) -> userFacade.currentUser()
                         .flatMap(user -> {
                             Group group = Group.builder()
-                                    .root(request.groups().get(0))
+                                    .title(String.join("/", request.groups()))
                                     .classes(request.groups())
                                     .build();
 
