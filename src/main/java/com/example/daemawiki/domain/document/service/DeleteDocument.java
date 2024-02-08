@@ -4,7 +4,7 @@ import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
 import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
-import com.example.daemawiki.domain.revision.service.RevisionComponent;
+import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.user.service.UserFacade;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

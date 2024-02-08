@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.revision.service;
+package com.example.daemawiki.domain.revision.component;
 
 import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
