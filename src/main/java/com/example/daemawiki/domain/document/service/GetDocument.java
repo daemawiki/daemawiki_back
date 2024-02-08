@@ -21,6 +21,7 @@ public class GetDocument {
                         .dateTime(document.getDateTime())
                         .groups(document.getGroups())
                         .editor(document.getEditor())
+                        .content(document.getContent())
                         .build());
     }
 

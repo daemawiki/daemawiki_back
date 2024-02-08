@@ -1,7 +1,6 @@
 package com.example.daemawiki.domain.document.model;
 
 import com.example.daemawiki.domain.document.model.type.DocumentType;
-import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.global.dateTime.model.EditDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,13 +29,16 @@ public class DefaultDocument {
 
     private DocumentEditor editor;
 
+    private String content;
+
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Group> groups, DocumentEditor documentEditor) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Group> groups, DocumentEditor documentEditor, String content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
         this.groups = groups;
         this.editor = documentEditor;
+        this.content = content;
     }
 
     public void deleteGroup(Group group) {
@@ -47,9 +49,10 @@ public class DefaultDocument {
         return this.getGroups().contains(group);
     }
 
-    public void update(String title, DocumentType type) {
+    public void update(String title, DocumentType type, String content) {
         this.title = title;
         this.type = type;
+        this.content = content;
     }
 
 }

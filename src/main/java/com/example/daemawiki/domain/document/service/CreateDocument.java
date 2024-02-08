@@ -43,6 +43,7 @@ public class CreateDocument {
                                     .createdUser(user)
                                     .updatedUser(user)
                                     .build())
+                            .content(request.content())
                             .build())
                 .flatMap(documentRepository::save)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()

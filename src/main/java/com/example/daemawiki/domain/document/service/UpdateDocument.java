@@ -34,7 +34,7 @@ public class UpdateDocument {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(request.documentId()), (user, document) -> dateTimeFacade.getKor()
                         .flatMap(now -> {
-                            document.update(request.title(), getDocumentType.execute(request.type()));
+                            document.update(request.title(), getDocumentType.execute(request.type()), request.content());
 
                             return documentRepository.save(document);
                         })
