@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
 import com.example.daemawiki.domain.mail.service.MailSend;
 import com.example.daemawiki.domain.mail.service.MailVerify;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -22,6 +23,7 @@ public class MailController {
     }
 
     @PostMapping("/send")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> send(@Valid @RequestBody AuthCodeRequest request) {
         return mailSend.execute(request);
     }
