@@ -1,7 +1,6 @@
 package com.example.daemawiki.domain.document.api;
 
-import com.example.daemawiki.domain.document.dto.request.CreateDocumentRequest;
-import com.example.daemawiki.domain.document.dto.request.UpdateDocumentRequest;
+import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.service.CreateDocument;
 import com.example.daemawiki.domain.document.service.DeleteDocument;
@@ -46,7 +45,7 @@ public class DocumentController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateDocument(@RequestBody UpdateDocumentRequest request) {
+    public Mono<Void> updateDocument(@RequestBody SaveDocumentRequest request) {
         return updateDocumentService.execute(request);
     }
 

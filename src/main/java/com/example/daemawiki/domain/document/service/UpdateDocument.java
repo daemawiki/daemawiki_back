@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.service;
 
-import com.example.daemawiki.domain.document.dto.request.UpdateDocumentRequest;
+import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
@@ -11,6 +11,8 @@ import com.example.daemawiki.domain.user.service.UserFacade;
 import com.example.daemawiki.global.dateTime.facade.DateTimeFacade;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.LinkedList;
 
 @Service
 public class UpdateDocument {
@@ -30,11 +32,16 @@ public class UpdateDocument {
         this.revisionComponent = revisionComponent;
     }
 
-    public Mono<Void> execute(UpdateDocumentRequest request) {
+    public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(request.documentId()), (user, document) -> dateTimeFacade.getKor()
+                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> dateTimeFacade.getKor()
                         .flatMap(now -> {
-                            document.update(request.title(), getDocumentType.execute(request.type()), request.content());
+                            LinkedList<String> groups = new LinkedList<>(request.groups());
+
+                            document.update(request.title(),
+                                    getDocumentType.execute(request.type()),
+                                    request.content(),
+                                    groups);
 
                             return documentRepository.save(document);
                         })

@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.service;
 
-import com.example.daemawiki.domain.document.dto.request.CreateDocumentRequest;
+import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentEditor;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
@@ -11,8 +11,11 @@ import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.user.service.UserFacade;
 import com.example.daemawiki.global.dateTime.facade.DateTimeFacade;
 import com.example.daemawiki.global.dateTime.model.EditDateTime;
+import org.eclipse.collections.api.factory.Lists;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class CreateDocument {
@@ -30,7 +33,7 @@ public class CreateDocument {
         this.getDocumentType = getDocumentType;
     }
 
-    public Mono<Void> execute(CreateDocumentRequest request) {
+    public Mono<Void> execute(SaveDocumentRequest request) {
         return userFacade.currentUser()
                 .zipWith(dateTimeFacade.getKor(), (user, now) -> DefaultDocument.builder()
                             .title(request.title())
@@ -44,6 +47,7 @@ public class CreateDocument {
                                     .updatedUser(user)
                                     .build())
                             .content(request.content())
+                            .groups(Lists.mutable.with(String.join("/", request.groups())))
                             .build())
                 .flatMap(documentRepository::save)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()

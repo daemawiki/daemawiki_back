@@ -5,7 +5,6 @@ import com.example.daemawiki.global.dateTime.model.EditDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.eclipse.collections.api.factory.Lists;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,14 +24,14 @@ public class DefaultDocument {
 
     private EditDateTime dateTime;
 
-    private List<Group> groups = Lists.mutable.of();
+    private List<String> groups;
 
     private DocumentEditor editor;
 
     private String content;
 
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Group> groups, DocumentEditor documentEditor, String content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<String> groups, DocumentEditor documentEditor, String content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
@@ -41,18 +40,19 @@ public class DefaultDocument {
         this.content = content;
     }
 
-    public void deleteGroup(Group group) {
+    public void deleteGroup(String group) {
         this.getGroups().remove(group);
     }
 
-    public Boolean isContain(Group group) {
+    public Boolean isContain(String group) {
         return this.getGroups().contains(group);
     }
 
-    public void update(String title, DocumentType type, String content) {
+    public void update(String title, DocumentType type, String content, List<String> groups) {
         this.title = title;
         this.type = type;
         this.content = content;
+        this.groups = groups;
     }
 
 }
