@@ -28,7 +28,7 @@ public class DocumentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Void> createDocument(@Valid @RequestBody CreateDocumentRequest request) {
+    public Mono<Void> createDocument(@Valid @RequestBody SaveDocumentRequest request) {
         return createDocumentService.execute(request);
     }
 
@@ -43,10 +43,10 @@ public class DocumentController {
         return deleteDocumentService.execute(documentId);
     }
 
-    @PatchMapping
+    @PatchMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateDocument(@RequestBody SaveDocumentRequest request) {
-        return updateDocumentService.execute(request);
+    public Mono<Void> updateDocument(@PathVariable String documentId, @RequestBody SaveDocumentRequest request) {
+        return updateDocumentService.execute(request, documentId);
     }
 
 }
