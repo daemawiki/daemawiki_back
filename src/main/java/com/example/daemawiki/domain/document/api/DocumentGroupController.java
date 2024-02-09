@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.document.dto.request.AddDocumentGroupRequest
 import com.example.daemawiki.domain.document.dto.request.DeleteDocumentGroupRequest;
 import com.example.daemawiki.domain.document.service.group.AddDocumentGroup;
 import com.example.daemawiki.domain.document.service.group.DeleteDocumentGroup;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +25,7 @@ public class DocumentGroupController {
     }
 
     @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteGroup(@RequestBody DeleteDocumentGroupRequest request) {
         return deleteDocumentGroup.execute(request);
     }

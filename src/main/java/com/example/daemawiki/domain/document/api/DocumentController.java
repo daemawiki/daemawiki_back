@@ -39,11 +39,13 @@ public class DocumentController {
     }
 
     @DeleteMapping("/{documentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteDocument(@PathVariable String documentId) {
         return deleteDocumentService.execute(documentId);
     }
 
     @PatchMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateDocument(@RequestBody UpdateDocumentRequest request) {
         return updateDocumentService.execute(request);
     }
