@@ -40,14 +40,6 @@ public class DefaultDocument {
         this.content = content;
     }
 
-    public void deleteGroup(String group) {
-        this.getGroups().remove(group);
-    }
-
-    public Boolean isContain(String group) {
-        return this.getGroups().contains(group);
-    }
-
     public void update(String title, DocumentType type, String content, List<String> groups) {
         this.title = title;
         this.type = type;
