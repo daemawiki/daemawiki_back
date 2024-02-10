@@ -15,8 +15,6 @@ import org.eclipse.collections.api.factory.Lists;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @Service
 public class CreateDocument {
     private final DocumentRepository documentRepository;
