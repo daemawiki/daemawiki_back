@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.revision.model;
 
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Document
@@ -26,6 +26,7 @@ public class RevisionHistory {
 
     private String editor;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
     private LocalDateTime updatedDateTime;
 
     @Builder
