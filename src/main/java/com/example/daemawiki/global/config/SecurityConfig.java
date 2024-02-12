@@ -4,6 +4,7 @@ import com.example.daemawiki.global.security.JwtWebFilter;
 import com.example.daemawiki.global.security.Tokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -35,6 +36,8 @@ public class SecurityConfig {
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
         return http.authorizeExchange(a -> a
                         .pathMatchers(WHITE_LIST).permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/documents/{documentId}").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/revision").permitAll()
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
