@@ -4,30 +4,29 @@ import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
 import com.example.daemawiki.domain.user.service.UserFacade;
-import com.example.daemawiki.global.dateTime.facade.DateTimeFacade;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
 
 @Component
 public class RevisionComponent {
     private final RevisionHistoryRepository revisionHistoryRepository;
     private final UserFacade userFacade;
-    private final DateTimeFacade dateTimeFacade;
 
-    public RevisionComponent(RevisionHistoryRepository revisionHistoryRepository, UserFacade userFacade, DateTimeFacade dateTimeFacade) {
+    public RevisionComponent(RevisionHistoryRepository revisionHistoryRepository, UserFacade userFacade) {
         this.revisionHistoryRepository = revisionHistoryRepository;
         this.userFacade = userFacade;
-        this.dateTimeFacade = dateTimeFacade;
     }
 
     public Mono<Void> saveHistory(SaveRevisionHistoryRequest request) {
         return userFacade.currentUser()
-                .zipWith(dateTimeFacade.getKor(), (user, now) -> RevisionHistory.builder()
+                .map(user -> RevisionHistory.builder()
                         .type(request.type())
                         .documentId(request.documentId())
                         .title(request.title())
                         .editor(user.getId())
-                        .updatedDateTime(now)
+                        .updatedDateTime(LocalDateTime.now())
                         .build())
                 .flatMap(revisionHistoryRepository::save)
                 .then();

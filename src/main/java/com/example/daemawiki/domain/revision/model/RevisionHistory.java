@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Getter
 @Document
 @NoArgsConstructor
@@ -23,10 +26,10 @@ public class RevisionHistory {
 
     private String editor;
 
-    private String updatedDateTime;
+    private LocalDateTime updatedDateTime;
 
     @Builder
-    public RevisionHistory(RevisionType type, String documentId, String title, String editor, String updatedDateTime) {
+    public RevisionHistory(RevisionType type, String documentId, String title, String editor, LocalDateTime updatedDateTime) {
         this.type = type;
         this.documentId = documentId;
         this.title = title;
