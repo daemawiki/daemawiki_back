@@ -11,7 +11,8 @@ import com.example.daemawiki.domain.user.service.UserFacade;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UpdateDocument {
@@ -32,7 +33,10 @@ public class UpdateDocument {
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                            LinkedList<String> groups = new LinkedList<>(request.groups());
+                            List<String> groups = request.groups().stream()
+                                    .filter(Objects::nonNull)
+                                    .map(group -> String.join("/", group))
+                                    .toList();
 
                             document.update(request.title(),
                                     getDocumentType.execute(request.type()),
