@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.revision.api;
 import com.example.daemawiki.domain.revision.dto.GetRevisionPageRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.service.RevisionService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -21,7 +22,7 @@ public class RevisionHistoryController {
     }
 
     @GetMapping("/page")
-    public Flux<RevisionHistory> getRevisionToPage(@RequestBody GetRevisionPageRequest request) {
+    public Flux<RevisionHistory> getRevisionToPage(@Valid @RequestBody GetRevisionPageRequest request) {
         return revisionService.getAllRevisionPaging(request);
     }
 

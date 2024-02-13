@@ -45,7 +45,7 @@ public class DocumentController {
 
     @PatchMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateDocument(@PathVariable String documentId, @RequestBody SaveDocumentRequest request) {
+    public Mono<Void> updateDocument(@PathVariable String documentId, @Valid @RequestBody SaveDocumentRequest request) {
         return updateDocumentService.execute(request, documentId);
     }
 
