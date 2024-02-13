@@ -14,6 +14,8 @@ public record GetDocumentResponse(
         EditDateTime dateTime,
         List<String> groups,
         DocumentEditor editor,
-        String content
+        String content,
+
+        Integer version
 ) {
 }

@@ -16,6 +16,7 @@ public class DocumentMapper {
                 .groups(document.getGroups())
                 .editor(document.getEditor())
                 .content(document.getContent())
+                .version(document.getVersion())
                 .build());
     }
 

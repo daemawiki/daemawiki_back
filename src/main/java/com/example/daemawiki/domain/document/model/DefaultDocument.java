@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -29,6 +30,9 @@ public class DefaultDocument {
     private DocumentEditor editor;
 
     private String content;
+
+    @Version
+    private Integer version;
 
     @Builder
     public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<String> groups, DocumentEditor documentEditor, String content) {

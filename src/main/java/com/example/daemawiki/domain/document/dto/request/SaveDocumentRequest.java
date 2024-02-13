@@ -6,6 +6,7 @@ public record SaveDocumentRequest(
         String title,
         String type,
         String content,
-        List<List<String>> groups
+        List<List<String>> groups,
+        Integer version
 ) {
 }
