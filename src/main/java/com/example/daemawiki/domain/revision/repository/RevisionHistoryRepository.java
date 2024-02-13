@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface RevisionHistoryRepository extends ReactiveMongoRepository<RevisionHistory, String> {
     Flux<RevisionHistory> findTop10ByTypeInOrderByUpdatedDateTimeDesc(List<RevisionType> types);
+    Flux<RevisionHistory> findAllByOrderByUpdatedDateTimeDesc();
 
 }
