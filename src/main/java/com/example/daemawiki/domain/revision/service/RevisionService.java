@@ -20,7 +20,7 @@ public class RevisionService {
 
     public Flux<RevisionHistory> getUpdatedTop10Revision() {
         List<RevisionType> types = List.of(RevisionType.UPDATE, RevisionType.CREATE);
-        return revisionHistoryRepository.findTop10ByTypeInOrderByUpdatedDateTimeDesc(types)
+        return revisionHistoryRepository.findTop10ByTypeInOrderByCreatedDateTimeDesc(types)
                 .distinct(RevisionHistory::getDocumentId);
     }
 
@@ -29,7 +29,7 @@ public class RevisionService {
     public Flux<RevisionHistory> getAllRevisionPaging(GetRevisionPageRequest request) {
         String lastRevisionId = request.lastRevisionId();
 
-        return revisionHistoryRepository.findAllByOrderByUpdatedDateTimeDesc()
+        return revisionHistoryRepository.findAllByOrderByCreatedDateTimeDesc()
                 .filter(revisionHistory -> lastRevisionId == null || lastRevisionId == "" ||
                         new ObjectId(revisionHistory.getId()).getTimestamp() > new ObjectId(lastRevisionId).getTimestamp())
                 .take(10);

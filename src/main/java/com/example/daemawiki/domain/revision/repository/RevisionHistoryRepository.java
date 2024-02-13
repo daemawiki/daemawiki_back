@@ -8,8 +8,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 public interface RevisionHistoryRepository extends ReactiveMongoRepository<RevisionHistory, String> {
-    Flux<RevisionHistory> findTop10ByTypeInOrderByUpdatedDateTimeDesc(List<RevisionType> types);
-    Flux<RevisionHistory> findAllByOrderByUpdatedDateTimeDesc();
+    Flux<RevisionHistory> findTop10ByTypeInOrderByCreatedDateTimeDesc(List<RevisionType> types);
+    Flux<RevisionHistory> findAllByOrderByCreatedDateTimeDesc();
 
     Flux<RevisionHistory> findAllByDocumentId(String id);
 
