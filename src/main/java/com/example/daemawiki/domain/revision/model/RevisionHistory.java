@@ -27,15 +27,15 @@ public class RevisionHistory {
     private String editor;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
-    private LocalDateTime updatedDateTime;
+    private LocalDateTime createdDateTime;
 
     @Builder
-    public RevisionHistory(RevisionType type, String documentId, String title, String editor, LocalDateTime updatedDateTime) {
+    public RevisionHistory(RevisionType type, String documentId, String title, String editor, LocalDateTime createdDateTime) {
         this.type = type;
         this.documentId = documentId;
         this.title = title;
         this.editor = editor;
-        this.updatedDateTime = updatedDateTime;
+        this.createdDateTime = createdDateTime;
     }
     
 }

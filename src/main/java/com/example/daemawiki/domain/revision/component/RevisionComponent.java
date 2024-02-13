@@ -26,7 +26,7 @@ public class RevisionComponent {
                         .documentId(request.documentId())
                         .title(request.title())
                         .editor(user.getId())
-                        .updatedDateTime(LocalDateTime.now())
+                        .createdDateTime(LocalDateTime.now())
                         .build())
                 .flatMap(revisionHistoryRepository::save)
                 .then();
