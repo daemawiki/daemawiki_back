@@ -17,7 +17,7 @@ public class RevisionHistoryController {
     }
 
     @GetMapping
-    public Flux<RevisionHistory> testAPI() {
+    public Flux<RevisionHistory> getRevisionTop10ByUpdatedDate() {
         return revisionService.getUpdatedTop10Revision();
     }
 
