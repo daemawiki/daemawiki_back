@@ -24,7 +24,8 @@ public class SecurityConfig {
 
     private static final String[] WHITE_LIST = {
             "/api/mail/**",
-            "/api/auth/**"
+            "/api/auth/**",
+            "/api/revision/**"
     };
 
     @Bean
@@ -37,7 +38,7 @@ public class SecurityConfig {
         return http.authorizeExchange(a -> a
                         .pathMatchers(WHITE_LIST).permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/documents/{documentId}").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/revision").permitAll()
+
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
