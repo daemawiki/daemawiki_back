@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.image.api;
 
 import com.example.daemawiki.infra.s3.S3Service;
+import com.example.daemawiki.infra.s3.model.ImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -17,9 +18,8 @@ public class ImageController {
     private final S3Service service;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<String> imgaeUpload(@RequestPart("file") FilePart filePart) {
+    public Mono<ImageResponse> imgaeUpload(@RequestPart("file") FilePart filePart) {
         return service.uploadObject(filePart);
     }
-
 
 }
