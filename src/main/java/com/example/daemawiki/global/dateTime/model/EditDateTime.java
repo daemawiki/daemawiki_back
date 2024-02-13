@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class EditDateTime {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
-    private LocalDateTime created;
+    private final LocalDateTime created;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
     private LocalDateTime updated;
 
