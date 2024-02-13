@@ -12,4 +12,6 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     @Query("{'$or':[{'title':{$regex:'?0', $options:'i'}}, {'content':{$regex:'?0', $options:'i'}}]}")
     Flux<DefaultDocument> findByTextContaining(String text);
 
+    @Query("{'_id': {$sample: {'size':  1}}}")
+    Mono<DefaultDocument> findRandomDocument();
 }
