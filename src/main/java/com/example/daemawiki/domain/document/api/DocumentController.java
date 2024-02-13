@@ -34,7 +34,7 @@ public class DocumentController {
 
     @GetMapping("/{documentId}")
     public Mono<GetDocumentResponse> getDocument(@PathVariable String documentId) {
-        return getDocumentService.execute(documentId);
+        return getDocumentService.getDocumentById(documentId);
     }
 
     @DeleteMapping("/{documentId}")

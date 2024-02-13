@@ -16,9 +16,14 @@ public class GetDocument {
         this.documentMapper = documentMapper;
     }
 
-    public Mono<GetDocumentResponse> execute(String id) {
+    public Mono<GetDocumentResponse> getDocumentById(String id) {
         return documentFacade.findDocumentById(id)
                         .flatMap(documentMapper::defaultDocumentToGetResponse);
+    }
+
+    public Mono<GetDocumentResponse> getDocumentByRandom() {
+        return documentFacade.findDocumentByRandom()
+                .flatMap(documentMapper::defaultDocumentToGetResponse);
     }
 
 }

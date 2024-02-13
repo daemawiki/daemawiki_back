@@ -28,4 +28,8 @@ public class DocumentFacade {
                 .switchIfEmpty(Mono.error(DocumentNotFoundException.EXCEPTION));
     }
 
+    public Mono<DefaultDocument> findDocumentByRandom() {
+        return documentRepository.findRandomDocument();
+    }
+
 }
