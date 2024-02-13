@@ -11,4 +11,6 @@ public interface RevisionHistoryRepository extends ReactiveMongoRepository<Revis
     Flux<RevisionHistory> findTop10ByTypeInOrderByUpdatedDateTimeDesc(List<RevisionType> types);
     Flux<RevisionHistory> findAllByOrderByUpdatedDateTimeDesc();
 
+    Flux<RevisionHistory> findAllByDocumentId(String id);
+
 }

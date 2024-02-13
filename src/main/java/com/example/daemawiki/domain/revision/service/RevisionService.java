@@ -35,4 +35,8 @@ public class RevisionService {
                 .take(10);
     }
 
+    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId) {
+        return revisionHistoryRepository.findAllByDocumentId(documentId);
+    }
+
 }
