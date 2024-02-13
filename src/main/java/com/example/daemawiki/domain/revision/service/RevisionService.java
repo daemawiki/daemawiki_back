@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.revision.service;
 
+import com.example.daemawiki.domain.revision.dto.GetRevisionPageRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
@@ -25,7 +26,9 @@ public class RevisionService {
 
     //        17077 92123
     //        17077 44486 최신
-    public Flux<RevisionHistory> getAllRevisionPaging(String lastRevisionId) {
+    public Flux<RevisionHistory> getAllRevisionPaging(GetRevisionPageRequest request) {
+        String lastRevisionId = request.lastRevisionId();
+
         return revisionHistoryRepository.findAllByOrderByUpdatedDateTimeDesc()
                 .filter(revisionHistory -> lastRevisionId == null || lastRevisionId == "" ||
                         new ObjectId(revisionHistory.getId()).getTimestamp() > new ObjectId(lastRevisionId).getTimestamp())
