@@ -19,7 +19,8 @@ public class RevisionService {
 
     public Flux<RevisionHistory> getUpdatedTop10Revision() {
         List<RevisionType> types = List.of(RevisionType.UPDATE, RevisionType.CREATE);
-        return revisionHistoryRepository.findTop10ByTypeInOrderByUpdatedDateTimeDesc(types);
+        return revisionHistoryRepository.findTop10ByTypeInOrderByUpdatedDateTimeDesc(types)
+                .distinct(RevisionHistory::getDocumentId);
     }
 
     //        17077 92123
