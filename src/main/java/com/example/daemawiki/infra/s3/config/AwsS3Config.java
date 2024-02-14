@@ -1,4 +1,4 @@
-package com.example.daemawiki.infra.s3;
+package com.example.daemawiki.infra.s3.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

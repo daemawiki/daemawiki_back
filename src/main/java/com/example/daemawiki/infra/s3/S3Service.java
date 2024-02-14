@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
-import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
-import software.amazon.awssdk.services.s3.model.CompletedPart;
-import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
-import software.amazon.awssdk.services.s3.model.UploadPartRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.util.Collections;
 import java.util.Map;
@@ -86,5 +83,15 @@ public class S3Service {
                                 .build())
                         .build()));
     }
+
+    public Mono<Void> deleteObject(String key) {
+        return Mono.just(DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build())
+                .map(s3AsyncClient::deleteObject)
+                .flatMap(Mono::fromFuture)
+                .then();
+    }   
 
 }
