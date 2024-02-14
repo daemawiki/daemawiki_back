@@ -1,10 +1,8 @@
 package com.example.daemawiki.infra.s3;
 
-import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
 import com.example.daemawiki.infra.s3.model.FileDetail;
 import com.example.daemawiki.infra.s3.model.FileResponse;
 import com.example.daemawiki.infra.s3.model.type.FileType;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -13,19 +11,24 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CompletedPart;
+import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
 import java.util.Collections;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class S3Service {
     private final S3AsyncClient s3AsyncClient;
 
+    public S3Service(S3AsyncClient s3AsyncClient) {
+        this.s3AsyncClient = s3AsyncClient;
+    }
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
     public Mono<FileResponse> uploadObject(FilePart filePart, String fileType) {
         String filename = filePart.filename();
         Map<String, String> metadata = Map.of("filename", filename);
@@ -88,16 +91,6 @@ public class S3Service {
                         .url("https://" + bucket + ".s3.amazonaws.com/" + fileName)
                         .build())
                 .build());
-    }
-
-    public Mono<Void> deleteObject(DeleteFileRequest request) {
-        return Mono.just(DeleteObjectRequest.builder()
-                .bucket(bucket)
-                .key(request.fileName())
-                .build())
-                .map(s3AsyncClient::deleteObject)
-                .flatMap(Mono::fromFuture)
-                .then();
     }
 
 }
