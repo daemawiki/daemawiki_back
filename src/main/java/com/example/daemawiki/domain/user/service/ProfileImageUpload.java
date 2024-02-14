@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
-import com.example.daemawiki.infra.s3.S3UploadObject;
+import com.example.daemawiki.infra.s3.service.S3UploadObject;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

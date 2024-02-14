@@ -1,4 +1,4 @@
-package com.example.daemawiki.infra.s3;
+package com.example.daemawiki.infra.s3.service;
 
 import com.example.daemawiki.infra.s3.model.FileDetail;
 import com.example.daemawiki.infra.s3.model.FileResponse;

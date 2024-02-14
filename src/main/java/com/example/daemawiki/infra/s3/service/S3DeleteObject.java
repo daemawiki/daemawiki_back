@@ -1,4 +1,4 @@
-package com.example.daemawiki.infra.s3;
+package com.example.daemawiki.infra.s3.service;
 
 import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.springframework.beans.factory.annotation.Value;

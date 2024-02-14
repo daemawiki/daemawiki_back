@@ -1,8 +1,8 @@
 package com.example.daemawiki.domain.file.api;
 
 import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
-import com.example.daemawiki.infra.s3.S3DeleteObject;
-import com.example.daemawiki.infra.s3.S3UploadObject;
+import com.example.daemawiki.infra.s3.service.S3DeleteObject;
+import com.example.daemawiki.infra.s3.service.S3UploadObject;
 import com.example.daemawiki.infra.s3.model.FileResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
