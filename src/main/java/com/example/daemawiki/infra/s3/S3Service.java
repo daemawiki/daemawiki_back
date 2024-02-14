@@ -1,5 +1,6 @@
 package com.example.daemawiki.infra.s3;
 
+import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
 import com.example.daemawiki.infra.s3.model.FileDetail;
 import com.example.daemawiki.infra.s3.model.FileResponse;
 import com.example.daemawiki.infra.s3.model.type.FileType;
@@ -84,10 +85,10 @@ public class S3Service {
                         .build()));
     }
 
-    public Mono<Void> deleteObject(String key) {
+    public Mono<Void> deleteObject(DeleteFileRequest request) {
         return Mono.just(DeleteObjectRequest.builder()
                 .bucket(bucket)
-                .key(key)
+                .key(request.fileName())
                 .build())
                 .map(s3AsyncClient::deleteObject)
                 .flatMap(Mono::fromFuture)
