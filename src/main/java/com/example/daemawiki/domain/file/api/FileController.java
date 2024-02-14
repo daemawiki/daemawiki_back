@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.image.api;
+package com.example.daemawiki.domain.file.api;
 
 import com.example.daemawiki.infra.s3.S3Service;
 import com.example.daemawiki.infra.s3.model.FileResponse;
@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/image")
 @RequiredArgsConstructor
-public class ImageController {
+public class FileController {
     private final S3Service service;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
