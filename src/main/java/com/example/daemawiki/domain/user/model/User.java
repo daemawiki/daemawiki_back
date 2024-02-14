@@ -28,11 +28,10 @@ public class User {
     private FileResponse profile = DefaultProfile.DEFAULT_PROFILE;
 
     @Builder
-    public User(String nickname, String email, String password, FileResponse profile) {
+    public User(String nickname, String email, String password) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.profile = profile;
     }
 
 }
