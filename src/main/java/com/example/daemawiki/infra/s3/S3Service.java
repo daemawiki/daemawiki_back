@@ -26,7 +26,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Mono<FileResponse> uploadObject(FilePart filePart, String imageType) {
+    public Mono<FileResponse> uploadObject(FilePart filePart, String fileType) {
         String filename = filePart.filename();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();
@@ -72,18 +72,22 @@ public class S3Service {
                                         .onErrorResume(Mono::error);
                             });
                 })
-                .flatMap(response -> Mono.just(FileResponse.builder()
-                        .fileName(filename)
-                        .fileType(type.toString())
-                        .detail(FileDetail.builder()
-                                .type(switch (imageType) {
-                                    case "content" -> FileType.CONTENT;
-                                    case "profile" -> FileType.PROFILE;
-                                    case null, default -> FileType.OTHER;
-                                })
-                                .url("https://" + bucket + ".s3.amazonaws.com/" + filename)
-                                .build())
-                        .build()));
+                .flatMap(response -> createFileResponse(filename, type, fileType));
+    }
+
+    private Mono<FileResponse> createFileResponse(String fileName, MediaType mediaType, String filetype) {
+        return Mono.just(FileResponse.builder()
+                .fileName(fileName)
+                .fileType(mediaType.toString())
+                .detail(FileDetail.builder()
+                        .type(switch (filetype) {
+                            case "content" -> FileType.CONTENT;
+                            case "profile" -> FileType.PROFILE;
+                            case null, default -> FileType.OTHER;
+                        })
+                        .url("https://" + bucket + ".s3.amazonaws.com/" + fileName)
+                        .build())
+                .build());
     }
 
     public Mono<Void> deleteObject(DeleteFileRequest request) {
