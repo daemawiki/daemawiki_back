@@ -30,7 +30,7 @@ public class RevisionService {
     //        17077 92123
     //        17077 44486 최신
     public Flux<RevisionHistory> getFilteredRevisions(Flux<RevisionHistory> revisions, String lastRevisionId) {
-        return revisions.filter(revisionHistory -> lastRevisionId == null || lastRevisionId.isEmpty() ||
+        return revisions.filter(revisionHistory -> lastRevisionId.isEmpty() ||
                         new ObjectId(revisionHistory.getId()).getTimestamp() > new ObjectId(lastRevisionId).getTimestamp())
                 .take(20);
     }
