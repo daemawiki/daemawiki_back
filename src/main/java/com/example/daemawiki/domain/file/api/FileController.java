@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.file.api;
 
+import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
 import com.example.daemawiki.infra.s3.S3Service;
 import com.example.daemawiki.infra.s3.model.FileResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,14 @@ import reactor.core.publisher.Mono;
 public class FileController {
     private final S3Service service;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<FileResponse> imageUpload(@RequestPart("file") FilePart filePart, @RequestParam("type") String imageType) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<FileResponse> uploadFile(@RequestPart("file") FilePart filePart, @RequestParam("type") String imageType) {
         return service.uploadObject(filePart, imageType);
+    }
+
+    @DeleteMapping
+    public Mono<Void> deleteFile(@RequestBody DeleteFileRequest request) {
+        return service.deleteObject(request);
     }
 
 }
