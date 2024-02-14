@@ -19,8 +19,8 @@ public class FileController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<FileResponse> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @RequestParam("type") String imageType) {
-        return service.uploadObject(filePart, imageType);
+    public Mono<FileResponse> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @RequestParam("type") String fileType) {
+        return service.uploadObject(filePart, fileType);
     }
 
     @DeleteMapping
