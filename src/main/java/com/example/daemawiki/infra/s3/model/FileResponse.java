@@ -3,10 +3,10 @@ package com.example.daemawiki.infra.s3.model;
 import lombok.Builder;
 
 @Builder
-public record ImageResponse(
+public record FileResponse(
         String fileName,
         String fileType,
-        ImageDetail detail
+        FileDetail detail
 
 ) {
 }

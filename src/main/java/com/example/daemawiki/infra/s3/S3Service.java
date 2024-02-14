@@ -1,8 +1,8 @@
 package com.example.daemawiki.infra.s3;
 
-import com.example.daemawiki.infra.s3.model.ImageDetail;
-import com.example.daemawiki.infra.s3.model.ImageResponse;
-import com.example.daemawiki.infra.s3.model.type.ImageType;
+import com.example.daemawiki.infra.s3.model.FileDetail;
+import com.example.daemawiki.infra.s3.model.FileResponse;
+import com.example.daemawiki.infra.s3.model.type.FileType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -25,7 +25,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Mono<ImageResponse> uploadObject(FilePart filePart, String imageType) {
+    public Mono<FileResponse> uploadObject(FilePart filePart, String imageType) {
         String filename = filePart.filename();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();
@@ -70,14 +70,14 @@ public class S3Service {
                                         });
                             });
                 })
-                .flatMap(response -> Mono.just(ImageResponse.builder()
+                .flatMap(response -> Mono.just(FileResponse.builder()
                         .fileName(filename)
                         .fileType(type.toString())
-                        .detail(ImageDetail.builder()
+                        .detail(FileDetail.builder()
                                 .type(switch (imageType) {
-                                    case "content" -> ImageType.CONTENT;
-                                    case "profile" -> ImageType.PROFILE;
-                                    case null, default -> ImageType.OTHER;
+                                    case "content" -> FileType.CONTENT;
+                                    case "profile" -> FileType.PROFILE;
+                                    case null, default -> FileType.OTHER;
                                 })
                                 .url("https://" + bucket + ".s3.amazonaws.com/" + filename)
                                 .build())
@@ -92,6 +92,6 @@ public class S3Service {
                 .map(s3AsyncClient::deleteObject)
                 .flatMap(Mono::fromFuture)
                 .then();
-    }   
+    }
 
 }
