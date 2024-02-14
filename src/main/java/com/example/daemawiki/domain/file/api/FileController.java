@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/image")
+@RequestMapping("/api/file")
 public class FileController {
     private final S3Service service;
 
