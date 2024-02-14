@@ -9,12 +9,6 @@ spring:
       port: ${REDIS_PORT}
       password: ${REDIS_PW}
 
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-      enabled: true
-
   mail:
     smtp:
       auth: true

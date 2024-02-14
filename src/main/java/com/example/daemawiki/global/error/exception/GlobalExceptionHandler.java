@@ -1,10 +1,10 @@
 package com.example.daemawiki.global.error.exception;
 
 import com.example.daemawiki.global.error.ErrorResponse;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
@@ -21,16 +21,26 @@ public class GlobalExceptionHandler {
                 .body(errorResponse));
     }
 
+    private final int badRequestStatus = HttpStatus.BAD_REQUEST.value();
+
     @ExceptionHandler(WebExchangeBindException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleValidException(WebExchangeBindException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
-        int status = HttpStatus.BAD_REQUEST.value();
+        int status = badRequestStatus;
         String message = fieldError != null ? fieldError.getDefaultMessage() : "Bad Request";
         ErrorResponse errorResponse = ErrorResponse.of(status, message);
 
         return Mono.just(ResponseEntity
                 .status(status)
                 .body(errorResponse));
+    }
+
+    @ExceptionHandler(DataBufferLimitException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleLimitException(DataBufferLimitException e) {
+        int status = HttpStatus.EXPECTATION_FAILED.value();
+        return Mono.just(ResponseEntity
+                .status(status)
+                .body(ErrorResponse.of(status, "파일 최대 크기인 5mb를 초과하였습니다.")));
     }
 
 }
