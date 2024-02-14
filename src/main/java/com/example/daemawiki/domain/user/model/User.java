@@ -33,4 +33,8 @@ public class User {
         this.profile = profile;
     }
 
+    public void editProfile(FileResponse fileResponse) {
+        this.profile = fileResponse;
+    }
+
 }
