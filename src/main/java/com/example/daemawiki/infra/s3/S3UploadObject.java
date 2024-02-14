@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.Map;
 
 @Service
-public class S3Service {
+public class S3UploadObject {
     private final S3AsyncClient s3AsyncClient;
 
-    public S3Service(S3AsyncClient s3AsyncClient) {
+    public S3UploadObject(S3AsyncClient s3AsyncClient) {
         this.s3AsyncClient = s3AsyncClient;
     }
 
