@@ -1,6 +1,8 @@
 package com.example.daemawiki.infra.s3;
 
+import com.example.daemawiki.infra.s3.model.ImageDetail;
 import com.example.daemawiki.infra.s3.model.ImageResponse;
+import com.example.daemawiki.infra.s3.model.type.ImageType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -26,7 +28,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Mono<ImageResponse> uploadObject(FilePart filePart) {
+    public Mono<ImageResponse> uploadObject(FilePart filePart, String imageType) {
         String filename = filePart.filename();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();
@@ -74,7 +76,14 @@ public class S3Service {
                 .flatMap(response -> Mono.just(ImageResponse.builder()
                         .fileName(filename)
                         .fileType(type.toString())
-                        .image("https://" + bucket + ".s3.amazonaws.com/" + filename)
+                        .detail(ImageDetail.builder()
+                                .type(switch (imageType) {
+                                    case "content" -> ImageType.CONTENT;
+                                    case "profile" -> ImageType.PROFILE;
+                                    case null, default -> ImageType.OTHER;
+                                })
+                                .url("https://" + bucket + ".s3.amazonaws.com/" + filename)
+                                .build())
                         .build()));
     }
 

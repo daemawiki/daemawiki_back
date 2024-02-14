@@ -6,7 +6,7 @@ import lombok.Builder;
 public record ImageResponse(
         String fileName,
         String fileType,
-        String image
+        ImageDetail detail
 
 ) {
 }
