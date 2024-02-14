@@ -26,4 +26,9 @@ public class RevisionHistoryController {
         return revisionService.getAllRevisionPaging(request);
     }
 
+    @GetMapping("/{documentId}")
+    public Flux<RevisionHistory> getRevisionByDocument(@PathVariable String documentId, @Valid @RequestBody GetRevisionPageRequest request) {
+        return revisionService.getAllRevisionByDocument(documentId, request);
+    }
+
 }
