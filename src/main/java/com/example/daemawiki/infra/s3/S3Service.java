@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
 import com.example.daemawiki.infra.s3.model.FileDetail;
 import com.example.daemawiki.infra.s3.model.FileResponse;
 import com.example.daemawiki.infra.s3.model.type.FileType;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -26,7 +27,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Mono<FileResponse> uploadObject(FilePart filePart, String imageType) {
+    public Mono<FileResponse> uploadObject(@NotBlank FilePart filePart, @NotBlank String imageType) {
         String filename = filePart.filename();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();
@@ -68,7 +69,8 @@ public class S3Service {
                                                     .build();
 
                                             return s3AsyncClient.completeMultipartUpload(completeRequest);
-                                        });
+                                        })
+                                        .onErrorResume(Mono::error);
                             });
                 })
                 .flatMap(response -> Mono.just(FileResponse.builder()
