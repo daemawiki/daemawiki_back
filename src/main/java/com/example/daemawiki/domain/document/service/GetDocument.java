@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.service.mapper.DocumentMapper;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -23,6 +24,11 @@ public class GetDocument {
 
     public Mono<GetDocumentResponse> getDocumentByRandom() {
         return documentFacade.findDocumentByRandom()
+                .flatMap(documentMapper::defaultDocumentToGetResponse);
+    }
+
+    public Flux<GetDocumentResponse> searchDocument(String text) {
+        return documentFacade.searchDocument(text)
                 .flatMap(documentMapper::defaultDocumentToGetResponse);
     }
 

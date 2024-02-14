@@ -9,6 +9,7 @@ import com.example.daemawiki.domain.document.service.UpdateDocument;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -40,6 +41,11 @@ public class DocumentController {
     @GetMapping("/random")
     public Mono<GetDocumentResponse> getDocumentByRandom() {
         return getDocumentService.getDocumentByRandom();
+    }
+
+    @GetMapping("/search")
+    public Flux<GetDocumentResponse> searchDocument(@RequestParam String text) {
+        return getDocumentService.searchDocument(text);
     }
 
     @DeleteMapping("/{documentId}")
