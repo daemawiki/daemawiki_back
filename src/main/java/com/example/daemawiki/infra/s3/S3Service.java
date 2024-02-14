@@ -27,7 +27,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Mono<FileResponse> uploadObject(@NotBlank FilePart filePart, @NotBlank String imageType) {
+    public Mono<FileResponse> uploadObject(FilePart filePart, @NotBlank String imageType) {
         String filename = filePart.filename();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();

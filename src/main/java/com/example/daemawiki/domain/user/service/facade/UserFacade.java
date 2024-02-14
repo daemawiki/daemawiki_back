@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.user.service;
+package com.example.daemawiki.domain.user.service.facade;
 
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
