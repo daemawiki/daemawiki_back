@@ -37,6 +37,11 @@ public class DocumentController {
         return getDocumentService.getDocumentById(documentId);
     }
 
+    @GetMapping("/random")
+    public Mono<GetDocumentResponse> getDocumentByRandom() {
+        return getDocumentService.getDocumentByRandom();
+    }
+
     @DeleteMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteDocument(@PathVariable String documentId) {
