@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.document.repository;
 
 import com.example.daemawiki.domain.document.model.DefaultDocument;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
@@ -10,6 +11,6 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     @Query("{'$or':[{'title':{$regex:'?0', $options:'i'}}, {'content':{$regex:'?0', $options:'i'}}]}")
     Flux<DefaultDocument> findByTextContaining(String text);
 
-    @Query("{'_id': {$sample: {'size':  1}}}")
+    @Aggregation("{ $sample: {'size':  1} }")
     Mono<DefaultDocument> findRandomDocument();
 }
