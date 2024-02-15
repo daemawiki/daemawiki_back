@@ -8,6 +8,7 @@ import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
+import com.example.daemawiki.domain.user.dto.UserDetailResponse;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.datetime.model.EditDateTime;
 import org.springframework.stereotype.Service;
@@ -32,23 +33,31 @@ public class CreateDocument {
 
     public Mono<Void> execute(SaveDocumentRequest request) {
         return userFacade.currentUser()
-                .map(user -> DefaultDocument.builder()
-                        .title(request.title())
-                        .type(getDocumentType.execute(request.type()))
-                        .dateTime(EditDateTime.builder()
-                                .created(LocalDateTime.now())
-                                .updated(LocalDateTime.now())
-                                .build())
-                        .documentEditor(DocumentEditor.builder()
-                                .createdUser(user)
-                                .updatedUser(user)
-                                .build())
-                        .content(request.content())
-                        .groups(request.groups().stream()
-                                .filter(Objects::nonNull)
-                                .map(group -> String.join("/", group))
-                                .toList())
-                        .build())
+                .map(user -> {
+                    UserDetailResponse userDetail = UserDetailResponse.builder()
+                            .id(user.getId())
+                            .name(user.getNickname())
+                            .profile(user.getProfile())
+                            .build();
+
+                    return DefaultDocument.builder()
+                            .title(request.title())
+                            .type(getDocumentType.execute(request.type()))
+                            .dateTime(EditDateTime.builder()
+                                    .created(LocalDateTime.now())
+                                    .updated(LocalDateTime.now())
+                                    .build())
+                            .documentEditor(DocumentEditor.builder()
+                                    .createdUser(userDetail)
+                                    .updatedUser(userDetail)
+                                    .build())
+                            .content(request.content())
+                            .groups(request.groups().stream()
+                                    .filter(Objects::nonNull)
+                                    .map(group -> String.join("/", group))
+                                    .toList())
+                            .build();
+                })
                 .flatMap(documentRepository::save)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.CREATE)

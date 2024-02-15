@@ -25,16 +25,23 @@ public class User {
 
     private File profile;
 
+    private UserDetail detail;
+
     @Builder
-    public User(String nickname, String email, String password, File profile) {
+    public User(String nickname, String email, String password, File profile, UserDetail detail) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.profile = profile;
+        this.detail = detail;
     }
 
     public void editProfile(File fileResponse) {
         this.profile = fileResponse;
+    }
+
+    public void editDetail(UserDetail detail) {
+        this.detail = detail;
     }
 
 }

@@ -7,6 +7,7 @@ import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.domain.user.dto.UserDetailResponse;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,12 @@ public class UpdateDocument {
                                     .filter(Objects::nonNull)
                                     .map(group -> String.join("/", group))
                                     .toList();
+
+                            document.getEditor().update(UserDetailResponse.builder()
+                                    .id(user.getId())
+                                    .name(user.getNickname())
+                                    .profile(user.getProfile())
+                                    .build());
 
                             document.update(request.title(),
                                     getDocumentType.execute(request.type()),
