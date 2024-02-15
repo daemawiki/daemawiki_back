@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api/revision")
+@RequestMapping("/api/revisions")
 public class RevisionHistoryController {
     private final RevisionService revisionService;
 

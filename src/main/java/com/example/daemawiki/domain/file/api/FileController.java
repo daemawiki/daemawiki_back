@@ -13,7 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/file")
+@RequestMapping("/api/files")
 public class FileController {
     private final S3UploadObject s3UploadObject;
     private final S3DeleteObject s3DeleteObject;
