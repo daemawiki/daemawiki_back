@@ -1,7 +1,10 @@
 package com.example.daemawiki.global.security;
 
+import com.example.daemawiki.global.exception.h400.InvalidTokenException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -21,7 +24,12 @@ public class JwtWebFilter implements WebFilter {
         if (token != null) {
             return tokenizer.getAuthentication(token)
                     .flatMap(auth -> chain.filter(exchange)
-                            .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth)));
+                            .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth)))
+                    .onErrorResume(InvalidTokenException.class, e -> {
+                        ServerHttpResponse response = exchange.getResponse();
+                        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                        return response.setComplete();
+                    });
         }
         return chain.filter(exchange);
     }
