@@ -40,26 +40,21 @@ public class Tokenizer {
                 .compact();
     }
 
-    public Boolean verify(String token) {
-        try {
-            parse(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public Mono<Boolean> verify(String token) {
+        return parse(token)
+                .map(jws -> true)
+                .onErrorReturn(false);
     }
 
-    private Jws<Claims> parse(String token) {
-        try {
-            return Jwts.parser().setSigningKey(secret)
-                    .parseClaimsJws(token);
-        } catch (JwtException e) {
-            throw InvalidTokenException.EXCEPTION;
-        }
+    private Mono<Jws<Claims>> parse(String token) {
+        return Mono.fromCallable(() -> Jwts.parser().setSigningKey(secret)
+                        .parseClaimsJws(token))
+                .onErrorMap(e -> InvalidTokenException.EXCEPTION);
     }
 
-    private Claims parseClaims(String token) {
-        return parse(token).getBody();
+    private Mono<Claims> parseClaims(String token) {
+        return parse(token)
+                .map(Jwt::getBody);
     }
 
     private UserDetails createAuthenticatedUserFromClaims(Claims claims) {
@@ -67,28 +62,25 @@ public class Tokenizer {
         return new User(subject, "", Collections.emptyList());
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = parseClaims(token);
-        UserDetails details = createAuthenticatedUserFromClaims(claims);
-        return new UsernamePasswordAuthenticationToken(
-                details, null, details.getAuthorities());
+    public Mono<Authentication> getAuthentication(String token) {
+        return parseClaims(token)
+                .map(this::createAuthenticatedUserFromClaims)
+                .map(details -> new UsernamePasswordAuthenticationToken(
+                        details, null, details.getAuthorities()));
     }
 
     public Mono<String> reissue(String token) {
-        try {
-            Claims claims = parseClaims(token);
-            String user = claims.getSubject();
-            String newToken = tokenize(user);
-
-            return Mono.justOrEmpty(newToken);
-        } catch (ExpiredJwtException e) {
-            String user = e.getClaims().getSubject();
-            String newToken = tokenize(user);
-
-            return Mono.justOrEmpty(newToken);
-        } catch (JwtException e) {
-            return Mono.error(InvalidTokenException.EXCEPTION);
-        }
+        return parseClaims(token)
+                .map(claims -> {
+                    String user = claims.getSubject();
+                    return tokenize(user);
+                })
+                .onErrorResume(ExpiredJwtException.class, e -> {
+                    String user = e.getClaims().getSubject();
+                    return Mono.justOrEmpty(tokenize(user));
+                })
+                .onErrorResume(JwtException.class, e ->
+                        Mono.error(InvalidTokenException.EXCEPTION));
     }
 
 }
