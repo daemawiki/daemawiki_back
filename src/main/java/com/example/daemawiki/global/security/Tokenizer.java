@@ -87,7 +87,7 @@ public class Tokenizer {
 
             return Mono.justOrEmpty(newToken);
         } catch (JwtException e) {
-            throw InvalidTokenException.EXCEPTION;
+            return Mono.error(InvalidTokenException.EXCEPTION);
         }
     }
 
