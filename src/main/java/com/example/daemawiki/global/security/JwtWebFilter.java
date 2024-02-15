@@ -16,22 +16,13 @@ public class JwtWebFilter implements WebFilter {
         this.tokenizer = tokenizer;
     }
 
-//    @Override
-//    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-//        return resolveToken(exchange.getRequest())
-//                .flatMap(token -> {
-//                    Authentication authentication = tokenizer.getAuthentication(token);
-//                    return chain.filter(exchange)
-//                            .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
-//                }).switchIfEmpty(chain.filter(exchange));
-//    }
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String token = resolveToken(exchange.getRequest());
         if (token != null) {
             Authentication auth = tokenizer.getAuthentication(token);
             return chain.filter(exchange)
-                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth))
         }
         return chain.filter(exchange);
     }
@@ -44,11 +35,5 @@ public class JwtWebFilter implements WebFilter {
             return null;
         }
     }
-
-//    private Mono<String> resolveToken(ServerHttpRequest request) {
-//        return Mono.justOrEmpty(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-//                .filter(authHeader -> authHeader.startsWith("Bearer "))
-//                .map(authHeader -> authHeader.substring(7));
-//    }
 
 }
