@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.auth.service;
 
 import com.example.daemawiki.domain.auth.dto.request.ReissueRequest;
 import com.example.daemawiki.domain.auth.dto.response.TokenResponse;
-import com.example.daemawiki.global.exception.H500.TokenReissueFailedException;
+import com.example.daemawiki.global.exception.h500.TokenReissueFailedException;
 import com.example.daemawiki.global.security.Tokenizer;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

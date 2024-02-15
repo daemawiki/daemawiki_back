@@ -1,6 +1,6 @@
 package com.example.daemawiki.global.security;
 
-import com.example.daemawiki.global.exception.H400.InvalidTokenException;
+import com.example.daemawiki.global.exception.h400.InvalidTokenException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

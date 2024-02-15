@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.document.service.facade;
 
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
-import com.example.daemawiki.global.exception.H404.DocumentNotFoundException;
+import com.example.daemawiki.global.exception.h404.DocumentNotFoundException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

@@ -2,8 +2,7 @@ package com.example.daemawiki.domain.user.service.facade;
 
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
-import com.example.daemawiki.global.exception.H400.InvalidTokenException;
-import com.example.daemawiki.global.exception.H404.UserNotFoundException;
+import com.example.daemawiki.global.exception.h404.UserNotFoundException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;

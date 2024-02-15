@@ -1,4 +1,4 @@
-package com.example.daemawiki.global.exception.H500;
+package com.example.daemawiki.global.exception.h500;
 
 import com.example.daemawiki.global.error.ErrorCode;
 import com.example.daemawiki.global.error.exception.CustomException;

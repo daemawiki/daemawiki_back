@@ -8,7 +8,7 @@ import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
-import com.example.daemawiki.global.exception.H400.VersionMismatchException;
+import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
