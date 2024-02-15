@@ -22,7 +22,7 @@ public class JwtWebFilter implements WebFilter {
         if (token != null) {
             Authentication auth = tokenizer.getAuthentication(token);
             return chain.filter(exchange)
-                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth))
+                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
         }
         return chain.filter(exchange);
     }
