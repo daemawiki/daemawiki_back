@@ -21,7 +21,7 @@ public class S3DeleteObject {
     public Mono<Void> deleteObject(DeleteFileRequest request) {
         return Mono.just(DeleteObjectRequest.builder()
                         .bucket(bucket)
-                        .key(request.fileName())
+                        .key(request.key())
                         .build())
                 .map(s3AsyncClient::deleteObject)
                 .flatMap(Mono::fromFuture)

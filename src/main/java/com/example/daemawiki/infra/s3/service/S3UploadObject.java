@@ -1,8 +1,9 @@
 package com.example.daemawiki.infra.s3.service;
 
+import com.example.daemawiki.domain.file.model.File;
 import com.example.daemawiki.domain.file.model.FileDetail;
-import com.example.daemawiki.domain.file.model.FileResponse;
 import com.example.daemawiki.domain.file.model.type.FileType;
+import com.example.daemawiki.domain.file.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -23,22 +24,25 @@ import java.util.UUID;
 @Service
 public class S3UploadObject {
     private final S3AsyncClient s3AsyncClient;
+    private final FileRepository fileRepository;
 
-    public S3UploadObject(S3AsyncClient s3AsyncClient) {
+    public S3UploadObject(S3AsyncClient s3AsyncClient, FileRepository fileRepository) {
         this.s3AsyncClient = s3AsyncClient;
+        this.fileRepository = fileRepository;
     }
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    public Mono<FileResponse> uploadObject(FilePart filePart, String fileType) {
+    public Mono<File> uploadObject(FilePart filePart, String fileType) {
         String filename = filePart.filename();
-        UUID uuid = UUID.randomUUID();
+        UUID key = UUID.randomUUID();
+        String keyString = key.toString();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();
 
         CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
                 .bucket(bucket)
-                .key(filename)
+                .key(keyString)
                 .metadata(metadata)
                 .build();
 
@@ -55,7 +59,7 @@ public class S3UploadObject {
 
                                 return Mono.fromCompletionStage(s3AsyncClient.uploadPart(UploadPartRequest.builder()
                                                 .bucket(bucket)
-                                                .key(filename)
+                                                .key(keyString)
                                                 .partNumber(partNumber)
                                                 .uploadId(uploadId)
                                                 .build(), AsyncRequestBody.fromBytes(fileContent)))
@@ -67,7 +71,7 @@ public class S3UploadObject {
 
                                             CompleteMultipartUploadRequest completeRequest = CompleteMultipartUploadRequest.builder()
                                                     .bucket(bucket)
-                                                    .key(filename)
+                                                    .key(keyString)
                                                     .uploadId(uploadId)
                                                     .multipartUpload(completedMultipartUpload -> completedMultipartUpload.parts(Collections.singletonList(part)))
                                                     .build();
@@ -77,11 +81,12 @@ public class S3UploadObject {
                                         .onErrorResume(Mono::error);
                             });
                 })
-                .flatMap(response -> createFileResponse(filename, type, fileType));
+                .flatMap(response -> createFile(key, filename, type, fileType));
     }
 
-    private Mono<FileResponse> createFileResponse(String fileName, MediaType mediaType, String filetype) {
-        return Mono.just(FileResponse.builder()
+    private Mono<File> createFile(UUID key, String fileName, MediaType mediaType, String filetype) {
+        return Mono.just(File.builder()
+                        .id(key)
                 .fileName(fileName)
                 .fileType(mediaType.toString())
                 .detail(FileDetail.builder()
@@ -90,9 +95,10 @@ public class S3UploadObject {
                             case "profile" -> FileType.PROFILE;
                             case null, default -> FileType.OTHER;
                         })
-                        .url("https://" + bucket + ".s3.amazonaws.com/" + fileName)
+                        .url("https://" + bucket + ".s3.amazonaws.com/" + key)
                         .build())
-                .build());
+                .build())
+                .flatMap(fileRepository::save);
     }
 
 }

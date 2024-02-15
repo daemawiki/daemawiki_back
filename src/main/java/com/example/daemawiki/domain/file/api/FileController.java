@@ -1,9 +1,9 @@
 package com.example.daemawiki.domain.file.api;
 
 import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
+import com.example.daemawiki.domain.file.model.File;
 import com.example.daemawiki.infra.s3.service.S3DeleteObject;
 import com.example.daemawiki.infra.s3.service.S3UploadObject;
-import com.example.daemawiki.domain.file.model.FileResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -22,7 +22,7 @@ public class FileController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<FileResponse> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @RequestParam("type") String fileType) {
+    public Mono<File> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @RequestParam("type") String fileType) {
         return s3UploadObject.uploadObject(filePart, fileType);
     }
 
