@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.file.model.component;
+package com.example.daemawiki.domain.file.component;
 
 import com.example.daemawiki.domain.file.repository.FileRepository;
 import org.springframework.stereotype.Component;

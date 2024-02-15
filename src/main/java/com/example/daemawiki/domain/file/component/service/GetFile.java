@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.file.model.component.service;
+package com.example.daemawiki.domain.file.component.service;
 
 import com.example.daemawiki.domain.file.model.File;
 import com.example.daemawiki.domain.file.repository.FileRepository;

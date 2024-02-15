@@ -1,7 +1,7 @@
 package com.example.daemawiki.infra.s3.service;
 
 import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
-import com.example.daemawiki.domain.file.model.component.DeleteFile;
+import com.example.daemawiki.domain.file.component.DeleteFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
