@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.revision.service;
+package com.example.daemawiki.domain.revision.component.service;
 
 import com.example.daemawiki.domain.revision.dto.GetRevisionPageRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
