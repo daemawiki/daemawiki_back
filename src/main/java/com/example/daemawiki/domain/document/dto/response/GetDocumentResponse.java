@@ -9,6 +9,7 @@ import java.util.List;
 
 @Builder
 public record GetDocumentResponse(
+        String id,
         String title,
         DocumentType type,
         EditDateTime dateTime,

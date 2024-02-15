@@ -10,6 +10,7 @@ public class DocumentMapper {
 
     public Mono<GetDocumentResponse> defaultDocumentToGetResponse(DefaultDocument document) {
         return Mono.justOrEmpty(GetDocumentResponse.builder()
+                .id(document.getId())
                 .title(document.getTitle())
                 .type(document.getType())
                 .dateTime(document.getDateTime())
