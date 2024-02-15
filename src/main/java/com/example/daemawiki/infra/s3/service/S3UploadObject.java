@@ -1,8 +1,8 @@
 package com.example.daemawiki.infra.s3.service;
 
-import com.example.daemawiki.infra.s3.model.FileDetail;
-import com.example.daemawiki.infra.s3.model.FileResponse;
-import com.example.daemawiki.infra.s3.model.type.FileType;
+import com.example.daemawiki.domain.file.model.FileDetail;
+import com.example.daemawiki.domain.file.model.FileResponse;
+import com.example.daemawiki.domain.file.model.type.FileType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -18,6 +18,7 @@ import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class S3UploadObject {
@@ -31,6 +32,7 @@ public class S3UploadObject {
     private String bucket;
     public Mono<FileResponse> uploadObject(FilePart filePart, String fileType) {
         String filename = filePart.filename();
+        UUID uuid = UUID.randomUUID();
         Map<String, String> metadata = Map.of("filename", filename);
         MediaType type = filePart.headers().getContentType();
 

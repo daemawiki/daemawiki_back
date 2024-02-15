@@ -1,4 +1,4 @@
-package com.example.daemawiki.infra.s3.model.type;
+package com.example.daemawiki.domain.file.model.type;
 
 public enum FileType {
     CONTENT,

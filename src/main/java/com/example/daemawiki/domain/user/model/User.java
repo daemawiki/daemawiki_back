@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.user.model;
 
-import com.example.daemawiki.infra.s3.model.FileResponse;
+import com.example.daemawiki.domain.file.model.FileResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.daemawiki.infra.s3.model;
+package com.example.daemawiki.domain.file.model;
 
 import lombok.Builder;
 

@@ -6,7 +6,7 @@ import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.H409.EmailAlreadyExistsException;
 import com.example.daemawiki.global.exception.H403.UnVerifiedEmailException;
-import com.example.daemawiki.infra.s3.model.DefaultProfile;
+import com.example.daemawiki.domain.file.model.DefaultProfile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

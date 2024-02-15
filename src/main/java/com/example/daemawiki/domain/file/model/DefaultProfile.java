@@ -1,6 +1,6 @@
-package com.example.daemawiki.infra.s3.model;
+package com.example.daemawiki.domain.file.model;
 
-import com.example.daemawiki.infra.s3.model.type.FileType;
+import com.example.daemawiki.domain.file.model.type.FileType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
