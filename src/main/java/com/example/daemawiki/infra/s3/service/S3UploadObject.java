@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.file.model.File;
 import com.example.daemawiki.domain.file.model.FileDetail;
 import com.example.daemawiki.domain.file.model.type.FileType;
 import com.example.daemawiki.domain.file.repository.FileRepository;
+import com.example.daemawiki.global.exception.h500.ImageUploadFaildException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -78,7 +79,7 @@ public class S3UploadObject {
 
                                             return s3AsyncClient.completeMultipartUpload(completeRequest);
                                         })
-                                        .onErrorResume(Mono::error);
+                                        .onErrorMap(e -> ImageUploadFaildException.EXCEPTION);
                             });
                 })
                 .flatMap(response -> createFile(key, filename, type, fileType));
