@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.user.api;
 
 import com.example.daemawiki.domain.user.service.ProfileImageUpload;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -21,6 +22,7 @@ public class UserController {
     }
 
     @PatchMapping("/profile-image")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> profileUpload(@RequestPart FilePart filePart) {
         return profileImageUpload.execute(filePart);
     }

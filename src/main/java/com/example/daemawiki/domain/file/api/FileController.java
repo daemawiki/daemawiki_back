@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.file.model.File;
 import com.example.daemawiki.infra.s3.service.S3DeleteObject;
 import com.example.daemawiki.infra.s3.service.S3UploadObject;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class FileController {
     }
 
     @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteFile(@Valid @RequestBody DeleteFileRequest request) {
         return s3DeleteObject.deleteObject(request);
     }

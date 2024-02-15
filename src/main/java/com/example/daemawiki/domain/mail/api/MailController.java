@@ -34,6 +34,7 @@ public class MailController {
     }
 
     @PostMapping("/reissue")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> reissue(@Valid @RequestBody AuthCodeRequest request) {
         return mailSend.reissue(request);
     }
