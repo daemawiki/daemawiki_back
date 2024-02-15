@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(CustomException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleGlobalException(CustomException e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode().getHttpStatus(), e.getErrorCode().getMessage());
