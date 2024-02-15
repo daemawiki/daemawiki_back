@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 public class GetDocumentType {
 
     public DocumentType execute(String type) {
-        return switch (type) {
+        return switch (type.toLowerCase()) {
             case "student" -> DocumentType.STUDENT;
             case "teacher" -> DocumentType.TEACHER;
             case "club" -> DocumentType.CLUB;
             case "gen" -> DocumentType.GEN;
             case "major" -> DocumentType.MAJOR;
-            case null, default -> DocumentType.DEFAULT;
+            default -> DocumentType.DEFAULT;
         };
     }
 
