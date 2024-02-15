@@ -1,4 +1,4 @@
-package com.example.daemawiki.global.dateTime.model;
+package com.example.daemawiki.global.datetime.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
