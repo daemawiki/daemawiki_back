@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.revision.dto;
+package com.example.daemawiki.domain.revision.dto.request;
 
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import lombok.Builder;

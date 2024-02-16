@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.revision.component;
 
-import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
+import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;

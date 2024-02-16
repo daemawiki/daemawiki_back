@@ -5,7 +5,7 @@ import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentEditor;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
-import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
+import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.user.dto.UserDetailResponse;

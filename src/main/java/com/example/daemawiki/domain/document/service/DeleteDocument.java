@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.document.service;
 
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
-import com.example.daemawiki.domain.revision.dto.SaveRevisionHistoryRequest;
+import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import org.springframework.stereotype.Service;

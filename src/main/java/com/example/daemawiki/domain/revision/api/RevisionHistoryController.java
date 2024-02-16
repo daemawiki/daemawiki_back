@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.revision.api;
 
-import com.example.daemawiki.domain.revision.dto.GetRevisionPageRequest;
+import com.example.daemawiki.domain.revision.dto.request.GetRevisionPageRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.component.service.RevisionService;
 import jakarta.validation.Valid;
