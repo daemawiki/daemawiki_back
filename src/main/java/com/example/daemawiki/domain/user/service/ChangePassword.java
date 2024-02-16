@@ -24,11 +24,10 @@ public class ChangePassword {
         return userFacade.currentUser()
                 .filter(user -> passwordEncoder.matches(request.oldPassword(), user.getPassword()))
                 .switchIfEmpty(Mono.error(PasswordMismatchException.EXCEPTION))
-                .map(user -> {
+                .flatMap(user -> {
                     user.changePassword(passwordEncoder.encode(request.newPassword()));
-                    return user;
+                    return userRepository.save(user);
                 })
-                .flatMap(userRepository::save)
                 .then();
     }
 
