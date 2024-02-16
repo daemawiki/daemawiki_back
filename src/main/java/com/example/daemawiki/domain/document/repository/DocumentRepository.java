@@ -13,4 +13,6 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
 
     @Aggregation("{ $sample: {'size':  1} }")
     Mono<DefaultDocument> findRandomDocument();
+
+    Flux<DefaultDocument> findTop10ByOrderByVersionDesc();
 }
