@@ -34,6 +34,7 @@ public class S3UploadObject {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
     public Mono<File> uploadObject(FilePart filePart, String fileType) {
         String filename = filePart.filename();
         UUID key = UUID.randomUUID();
