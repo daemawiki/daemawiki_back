@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.revision.component.service;
 
-import com.example.daemawiki.domain.revision.component.mapper.RevisionMapper;
+import com.example.daemawiki.domain.revision.model.mapper.RevisionMapper;
 import com.example.daemawiki.domain.revision.dto.request.GetRevisionPageRequest;
 import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;

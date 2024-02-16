@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.revision.component.mapper;
+package com.example.daemawiki.domain.revision.model.mapper;
 
 import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
 import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;

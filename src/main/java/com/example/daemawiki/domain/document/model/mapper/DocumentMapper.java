@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.document.service.mapper;
+package com.example.daemawiki.domain.document.model.mapper;
 
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
