@@ -28,4 +28,8 @@ public class DocumentFacade {
         return documentRepository.findByTextContaining(text);
     }
 
+    public Flux<DefaultDocument> findDocumentByVersionDesc() {
+        return documentRepository.findTop10ByOrderByVersionDesc();
+    }
+
 }
