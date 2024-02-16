@@ -34,7 +34,7 @@ public class GetDocument {
     }
 
     public Flux<SimpleDocumentResponse> getDocumentTop10() {
-        return documentFacade.findDocumentByVersionDesc()
+        return documentFacade.getDocumentOrderByVersion()
                 .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
     }
 

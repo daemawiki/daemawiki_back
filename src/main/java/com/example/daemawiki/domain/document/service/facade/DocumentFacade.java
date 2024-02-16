@@ -28,7 +28,7 @@ public class DocumentFacade {
         return documentRepository.findByTextContaining(text);
     }
 
-    public Flux<DefaultDocument> findDocumentByVersionDesc() {
+    public Flux<DefaultDocument> getDocumentOrderByVersion() {
         return documentRepository.findTop10ByOrderByVersionDesc();
     }
 
