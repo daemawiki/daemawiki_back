@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.document.api;
 
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
+import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import com.example.daemawiki.domain.document.service.CreateDocument;
 import com.example.daemawiki.domain.document.service.DeleteDocument;
 import com.example.daemawiki.domain.document.service.GetDocument;
@@ -46,6 +47,11 @@ public class DocumentController {
     @GetMapping("/search")
     public Flux<GetDocumentResponse> searchDocument(@RequestParam String text) {
         return getDocumentService.searchDocument(text);
+    }
+
+    @GetMapping("/most-revision/top10")
+    public Flux<SimpleDocumentResponse> getDocumentOrderByVersion() {
+        return getDocumentService.getDocumentTop10();
     }
 
     @DeleteMapping("/{documentId}")
