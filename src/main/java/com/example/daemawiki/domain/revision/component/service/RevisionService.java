@@ -1,6 +1,8 @@
 package com.example.daemawiki.domain.revision.component.service;
 
+import com.example.daemawiki.domain.revision.component.mapper.RevisionMapper;
 import com.example.daemawiki.domain.revision.dto.request.GetRevisionPageRequest;
+import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
@@ -14,17 +16,20 @@ import java.util.List;
 @Service
 public class RevisionService {
     private final RevisionHistoryRepository revisionHistoryRepository;
+    private final RevisionMapper revisionMapper;
     private final Scheduler scheduler;
 
-    public RevisionService(RevisionHistoryRepository revisionHistoryRepository, Scheduler scheduler) {
+    public RevisionService(RevisionHistoryRepository revisionHistoryRepository, RevisionMapper revisionMapper, Scheduler scheduler) {
         this.revisionHistoryRepository = revisionHistoryRepository;
+        this.revisionMapper = revisionMapper;
         this.scheduler = scheduler;
     }
 
-    public Flux<RevisionHistory> getUpdatedTop10Revision() {
+    public Flux<RevisionDocumentDetailResponse> getUpdatedTop10Revision() {
         List<RevisionType> types = List.of(RevisionType.UPDATE, RevisionType.CREATE);
         return revisionHistoryRepository.findTop10ByTypeInOrderByCreatedDateTimeDesc(types)
-                .distinct(RevisionHistory::getDocumentId);
+                .distinct(RevisionHistory::getDocumentId)
+                .flatMap(revisionMapper::revisionToRevisionDocumentDetailResponse);
     }
 
     //        17077 92123

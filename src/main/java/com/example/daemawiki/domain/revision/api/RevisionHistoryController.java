@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.revision.api;
 
 import com.example.daemawiki.domain.revision.dto.request.GetRevisionPageRequest;
+import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.component.service.RevisionService;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ public class RevisionHistoryController {
     }
 
     @GetMapping
-    public Flux<RevisionHistory> getRevisionTop10ByUpdatedDate() {
+    public Flux<RevisionDocumentDetailResponse> getRevisionTop10ByUpdatedDate() {
         return revisionService.getUpdatedTop10Revision();
     }
 
