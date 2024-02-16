@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.document.service;
 
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
+import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.service.mapper.DocumentMapper;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class GetDocument {
     public Flux<GetDocumentResponse> searchDocument(String text) {
         return documentFacade.searchDocument(text)
                 .flatMap(documentMapper::defaultDocumentToGetResponse);
+    }
+
+    public Flux<SimpleDocumentResponse> getDocumentTop10() {
+        return documentFacade.findDocumentByVersionDesc()
+                .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
     }
 
 }
