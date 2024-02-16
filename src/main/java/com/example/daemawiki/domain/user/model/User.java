@@ -16,7 +16,7 @@ public class User {
     @Id
     private String id;
 
-    private String nickname;
+    private String name;
 
     private String email;
 
@@ -28,8 +28,8 @@ public class User {
     private UserDetail detail;
 
     @Builder
-    public User(String nickname, String email, String password, File profile, UserDetail detail) {
-        this.nickname = nickname;
+    public User(String name, String email, String password, File profile, UserDetail detail) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.profile = profile;

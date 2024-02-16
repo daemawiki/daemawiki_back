@@ -42,7 +42,7 @@ public class Signup {
                                 return Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
                                         .subscribeOn(scheduler)
                                         .map(password -> User.builder()
-                                                    .nickname(request.nickname())
+                                                    .name(request.name())
                                                     .email(request.email())
                                                     .password(password)
                                                     .profile(DefaultProfile.DEFAULT_PROFILE)

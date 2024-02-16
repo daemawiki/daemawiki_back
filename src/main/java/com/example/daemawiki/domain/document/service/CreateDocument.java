@@ -36,7 +36,7 @@ public class CreateDocument {
                 .map(user -> {
                     UserDetailResponse userDetail = UserDetailResponse.builder()
                             .id(user.getId())
-                            .name(user.getNickname())
+                            .name(user.getName())
                             .profile(user.getProfile())
                             .build();
 
