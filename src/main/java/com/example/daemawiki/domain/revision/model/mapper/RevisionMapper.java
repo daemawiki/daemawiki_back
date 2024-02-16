@@ -19,7 +19,7 @@ public class RevisionMapper {
                 .map(document -> RevisionDocumentDetailResponse.builder()
                         .documentId(revisionHistory.getDocumentId())
                         .title(revisionHistory.getTitle())
-                        .numberOfRevision(document.getVersion() + 1)
+                        .numberOfRevision(document.getVersion())
                         .updatedDate(revisionHistory.getCreatedDateTime())
                         .build());
     }

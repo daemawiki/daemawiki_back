@@ -26,7 +26,7 @@ public class DocumentMapper {
         return Mono.justOrEmpty(SimpleDocumentResponse.builder()
                 .id(document.getId())
                 .title(document.getTitle())
-                .numberOfUpdate(document.getVersion() + 1)
+                .numberOfUpdate(document.getVersion())
                 .updatedDate(document.getDateTime().getUpdated())
                 .build());
     }
