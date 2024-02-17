@@ -92,10 +92,10 @@ public class S3UploadObject {
                         .fileName(fileName)
                         .fileType(mediaType.toString())
                         .detail(FileDetail.builder()
-                                .type(switch (filetype) {
+                                .type(switch (filetype.toLowerCase()) {
                                     case "content" -> FileType.CONTENT;
                                     case "profile" -> FileType.PROFILE;
-                                    case null, default -> FileType.OTHER;
+                                    default -> FileType.OTHER;
                                 })
                                 .url("https://" + bucket + ".s3.amazonaws.com/" + key)
                                 .build())
