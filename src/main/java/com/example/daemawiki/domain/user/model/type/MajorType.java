@@ -20,7 +20,7 @@ public enum MajorType {
     CLEANER("청소부"),
     GITOPS("깃옵스"),
     DBA("데이터베이스-관리자"),
-    FULLSTACK("풀스택");
+    FULLSTACK("풀스택-개발자");
 
     private final String major;
 }
