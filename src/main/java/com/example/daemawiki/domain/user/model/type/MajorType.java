@@ -5,5 +5,11 @@ public enum MajorType {
     FRONTEND,
     APP,
     SCAMMER,
+    DEVOPS,
+    DESIGN,
+    SECURITY,
+    GAME,
+    EMBEDDED,
+    AI,
     CLEANER
 }

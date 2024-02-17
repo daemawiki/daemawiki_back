@@ -9,12 +9,19 @@ public class GetMajorType {
         💀
     */
     public MajorType execute(String major) {
-        return switch (major.toLowerCase()) {
+        return switch (major) {
             case "backend" -> MajorType.BACKEND;
             case "frontend" -> MajorType.FRONTEND;
             case "app" -> MajorType.APP;
             case "teacher" -> MajorType.SCAMMER;
-            default -> MajorType.CLEANER;
+            case "devops" -> MajorType.DEVOPS;
+            case "ai" -> MajorType.AI;
+            case "design" -> MajorType.DESIGN;
+            case "security" -> MajorType.SECURITY;
+            case "game" -> MajorType.GAME;
+            case "embedded" -> MajorType.EMBEDDED;
+
+            case null, default -> MajorType.CLEANER;
         };
     }
 
