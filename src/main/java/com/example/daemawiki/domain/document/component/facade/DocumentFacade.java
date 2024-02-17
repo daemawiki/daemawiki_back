@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.document.service.facade;
+package com.example.daemawiki.domain.document.component.facade;
 
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;

@@ -1,9 +1,9 @@
-package com.example.daemawiki.domain.document.service;
+package com.example.daemawiki.domain.document.component.service;
 
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
-import com.example.daemawiki.domain.document.service.facade.DocumentFacade;
+import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
