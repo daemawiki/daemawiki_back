@@ -40,7 +40,7 @@ public class CreateDocumentByUser {
     private DefaultDocument createDocument(User user) {
         List<List<String>> groups = Arrays.asList(
                 Arrays.asList("학생", user.getDetail().gen() + "기", user.getName()),
-                Arrays.asList("전공", user.getDetail().major().toString())
+                Arrays.asList("전공", user.getDetail().major().getMajor())
         );
 
         return createDocumentFacade.execute(SaveDocumentRequest.builder()
