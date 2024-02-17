@@ -1,9 +1,8 @@
 package com.example.daemawiki.domain.revision.component.service;
 
-import com.example.daemawiki.domain.revision.model.mapper.RevisionMapper;
-import com.example.daemawiki.domain.revision.dto.request.GetRevisionPageRequest;
 import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
+import com.example.daemawiki.domain.revision.model.mapper.RevisionMapper;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
 import org.bson.types.ObjectId;
@@ -40,16 +39,14 @@ public class RevisionService {
                 .take(20);
     }
 
-    public Flux<RevisionHistory> getAllRevisionPaging(GetRevisionPageRequest request) {
-        String lastRevisionId = request.lastRevisionId();
+    public Flux<RevisionHistory> getAllRevisionPaging(String lastRevisionId) {
         return getFilteredRevisions(
                 revisionHistoryRepository.findAllByOrderByCreatedDateTimeDesc(),
                 lastRevisionId
         ).subscribeOn(scheduler);
     }
 
-    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, GetRevisionPageRequest request) {
-        String lastRevisionId = request.lastRevisionId();
+    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, String lastRevisionId) {
         return getFilteredRevisions(
                 revisionHistoryRepository.findAllByDocumentId(documentId),
                 lastRevisionId

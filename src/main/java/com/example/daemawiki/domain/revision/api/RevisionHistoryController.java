@@ -1,10 +1,8 @@
 package com.example.daemawiki.domain.revision.api;
 
-import com.example.daemawiki.domain.revision.dto.request.GetRevisionPageRequest;
+import com.example.daemawiki.domain.revision.component.service.RevisionService;
 import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
-import com.example.daemawiki.domain.revision.component.service.RevisionService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -23,13 +21,13 @@ public class RevisionHistoryController {
     }
 
     @GetMapping("/page")
-    public Flux<RevisionHistory> getRevisionToPage(@Valid @RequestBody GetRevisionPageRequest request) {
-        return revisionService.getAllRevisionPaging(request);
+    public Flux<RevisionHistory> getRevisionToPage(@RequestParam String lastRevisionId) {
+        return revisionService.getAllRevisionPaging(lastRevisionId);
     }
 
     @GetMapping("/{documentId}")
-    public Flux<RevisionHistory> getRevisionByDocument(@PathVariable String documentId, @Valid @RequestBody GetRevisionPageRequest request) {
-        return revisionService.getAllRevisionByDocument(documentId, request);
+    public Flux<RevisionHistory> getRevisionByDocument(@PathVariable String documentId, @RequestParam String lastRevisionId) {
+        return revisionService.getAllRevisionByDocument(documentId, lastRevisionId);
     }
 
 }
