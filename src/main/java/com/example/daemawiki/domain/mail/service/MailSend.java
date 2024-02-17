@@ -3,6 +3,8 @@ package com.example.daemawiki.domain.mail.service;
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
+import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
 import com.example.daemawiki.global.exception.h500.MailSendFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -23,11 +25,13 @@ public class MailSend {
     private final AuthCodeRepository codeRepository;
     private final JavaMailSender mailSender;
     private final Scheduler scheduler;
+    private final UserFacade userFacade;
 
-    public MailSend(AuthCodeRepository authCodeRepository, JavaMailSender javaMailSender, Scheduler scheduler) {
+    public MailSend(AuthCodeRepository authCodeRepository, JavaMailSender javaMailSender, Scheduler scheduler, UserFacade userFacade) {
         this.codeRepository = authCodeRepository;
         this.mailSender = javaMailSender;
         this.scheduler = scheduler;
+        this.userFacade = userFacade;
     }
 
     @Value("${admin.mail}")
@@ -36,14 +40,19 @@ public class MailSend {
     private static final Random rand = new Random();
 
     public Mono<Void> execute(AuthCodeRequest request) {
-        String authCode = getRandomCode();
-        String mail = request.mail();
+        return userFacade.findByEmail(request.mail())
+                .flatMap(user -> Mono.error(EmailAlreadyExistsException.EXCEPTION))
+                .switchIfEmpty(Mono.fromCallable(() -> {
+                    String authCode = getRandomCode();
+                    String mail = request.mail();
 
-        Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(scheduler);
-        Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(scheduler);
+                    Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(scheduler);
+                    Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(scheduler);
 
-        return Mono.when(sendMailMono,
-                saveAuthCodeMono);
+                    return Mono.when(sendMailMono,
+                            saveAuthCodeMono);
+                }))
+                .then();
     }
 
 

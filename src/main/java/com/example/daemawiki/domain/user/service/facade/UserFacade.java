@@ -26,8 +26,12 @@ public class UserFacade {
     }
 
     public Mono<User> findByEmailNotNull(String email) {
-        return userRepository.findByEmail(email)
+        return findByEmail(email)
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION));
+    }
+
+    public Mono<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }
