@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
+@Setter
 @Document
 @NoArgsConstructor
 public class User {
@@ -27,13 +29,16 @@ public class User {
 
     private UserDetail detail;
 
+    private String documentId;
+
     @Builder
-    public User(String name, String email, String password, File profile, UserDetail detail) {
+    public User(String name, String email, String password, File profile, UserDetail detail, String documentId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.profile = profile;
         this.detail = detail;
+        this.documentId = documentId;
     }
 
     public void editProfile(File fileResponse) {

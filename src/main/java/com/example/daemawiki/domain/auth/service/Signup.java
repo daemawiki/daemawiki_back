@@ -59,8 +59,11 @@ public class Signup {
                                                             .major(getMajorType.execute(request.major()))
                                                             .build())
                                                     .build())
-                                        .flatMap(userRepository::save)
-                                        .doOnSuccess(createDocumentByUser::execute);
+                                        .flatMap(user -> createDocumentByUser.execute(user)
+                                                .flatMap(document -> {
+                                                    user.setDocumentId(document.getId());
+                                                    return userRepository.save(user);
+                                                }));
                             }))).then();
     }
 

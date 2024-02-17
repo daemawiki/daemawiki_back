@@ -26,14 +26,15 @@ public class CreateDocumentByUser {
         this.revisionComponent = revisionComponent;
     }
 
-    public Mono<Void> execute(User user) {
+    public Mono<DefaultDocument> execute(User user) {
         return documentRepository.save(createDocument(user))
                 .onErrorResume(Mono::error)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.CREATE)
                         .documentId(document.getId())
                         .title(document.getTitle())
-                        .build()));
+                        .build())
+                        .thenReturn(document));
     }
 
     private DefaultDocument createDocument(User user) {
