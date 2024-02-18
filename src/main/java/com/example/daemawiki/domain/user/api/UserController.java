@@ -5,6 +5,7 @@ import com.example.daemawiki.domain.user.dto.GetUserResponse;
 import com.example.daemawiki.domain.user.service.ChangePassword;
 import com.example.daemawiki.domain.user.service.GetUser;
 import com.example.daemawiki.domain.user.service.ProfileImageUpload;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.multipart.FilePart;
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Flux<GetUserResponse> getUserByMajor(@NotNull @RequestParam String major) {
+    public Flux<GetUserResponse> getUserByMajor(@NotBlank @RequestParam String major) {
         return getUser.getUserByMajor(major);
     }
 
