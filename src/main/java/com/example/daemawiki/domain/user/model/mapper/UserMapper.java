@@ -13,7 +13,7 @@ public class UserMapper {
                 .userId(user.getId())
                 .documentId(user.getDocumentId())
                 .name(user.getName())
-                .major(user.getMajor().getMajor())
+                .detail(user.getDetail())
                 .profile(user.getProfile())
                 .build());
     }
