@@ -48,4 +48,9 @@ public class UserController {
         return getUser.getUserByMajor(param);
     }
 
+    @GetMapping
+    public Mono<GetUserResponse> getCurrentUser() {
+        return getUser.getCurrentUser();
+    }
+
 }
