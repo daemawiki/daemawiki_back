@@ -1,6 +1,6 @@
-package com.example.daemawiki.domain.user.model.type.component;
+package com.example.daemawiki.domain.user.model.type.major.component;
 
-import com.example.daemawiki.domain.user.model.type.MajorType;
+import com.example.daemawiki.domain.user.model.type.major.MajorType;
 import org.springframework.stereotype.Component;
 
 @Component

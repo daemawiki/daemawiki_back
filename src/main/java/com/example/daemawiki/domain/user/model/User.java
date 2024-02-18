@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.user.model;
 
 import com.example.daemawiki.domain.file.model.File;
-import com.example.daemawiki.domain.user.model.type.MajorType;
+import com.example.daemawiki.domain.user.model.type.major.MajorType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;

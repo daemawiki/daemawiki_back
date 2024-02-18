@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.user.model;
 
-import com.example.daemawiki.domain.user.model.type.MajorType;
+import com.example.daemawiki.domain.user.model.type.major.MajorType;
 import lombok.Builder;
 
 @Builder

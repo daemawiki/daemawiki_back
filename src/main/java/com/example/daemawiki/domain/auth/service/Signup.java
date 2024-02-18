@@ -5,7 +5,7 @@ import com.example.daemawiki.domain.document.component.CreateDocumentByUser;
 import com.example.daemawiki.domain.file.model.DefaultProfile;
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
 import com.example.daemawiki.domain.user.model.User;
-import com.example.daemawiki.domain.user.model.type.component.GetMajorType;
+import com.example.daemawiki.domain.user.model.type.major.component.GetMajorType;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.h403.UnVerifiedEmailException;
 import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;

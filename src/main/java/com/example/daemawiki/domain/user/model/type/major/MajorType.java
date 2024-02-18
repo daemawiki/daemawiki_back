@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.user.model.type;
+package com.example.daemawiki.domain.user.model.type.major;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
