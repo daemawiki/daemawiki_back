@@ -8,11 +8,10 @@
 | :-: |
 | <a href="https://github.com/ori0o0p">@김승원</a> |
 
-## Tech Stack
-- Java 21
-- Spring Boot 3.2.2
-- Spring WebFlux
-  
-### DataBase
-- Reactive MongoDB
-- Reactive Redis
+## Product Spec
+| Tech Stack |
+| :-: |
+|  **Language**  | Java 21 |
+|  **FrameWork** |  Spring Boot  | Spring WebFlux |
+|  **DataBase** | MongoDB  |  Redis  |
+
