@@ -28,8 +28,8 @@ public class MailVerify {
                         .then(codeRepository.delete(authCode))
                         .thenReturn(ResponseEntity.status(200)
                                 .body(getResponse(true))))
-                .switchIfEmpty(Mono.defer(() -> Mono.just(ResponseEntity.status(400)
-                                .body(getResponse(false)))));
+                .switchIfEmpty(Mono.justOrEmpty(ResponseEntity.status(400)
+                                .body(getResponse(false))));
     }
 
     private static final String SUCCESS = "인증에 성공했습니다.";
