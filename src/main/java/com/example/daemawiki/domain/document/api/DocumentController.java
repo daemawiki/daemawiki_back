@@ -1,13 +1,14 @@
 package com.example.daemawiki.domain.document.api;
 
-import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
-import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
-import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import com.example.daemawiki.domain.document.component.service.CreateDocument;
 import com.example.daemawiki.domain.document.component.service.DeleteDocument;
 import com.example.daemawiki.domain.document.component.service.GetDocument;
 import com.example.daemawiki.domain.document.component.service.UpdateDocument;
+import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
+import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
+import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -45,7 +46,7 @@ public class DocumentController {
     }
 
     @GetMapping("/search")
-    public Flux<GetDocumentResponse> searchDocument(@RequestParam String text) {
+    public Flux<GetDocumentResponse> searchDocument(@NotBlank @RequestParam String text) {
         return getDocumentService.searchDocument(text);
     }
 
