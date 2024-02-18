@@ -5,7 +5,8 @@ import lombok.Builder;
 
 @Builder
 public record GetUserResponse(
-        String id,
+        String userId,
+        String documentId,
         String name,
         String major,
         File profile

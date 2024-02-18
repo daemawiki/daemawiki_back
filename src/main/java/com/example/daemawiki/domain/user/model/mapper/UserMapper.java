@@ -10,7 +10,8 @@ public class UserMapper {
 
     public Mono<GetUserResponse> userToGetUserResponse(User user) {
         return Mono.just(GetUserResponse.builder()
-                .id(user.getId())
+                .userId(user.getId())
+                .documentId(user.getDocumentId())
                 .name(user.getName())
                 .major(user.getMajor().getMajor())
                 .profile(user.getProfile())
