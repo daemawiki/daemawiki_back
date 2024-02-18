@@ -10,7 +10,7 @@
 
 ## Product Spec
 | Tech Stack |
-| :-: |
+| :------------ | :------------ | :------------ |
 |  **Language**  | Java 21 |
 |  **FrameWork** |  Spring Boot  | Spring WebFlux |
 |  **DataBase** | MongoDB  |  Redis  |
