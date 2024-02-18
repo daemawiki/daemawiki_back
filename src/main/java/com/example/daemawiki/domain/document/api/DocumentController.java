@@ -36,7 +36,7 @@ public class DocumentController {
     }
 
     @GetMapping("/{documentId}")
-    public Mono<GetDocumentResponse> getDocument(@PathVariable String documentId) {
+    public Mono<GetDocumentResponse> getDocument(@NotBlank @PathVariable String documentId) {
         return getDocumentService.getDocumentById(documentId);
     }
 
@@ -57,13 +57,13 @@ public class DocumentController {
 
     @DeleteMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteDocument(@PathVariable String documentId) {
+    public Mono<Void> deleteDocument(@NotBlank @PathVariable String documentId) {
         return deleteDocumentService.execute(documentId);
     }
 
     @PatchMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateDocument(@PathVariable String documentId, @Valid @RequestBody SaveDocumentRequest request) {
+    public Mono<Void> updateDocument(@NotBlank @PathVariable String documentId, @Valid @RequestBody SaveDocumentRequest request) {
         return updateDocumentService.execute(request, documentId);
     }
 
