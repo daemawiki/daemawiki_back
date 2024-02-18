@@ -36,7 +36,7 @@ public class GetUser {
                 .flatMap(userMapper::userToGetUserResponse);
     }
 
-    public Mono<GetUserResponse> geturrentUser() {
+    public Mono<GetUserResponse> getCurrentUser() {
         return userFacade.currentUser()
                 .flatMap(userMapper::userToGetUserResponse);
     }
