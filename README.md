@@ -9,9 +9,8 @@
 | <a href="https://github.com/ori0o0p">@김승원</a> |
 
 ## Product Spec
-| Tech Stack |
-| :------------ | :------------ |
-|  **Language**  | Java 21 |
-|  **FrameWork** |  Spring Boot  | Spring WebFlux |
-|  **DataBase** | MongoDB  |  Redis  |
-
+|  Tech Stack |   |   |
+| :------------: | :------------: | :------------: |
+|  **Language**  | Java 21  |   |
+|  **FrameWork**  | Spring Boot  | Spring WebFlux  |
+| **DataBase**  |  MongoDB | Redis  |
