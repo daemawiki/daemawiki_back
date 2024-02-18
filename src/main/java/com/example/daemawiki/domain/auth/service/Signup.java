@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 /*
     유저 회원가입 성공시
@@ -28,14 +29,16 @@ public class Signup {
     private final Scheduler scheduler;
     private final GetMajorType getMajorType;
     private final CreateDocumentByUser createDocumentByUser;
+    private final DefaultProfile defaultProfile;
 
-    public Signup(UserRepository userRepository,AuthMailRepository authMailRepository, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentByUser createDocumentByUser) {
+    public Signup(UserRepository userRepository,AuthMailRepository authMailRepository, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentByUser createDocumentByUser, DefaultProfile defaultProfile) {
         this.userRepository = userRepository;
         this.authMailRepository = authMailRepository;
         this.passwordEncoder = passwordEncoder;
         this.scheduler = scheduler;
         this.getMajorType = getMajorType;
         this.createDocumentByUser = createDocumentByUser;
+        this.defaultProfile = defaultProfile;
     }
 
     public Mono<Void> execute(SignupRequest request) {
@@ -53,17 +56,19 @@ public class Signup {
                                                     .name(request.name())
                                                     .email(request.email())
                                                     .password(password)
-                                                    .profile(DefaultProfile.DEFAULT_PROFILE)
+                                                    .profile(defaultProfile.defaultProfile())
                                                     .detail(UserDetail.builder()
                                                             .gen(request.gen())
                                                             .major(getMajorType.execute(request.major()))
                                                             .build())
                                                     .build())
+                                        .flatMap(userRepository::save)
+                                        .publishOn(Schedulers.parallel())
                                         .flatMap(user -> createDocumentByUser.execute(user)
                                                 .flatMap(document -> {
                                                     user.setDocumentId(document.getId());
                                                     return userRepository.save(user);
-                                                }));
+                                                }).subscribeOn(scheduler));
                             }))).then();
     }
 

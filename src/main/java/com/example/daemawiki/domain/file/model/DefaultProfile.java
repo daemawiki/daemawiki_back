@@ -1,35 +1,36 @@
 package com.example.daemawiki.domain.file.model;
 
 import com.example.daemawiki.domain.file.model.type.FileType;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Component
 public class DefaultProfile {
 
     @Value("${profile.image.url}")
-    private static String defaultImageURL;
+    private String defaultImageURL;
 
     @Value("${profile.image.id}")
-    private static UUID defaultImageId;
+    private UUID defaultImageId;
 
     @Value("${profile.image.name}")
-    private static String defaultImageName;
+    private String defaultImageName;
 
     @Value("${profile.image.type}")
-    private static String defaultImageType;
+    private String defaultImageType;
 
-    public static final File DEFAULT_PROFILE = File.builder()
-            .id(defaultImageId)
-            .fileName(defaultImageName)
-            .fileType(defaultImageType)
-            .detail(FileDetail.builder()
-                    .type(FileType.PROFILE)
-                    .url(defaultImageURL)
-                    .build())
-            .build();
+    public File defaultProfile() {
+        return File.builder()
+                .id(defaultImageId)
+                .fileName(defaultImageName)
+                .fileType(defaultImageType)
+                .detail(FileDetail.builder()
+                        .type(FileType.PROFILE)
+                        .url(defaultImageURL)
+                        .build())
+                .build();
+    }
 
 }
