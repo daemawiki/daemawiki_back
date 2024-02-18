@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import reactor.core.publisher.Mono;
 
 @RestControllerAdvice
@@ -30,6 +31,16 @@ public class GlobalExceptionHandler {
         int status = badRequestStatus;
         String message = fieldError != null ? fieldError.getDefaultMessage() : "Bad Request";
         ErrorResponse errorResponse = ErrorResponse.of(status, message);
+
+        return Mono.just(ResponseEntity
+                .status(status)
+                .body(errorResponse));
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleValidationException(HandlerMethodValidationException e) {
+        int status = badRequestStatus;
+        ErrorResponse errorResponse = ErrorResponse.of(status, "설정한 Validation에 맞지 않는 request를 보내셨습니다.");
 
         return Mono.just(ResponseEntity
                 .status(status)
