@@ -27,12 +27,12 @@ public class GetUser {
     }
 
     public Flux<GetUserResponse> getUserByGen(Integer gen) {
-        return userRepository.findAllByGenOrderByNameAsc(gen)
+        return userRepository.findAllByDetail_GenOrderByNameAsc(gen)
                 .flatMap(userMapper::userToGetUserResponse);
     }
 
     public Flux<GetUserResponse> getUserByMajor(String major) {
-        return userRepository.findAllByMajorOrderByNameAsc(getMajorType.execute(major))
+        return userRepository.findAllByDetail_MajorOrderByNameAsc(getMajorType.execute(major))
                 .flatMap(userMapper::userToGetUserResponse);
     }
 

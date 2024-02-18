@@ -1,7 +1,6 @@
 package com.example.daemawiki.domain.user.model;
 
 import com.example.daemawiki.domain.file.model.File;
-import com.example.daemawiki.domain.user.model.type.major.MajorType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,20 +27,17 @@ public class User {
 
     private File profile;
 
-    private Integer gen;
-
-    private MajorType major;
+    private UserDetail detail;
 
     private String documentId;
 
     @Builder
-    public User(String name, String email, String password, File profile, Integer gen, MajorType major, String documentId) {
+    public User(String name, String email, String password, File profile, UserDetail detail, String documentId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.profile = profile;
-        this.gen = gen;
-        this.major = major;
+        this.detail = detail;
         this.documentId = documentId;
     }
 
