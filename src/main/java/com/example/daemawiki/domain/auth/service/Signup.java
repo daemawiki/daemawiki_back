@@ -51,7 +51,8 @@ public class Signup {
 
                                 return Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
                                         .subscribeOn(scheduler)
-                                        .map(password -> User.builder()
+                                        .flatMap(password -> {
+                                            User user = User.builder()
                                                     .name(request.name())
                                                     .email(request.email())
                                                     .password(password)
@@ -60,13 +61,15 @@ public class Signup {
                                                             .gen(request.gen())
                                                             .major(getMajorType.execute(request.major()))
                                                             .build())
-                                                    .build())
-                                        .flatMap(userRepository::save)
-                                        .flatMap(user -> createDocumentByUser.execute(user)
-                                                .flatMap(document -> {
-                                                    user.setDocumentId(document.getId());
-                                                    return userRepository.save(user);
-                                                }));
+                                                    .build();
+
+                                            return userRepository.save(user)
+                                                    .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
+                                                            .flatMap(document -> {
+                                                                savedUser.setDocumentId(document.getId());
+                                                                return userRepository.save(savedUser);
+                                                            }));
+                                        });
                             }))).then();
     }
 
