@@ -2,19 +2,18 @@ package com.example.daemawiki.domain.auth.service;
 
 import com.example.daemawiki.domain.auth.dto.request.SignupRequest;
 import com.example.daemawiki.domain.document.component.CreateDocumentByUser;
+import com.example.daemawiki.domain.file.model.DefaultProfile;
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.model.UserDetail;
 import com.example.daemawiki.domain.user.model.type.component.GetMajorType;
 import com.example.daemawiki.domain.user.repository.UserRepository;
-import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
 import com.example.daemawiki.global.exception.h403.UnVerifiedEmailException;
-import com.example.daemawiki.domain.file.model.DefaultProfile;
+import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 /*
     유저 회원가입 성공시
@@ -44,32 +43,36 @@ public class Signup {
     public Mono<Void> execute(SignupRequest request) {
         return userRepository.findByEmail(request.email())
                 .flatMap(user -> Mono.error(EmailAlreadyExistsException.EXCEPTION))
-                .switchIfEmpty(Mono.defer(() -> authMailRepository.findByMail(request.email())
-                            .flatMap(verified -> {
-                                if (!verified) {
-                                    return Mono.error(UnVerifiedEmailException.EXCEPTION);
-                                }
+                .switchIfEmpty(Mono.justOrEmpty(authMailRepository.findByMail(request.email())
+                        .flatMap(verified -> {
+                            if (!verified) {
+                                return Mono.error(UnVerifiedEmailException.EXCEPTION);
+                            }
 
-                                return Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
-                                        .subscribeOn(scheduler)
-                                        .map(password -> User.builder()
-                                                    .name(request.name())
-                                                    .email(request.email())
-                                                    .password(password)
-                                                    .profile(defaultProfile.defaultProfile())
-                                                    .detail(UserDetail.builder()
-                                                            .gen(request.gen())
-                                                            .major(getMajorType.execute(request.major()))
-                                                            .build())
-                                                    .build())
-                                        .flatMap(userRepository::save)
-                                        .publishOn(Schedulers.parallel())
-                                        .flatMap(user -> createDocumentByUser.execute(user)
-                                                .flatMap(document -> {
-                                                    user.setDocumentId(document.getId());
-                                                    return userRepository.save(user);
-                                                }).subscribeOn(scheduler));
-                            }))).then();
+                            return Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
+                                    .subscribeOn(scheduler)
+                                    .flatMap(password -> {
+                                        User newUser = User.builder()
+                                                .name(request.name())
+                                                .email(request.email())
+                                                .password(password)
+                                                .profile(defaultProfile.defaultProfile())
+                                                .detail(UserDetail.builder()
+                                                        .gen(request.gen())
+                                                        .major(getMajorType.execute(request.major()))
+                                                        .build())
+                                                .build();
+
+                                        return userRepository.save(newUser)
+                                                .flatMap(user -> createDocumentByUser.execute(user)
+                                                        .flatMap(document -> {
+                                                            user.setDocumentId(document.getId());
+                                                            return userRepository.save(user);
+                                                        }));
+                                    });
+                        })))
+                .then();
     }
+
 
 }
