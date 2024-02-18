@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 public interface UserRepository extends ReactiveMongoRepository<User, String> {
     Mono<User> findByEmail(String email);
 
-    Flux<User> findAllByGen(Integer gen);
+    Flux<User> findAllByGenOrderByNameAsc(Integer gen);
 
-    Flux<User> findAllByMajor(MajorType major);
+    Flux<User> findAllByMajorOrderByNameAsc(MajorType major);
 }
