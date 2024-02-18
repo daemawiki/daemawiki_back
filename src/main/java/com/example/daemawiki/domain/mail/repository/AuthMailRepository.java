@@ -32,5 +32,5 @@ public class AuthMailRepository {
                 .get(AUTHMAIL + mail)
                 .hasElement();
     }
-    
+
 }
