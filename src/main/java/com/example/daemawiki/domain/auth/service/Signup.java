@@ -14,11 +14,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-/*
-    유저 회원가입 성공시
-    해당 유저의 문서 생성
-*/
-
 @Service
 public class Signup {
     private final UserRepository userRepository;

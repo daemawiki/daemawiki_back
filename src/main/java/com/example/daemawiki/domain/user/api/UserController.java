@@ -13,12 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/*
-
-    비밀번호 변경
-    프로필 이미지 변경
-    ...
-*/
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

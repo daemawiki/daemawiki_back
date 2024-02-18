@@ -5,9 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GetMajorType {
-    /*
-        💀
-    */
+
     public MajorType execute(String major) {
         return switch (major) {
             case "backend" -> MajorType.BACKEND;
