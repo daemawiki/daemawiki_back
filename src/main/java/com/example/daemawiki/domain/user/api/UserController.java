@@ -38,14 +38,14 @@ public class UserController {
         return changePasswordService.execute(request);
     }
 
-    @GetMapping
-    public Flux<GetUserResponse> getUserByGen(@NotNull @RequestParam Integer gen) {
-        return getUser.getUserByGen(gen);
+    @GetMapping("/gen")
+    public Flux<GetUserResponse> getUserByGen(@NotNull @RequestParam Integer param) {
+        return getUser.getUserByGen(param);
     }
 
-    @GetMapping
-    public Flux<GetUserResponse> getUserByMajor(@NotBlank @RequestParam String major) {
-        return getUser.getUserByMajor(major);
+    @GetMapping("/major")
+    public Flux<GetUserResponse> getUserByMajor(@NotBlank @RequestParam String param) {
+        return getUser.getUserByMajor(param);
     }
 
 }
