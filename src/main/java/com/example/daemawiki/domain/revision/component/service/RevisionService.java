@@ -34,7 +34,7 @@ public class RevisionService {
     //        17077 92123
     //        17077 44486 최신
     public Flux<RevisionHistory> getFilteredRevisions(Flux<RevisionHistory> revisions, String lastRevisionId) {
-        return revisions.filter(revisionHistory -> lastRevisionId.isEmpty() ||
+        return revisions.filter(revisionHistory -> lastRevisionId.isBlank() ||
                         new ObjectId(revisionHistory.getId()).getTimestamp() > new ObjectId(lastRevisionId).getTimestamp())
                 .take(20);
     }
@@ -49,6 +49,13 @@ public class RevisionService {
     public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, String lastRevisionId) {
         return getFilteredRevisions(
                 revisionHistoryRepository.findAllByDocumentId(documentId),
+                lastRevisionId
+        ).subscribeOn(scheduler);
+    }
+
+    public Flux<RevisionHistory> getAllRevisionByUser(String userId, String lastRevisionId) {
+        return getFilteredRevisions(
+                revisionHistoryRepository.findAllByEditorOrderByCreatedDateTimeDesc(userId),
                 lastRevisionId
         ).subscribeOn(scheduler);
     }
