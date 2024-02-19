@@ -31,8 +31,8 @@ public class RevisionHistoryController {
     }
 
     @GetMapping("/users")
-    public Flux<RevisionHistory> getRevisionByUser(@RequestParam String param, @RequestParam String lastRevision) {
-        return revisionService.getAllRevisionByUser(param, lastRevision);
+    public Flux<RevisionHistory> getRevisionByUser(@RequestParam String user, @RequestParam String lastRevision) {
+        return revisionService.getAllRevisionByUser(user, lastRevision);
     }
 
 }
