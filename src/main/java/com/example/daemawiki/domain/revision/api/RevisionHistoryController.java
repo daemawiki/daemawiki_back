@@ -15,7 +15,7 @@ public class RevisionHistoryController {
         this.revisionService = revisionService;
     }
 
-    @GetMapping
+    @GetMapping("/top-10")
     public Flux<RevisionDocumentDetailResponse> getRevisionTop10ByUpdatedDate() {
         return revisionService.getUpdatedTop10Revision();
     }

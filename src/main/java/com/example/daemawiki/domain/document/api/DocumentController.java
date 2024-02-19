@@ -50,7 +50,7 @@ public class DocumentController {
         return getDocumentService.searchDocument(text);
     }
 
-    @GetMapping("/most-revision/top10")
+    @GetMapping("/most-revision/top-10")
     public Flux<SimpleDocumentResponse> getDocumentOrderByVersion() {
         return getDocumentService.getDocumentTop10();
     }
