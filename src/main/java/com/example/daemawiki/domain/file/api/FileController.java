@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.file.model.File;
 import com.example.daemawiki.infra.s3.service.S3DeleteObject;
 import com.example.daemawiki.infra.s3.service.S3UploadObject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -38,12 +39,12 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public Mono<File> getFileById(@PathVariable String id) {
+    public Mono<File> getFileById(@NotBlank @PathVariable String id) {
         return getFile.getFileById(id);
     }
 
     @GetMapping
-    public Flux<File> getFileByName(@RequestParam String name) {
+    public Flux<File> getFileByName(@NotBlank @RequestParam String name) {
         return getFile.getFileByName(name);
     }
 

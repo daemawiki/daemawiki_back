@@ -46,7 +46,7 @@ public class DocumentController {
     }
 
     @GetMapping("/search")
-    public Flux<GetDocumentResponse> searchDocument(@NotBlank @RequestParam String text) {
+    public Flux<GetDocumentResponse> searchDocument(@NotBlank @RequestParam("text") String text) {
         return getDocumentService.searchDocument(text);
     }
 
