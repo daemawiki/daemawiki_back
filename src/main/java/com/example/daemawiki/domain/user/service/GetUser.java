@@ -1,6 +1,5 @@
 package com.example.daemawiki.domain.user.service;
 
-import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.user.dto.GetUserResponse;
 import com.example.daemawiki.domain.user.model.mapper.UserMapper;
 import com.example.daemawiki.domain.user.model.type.major.component.GetMajorType;
@@ -16,14 +15,12 @@ public class GetUser {
     private final UserMapper userMapper;
     private final GetMajorType getMajorType;
     private final UserFacade userFacade;
-    private final DocumentFacade documentFacade;
 
-    public GetUser(UserRepository userRepository, UserMapper userMapper, GetMajorType getMajorType, UserFacade userFacade, DocumentFacade documentFacade) {
+    public GetUser(UserRepository userRepository, UserMapper userMapper, GetMajorType getMajorType, UserFacade userFacade) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.getMajorType = getMajorType;
         this.userFacade = userFacade;
-        this.documentFacade = documentFacade;
     }
 
     public Flux<GetUserResponse> getUserByGen(Integer gen) {
