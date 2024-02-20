@@ -38,13 +38,13 @@ public class FileController {
         return s3DeleteObject.deleteObject(request);
     }
 
-    @GetMapping("/{id}")
-    public Mono<File> getFileById(@NotBlank @PathVariable String id) {
-        return getFile.getFileById(id);
+    @GetMapping("/{fileId}")
+    public Mono<File> getFileById(@NotBlank @PathVariable String fileId) {
+        return getFile.getFileById(fileId);
     }
 
     @GetMapping
-    public Flux<File> getFileByName(@NotBlank @RequestParam String name) {
+    public Flux<File> getFileByName(@NotBlank @RequestParam("name") String name) {
         return getFile.getFileByName(name);
     }
 
