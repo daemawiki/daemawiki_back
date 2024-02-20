@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 @Builder
 @Getter
-@RedisHash(timeToLive = 9000)
+@RedisHash(timeToLive = 180 * 60)
 public class AuthMail {
 
     @Id
