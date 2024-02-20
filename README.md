@@ -9,7 +9,7 @@
 | <a href="https://github.com/ori0o0p">@김승원</a> |
 
 ## Product Spec
-<img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/3a8659d6-0703-4b30-81e3-8130aca4617d">
+<img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/bdfb06d5-2953-40e5-bd65-9efab7a77713">
 
 대마위키 백엔드 성능 개선 블로그
 
