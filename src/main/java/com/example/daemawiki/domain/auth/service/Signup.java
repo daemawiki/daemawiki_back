@@ -10,6 +10,7 @@ import com.example.daemawiki.domain.user.model.type.major.component.GetMajorType
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.h403.UnVerifiedEmailException;
 import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -65,7 +66,8 @@ public class Signup {
                                                                 savedUser.setDocumentId(document.getId());
                                                                 return userRepository.save(savedUser);
                                                             }));
-                                        });
+                                        })
+                                        .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
                             }))).then();
     }
 
