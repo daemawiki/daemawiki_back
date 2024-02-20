@@ -25,6 +25,7 @@ public enum ErrorCode {
     MAIL_CONFIRM_FAILED(500, "메일 전송 실패 (서버 오류)"),
     TOKEN_REISSUE_FAILED(500, "토큰 재발급 실패"),
     FILE_UPLOAD_FAILED(500, "파일 업로드 실패ㅋ"),
+    EXECUTE_FAILED(500, "서버 에러"),
 
 
     TEST(400, "TEST");
