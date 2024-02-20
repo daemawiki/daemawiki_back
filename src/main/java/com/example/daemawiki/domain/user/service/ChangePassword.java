@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.user.service;
 import com.example.daemawiki.domain.user.dto.ChangePasswordRequest;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -27,6 +28,7 @@ public class ChangePassword {
                     user.changePassword(passwordEncoder.encode(request.newPassword()));
                     return userRepository.save(user);
                 })
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
                 .then();
     }
 

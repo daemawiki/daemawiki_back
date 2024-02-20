@@ -2,6 +2,7 @@ package com.example.daemawiki.infra.s3.service;
 
 import com.example.daemawiki.domain.file.dto.DeleteFileRequest;
 import com.example.daemawiki.domain.file.component.DeleteFile;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -28,7 +29,8 @@ public class S3DeleteObject {
                         .build())
                 .map(s3AsyncClient::deleteObject)
                 .flatMap(Mono::fromFuture)
-                .flatMap(deleteObjectResponse -> deleteFile.deleteById(request.key()));
+                .flatMap(deleteObjectResponse -> deleteFile.deleteById(request.key()))
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
 }

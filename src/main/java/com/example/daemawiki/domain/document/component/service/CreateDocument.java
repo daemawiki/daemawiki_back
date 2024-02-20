@@ -7,6 +7,7 @@ import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,8 @@ public class CreateDocument {
                         .type(RevisionType.CREATE)
                         .documentId(document.getId())
                         .title(document.getTitle())
-                        .build()));
+                        .build()))
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
 }

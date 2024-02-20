@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequ
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -29,7 +30,8 @@ public class RevisionComponent {
                         .createdDateTime(LocalDateTime.now())
                         .build())
                 .flatMap(revisionHistoryRepository::save)
-                .then();
+                .then()
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
 }

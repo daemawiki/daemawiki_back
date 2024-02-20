@@ -1,15 +1,16 @@
 package com.example.daemawiki.domain.document.component.service;
 
+import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
-import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.user.dto.UserDetailResponse;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -60,7 +61,8 @@ public class UpdateDocument {
                                 .type(RevisionType.UPDATE)
                                 .documentId(d.getId())
                                 .title(d.getTitle())
-                                .build()));
+                                .build()))
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
 }

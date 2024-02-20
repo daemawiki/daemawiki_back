@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import com.example.daemawiki.infra.s3.service.S3UploadObject;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class ProfileImageUpload {
                     return user;
                 })
                 .flatMap(userRepository::save)
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
                 .then();
     }
 
