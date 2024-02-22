@@ -28,7 +28,7 @@ public class FileController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<File> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @RequestParam("type") String fileType) {
+    public Mono<File> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @NotBlank @RequestParam("type") String fileType) {
         return s3UploadObject.uploadObject(filePart, fileType);
     }
 
