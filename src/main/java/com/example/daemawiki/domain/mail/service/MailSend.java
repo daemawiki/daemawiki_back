@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.mail.service;
 
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
+import com.example.daemawiki.domain.mail.model.MailType;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -42,7 +44,13 @@ public class MailSend {
 
     public Mono<Void> execute(AuthCodeRequest request) {
         Mono<User> userMono = userFacade.findByEmail(request.mail())
-                .flatMap(user -> Mono.error(EmailAlreadyExistsException.EXCEPTION));
+                .flatMap(user -> {
+                    if (Objects.equals(request.type(), MailType.CHANGE_PW.getType())) {
+                        return Mono.empty();
+                    }
+
+                    return Mono.error(EmailAlreadyExistsException.EXCEPTION);
+                });
 
         String authCode = getRandomCode();
         String mail = request.mail();
@@ -50,8 +58,7 @@ public class MailSend {
         Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(scheduler);
         Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(scheduler);
 
-        return Mono.when(sendMailMono, saveAuthCodeMono, userMono)
-                .then();
+        return Mono.when(sendMailMono, saveAuthCodeMono, userMono).then();
     }
 
 
