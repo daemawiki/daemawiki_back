@@ -84,7 +84,7 @@ public class S3UploadObject {
                                         .onErrorMap(e -> FileUploadFailedException.EXCEPTION);
                             });
                 })
-                .flatMap(response -> createFile(key, filename, type, fileType))
+                .flatMap(response -> createFile(key, filename, type, fileType.toLowerCase()))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
