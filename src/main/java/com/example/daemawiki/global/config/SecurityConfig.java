@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/documents/random").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/most-revision/top-10").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/files").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/files/{fileId}").permitAll()
                 
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
