@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.user.service.facade;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.h404.UserNotFoundException;
+import lombok.NonNull;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class UserFacade {
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION));
     }
 
-    public Mono<User> findByEmail(String email) {
+    public Mono<User> findByEmail(@NonNull String email) {
         return userRepository.findByEmail(email);
     }
 
