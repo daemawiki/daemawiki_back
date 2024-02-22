@@ -29,7 +29,7 @@ public class ChangePassword {
         return userFacade.currentUser()
                 .flatMap(user -> changePasswordAndSaveUser(request.newPassword(), user));
     }
-    
+
     public Mono<Void> NonLoggedInUser(ChangePasswordRequest request) {
         return userFacade.findByEmailNotNull(request.email())
                 .flatMap(user -> authMailRepository.findByMail(request.email())
@@ -49,5 +49,5 @@ public class ChangePassword {
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
                 .then();
     }
-
+    
 }
