@@ -65,7 +65,8 @@ public class Signup {
                                                             .flatMap(document -> {
                                                                 savedUser.setDocumentId(document.getId());
                                                                 return userRepository.save(savedUser);
-                                                            }));
+                                                            }))
+                                                    .flatMap(savedUser -> authMailRepository.delete(savedUser.getEmail()));
                                         })
                                         .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
                             }))).then();
