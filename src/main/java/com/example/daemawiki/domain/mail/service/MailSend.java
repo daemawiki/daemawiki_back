@@ -86,7 +86,9 @@ public class MailSend {
                                 throw MailSendFailedException.EXCEPTION;
                             }
                         })
-                ).then();
+                )
+                .onErrorMap(e -> MailSendFailedException.EXCEPTION)
+                .then();
     }
 
 
