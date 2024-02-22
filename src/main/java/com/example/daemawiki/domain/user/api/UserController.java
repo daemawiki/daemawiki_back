@@ -37,7 +37,7 @@ public class UserController {
     @PatchMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
-        return changePasswordService.execute(request);
+        return changePasswordService.currentUser(request);
     }
 
     @GetMapping("/gen")
