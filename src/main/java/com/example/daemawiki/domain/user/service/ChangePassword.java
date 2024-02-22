@@ -49,5 +49,5 @@ public class ChangePassword {
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
                 .then();
     }
-    
+
 }
