@@ -30,7 +30,7 @@ public class ChangePassword {
                 .flatMap(user -> changePasswordAndSaveUser(request.newPassword(), user));
     }
 
-    public Mono<Void> NonLoggedInUser(ChangePasswordRequest request) {
+    public Mono<Void> nonLoggedInUser(ChangePasswordRequest request) {
         return userFacade.findByEmailNotNull(request.email())
                 .flatMap(user -> authMailRepository.findByMail(request.email())
                         .flatMap(verified -> {
