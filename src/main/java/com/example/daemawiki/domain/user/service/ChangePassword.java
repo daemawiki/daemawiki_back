@@ -43,11 +43,17 @@ public class ChangePassword {
     }
 
     private Mono<Void> changePasswordAndSaveUser(String newPassword, User user) {
-        user.changePassword(passwordEncoder.encode(newPassword));
-
-        return userRepository.save(user)
+        return encodePassword(newPassword)
+                .flatMap(password -> {
+                    user.changePassword(password);
+                    return userRepository.save(user);
+                })
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
                 .then();
+    }
+
+    private Mono<String> encodePassword(String password) {
+        return Mono.just(passwordEncoder.encode(password));
     }
 
 }
