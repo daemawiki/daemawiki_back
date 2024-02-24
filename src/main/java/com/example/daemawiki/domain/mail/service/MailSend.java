@@ -61,7 +61,6 @@ public class MailSend {
         return Mono.when(sendMailMono, saveAuthCodeMono, userMono).then();
     }
 
-
     public Mono<Void> reissue(AuthCodeRequest request) {
         return getAuthCode(request.mail())
                 .flatMap(authCode -> codeRepository.delete(authCode)
@@ -97,7 +96,6 @@ public class MailSend {
                 .onErrorMap(e -> MailSendFailedException.EXCEPTION)
                 .then();
     }
-
 
     private Mono<Void> saveAuthCode(String to, String authCode) {
         return codeRepository.save(AuthCode.builder()
