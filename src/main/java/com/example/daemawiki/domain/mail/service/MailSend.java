@@ -7,6 +7,7 @@ import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import com.example.daemawiki.global.exception.h500.MailSendFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -101,7 +102,8 @@ public class MailSend {
         return codeRepository.save(AuthCode.builder()
                 .mail(to)
                 .code(authCode)
-                .build());
+                .build())
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
     private String getMailTemplate(String key) {
