@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.model;
 
-import com.example.daemawiki.domain.user.dto.UserDetailResponse;
+import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.user.dto;
+package com.example.daemawiki.domain.user.dto.response;
 
 import com.example.daemawiki.domain.file.model.File;
 import lombok.Builder;

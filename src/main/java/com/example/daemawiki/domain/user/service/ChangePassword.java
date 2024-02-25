@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
-import com.example.daemawiki.domain.user.dto.ChangePasswordRequest;
+import com.example.daemawiki.domain.user.dto.request.ChangePasswordRequest;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;

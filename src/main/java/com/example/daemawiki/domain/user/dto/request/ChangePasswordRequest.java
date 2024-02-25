@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.user.dto;
+package com.example.daemawiki.domain.user.dto.request;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;

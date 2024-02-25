@@ -1,8 +1,8 @@
 package com.example.daemawiki.domain.user.api;
 
-import com.example.daemawiki.domain.user.dto.ChangePasswordRequest;
-import com.example.daemawiki.domain.user.dto.GetUserResponse;
-import com.example.daemawiki.domain.user.dto.UpdateClubRequest;
+import com.example.daemawiki.domain.user.dto.request.ChangePasswordRequest;
+import com.example.daemawiki.domain.user.dto.response.GetUserResponse;
+import com.example.daemawiki.domain.user.dto.request.UpdateClubRequest;
 import com.example.daemawiki.domain.user.service.ChangePassword;
 import com.example.daemawiki.domain.user.service.GetUser;
 import com.example.daemawiki.domain.user.service.ProfileImageUpload;

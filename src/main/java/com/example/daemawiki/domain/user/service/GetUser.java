@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.user.service;
 
-import com.example.daemawiki.domain.user.dto.GetUserResponse;
+import com.example.daemawiki.domain.user.dto.response.GetUserResponse;
 import com.example.daemawiki.domain.user.model.mapper.UserMapper;
 import com.example.daemawiki.domain.user.model.type.major.component.GetMajorType;
 import com.example.daemawiki.domain.user.repository.UserRepository;

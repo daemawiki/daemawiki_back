@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
-import com.example.daemawiki.domain.user.dto.UpdateClubRequest;
+import com.example.daemawiki.domain.user.dto.request.UpdateClubRequest;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;

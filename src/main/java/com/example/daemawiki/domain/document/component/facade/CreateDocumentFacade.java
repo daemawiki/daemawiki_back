@@ -4,7 +4,7 @@ import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentEditor;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
-import com.example.daemawiki.domain.user.dto.UserDetailResponse;
+import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.global.datetime.model.EditDateTime;
 import org.springframework.stereotype.Component;
