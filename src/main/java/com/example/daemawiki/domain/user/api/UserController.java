@@ -2,9 +2,11 @@ package com.example.daemawiki.domain.user.api;
 
 import com.example.daemawiki.domain.user.dto.ChangePasswordRequest;
 import com.example.daemawiki.domain.user.dto.GetUserResponse;
+import com.example.daemawiki.domain.user.dto.UpdateClubRequest;
 import com.example.daemawiki.domain.user.service.ChangePassword;
 import com.example.daemawiki.domain.user.service.GetUser;
 import com.example.daemawiki.domain.user.service.ProfileImageUpload;
+import com.example.daemawiki.domain.user.service.UpdateClub;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,11 +23,13 @@ public class UserController {
     private final ProfileImageUpload profileImageUpload;
     private final ChangePassword changePasswordService;
     private final GetUser getUser;
+    private final UpdateClub updateClub;
 
-    public UserController(ProfileImageUpload profileImageUpload, ChangePassword changePasswordService, GetUser getUser) {
+    public UserController(ProfileImageUpload profileImageUpload, ChangePassword changePasswordService, GetUser getUser, UpdateClub updateClub) {
         this.profileImageUpload = profileImageUpload;
         this.changePasswordService = changePasswordService;
         this.getUser = getUser;
+        this.updateClub = updateClub;
     }
 
     @PatchMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -64,6 +68,12 @@ public class UserController {
     @GetMapping
     public Mono<GetUserResponse> getCurrentUser() {
         return getUser.getCurrentUser();
+    }
+
+    @PatchMapping("/test")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> updateClub(@RequestBody UpdateClubRequest request) {
+        return updateClub.execute(request);
     }
 
 }
