@@ -30,8 +30,8 @@ public class RevisionComponent {
                         .createdDateTime(LocalDateTime.now())
                         .build())
                 .flatMap(revisionHistoryRepository::save)
-                .then()
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
+                .then();
     }
 
 }
