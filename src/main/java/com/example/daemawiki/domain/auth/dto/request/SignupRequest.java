@@ -17,8 +17,6 @@ public record SignupRequest(
         Integer gen,
         @NotBlank(message = "전공을 입력해주세요.")
         String major,
-        @NotBlank(message = "동아리를 입력해주세요.")
-        String club,
         @NotBlank(message = "비밀번호를 입력해주세요.")
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()-=_+]*$",
                 message = "비밀번호 형식이 올바르지 않습니다.")

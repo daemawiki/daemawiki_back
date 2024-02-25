@@ -45,10 +45,6 @@ public class CreateDocumentByUser {
                 Arrays.asList("전공", user.getDetail().getMajor().getMajor())
         );
 
-        if (!user.getDetail().getClub().isBlank()) {
-            groups.add(Arrays.asList("동아리", user.getDetail().getClub()));
-        }
-
         return createDocumentFacade.execute(SaveDocumentRequest.builder()
                         .title(user.getName())
                         .type("student")
