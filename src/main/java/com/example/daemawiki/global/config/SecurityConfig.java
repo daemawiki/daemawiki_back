@@ -43,7 +43,9 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/documents/most-revision/top-10").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/files").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/files/{fileId}").permitAll()
-
+                        .pathMatchers(HttpMethod.PATCH, "/api/users/non-login/password").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/users/gen").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/users/major").permitAll()
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
