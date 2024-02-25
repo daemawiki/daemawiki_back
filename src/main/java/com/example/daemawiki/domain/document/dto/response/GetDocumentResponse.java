@@ -13,7 +13,7 @@ public record GetDocumentResponse(
         String title,
         DocumentType type,
         EditDateTime dateTime,
-        List<String> groups,
+        List<List<String>> groups,
         DocumentEditor editor,
         String content,
 
