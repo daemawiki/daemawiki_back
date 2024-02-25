@@ -14,7 +14,6 @@ import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -36,11 +35,6 @@ public class UpdateDocument {
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                            List<String> groups = request.groups().stream()
-                                    .filter(Objects::nonNull)
-                                    .map(group -> String.join("/", group))
-                                    .toList();
-
                             document.getEditor().update(UserDetailResponse.builder()
                                     .id(user.getId())
                                     .name(user.getName())
@@ -50,7 +44,7 @@ public class UpdateDocument {
                             document.update(request.title(),
                                     getDocumentType.execute(request.type()),
                                     request.content(),
-                                    groups);
+                                    request.groups());
 
                             return document;
                         })

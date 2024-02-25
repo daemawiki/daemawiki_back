@@ -25,7 +25,7 @@ public class DefaultDocument {
 
     private EditDateTime dateTime;
 
-    private List<String> groups;
+    private List<List<String>> groups;
 
     private DocumentEditor editor;
 
@@ -35,7 +35,7 @@ public class DefaultDocument {
     private Integer version;
 
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<String> groups, DocumentEditor documentEditor, String content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<List<String>> groups, DocumentEditor documentEditor, String content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
@@ -44,7 +44,7 @@ public class DefaultDocument {
         this.content = content;
     }
 
-    public void update(String title, DocumentType type, String content, List<String> groups) {
+    public void update(String title, DocumentType type, String content, List<List<String>> groups) {
         this.title = title;
         this.type = type;
         this.content = content;
