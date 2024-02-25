@@ -4,8 +4,9 @@
 
 
 ## People and Roles
-| [<img src="https://avatars.githubusercontent.com/u/107746917?s=460&v=4" width="100">](https://github.com/ori0o0p)|
+| Developer |
 | :-: |
+| [<img src="https://avatars.githubusercontent.com/u/107746917?s=460&v=4" width="100">](https://github.com/ori0o0p)|
 | <a href="https://github.com/ori0o0p">@김승원</a> |
 
 ## Product Spec
