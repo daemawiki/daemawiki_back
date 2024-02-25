@@ -62,10 +62,8 @@ public class Signup {
 
                                             return userRepository.save(user)
                                                     .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
-                                                            .flatMap(document -> {
-                                                                savedUser.setDocumentId(document.getId());
-                                                                return userRepository.save(savedUser);
-                                                            }))
+                                                            .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                                                            .flatMap(document -> userRepository.save(savedUser)))
                                                     .flatMap(savedUser -> authMailRepository.delete(savedUser.getEmail()));
                                         })
                                         .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
