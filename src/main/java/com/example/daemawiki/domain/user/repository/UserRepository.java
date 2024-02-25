@@ -12,4 +12,7 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
     Flux<User> findAllByDetail_GenOrderByNameAsc(Integer gen);
 
     Flux<User> findAllByDetail_MajorOrderByNameAsc(MajorType major);
+
+    Flux<User> findAllByDetail_ClubOrderByNameAsc(String club);
+
 }

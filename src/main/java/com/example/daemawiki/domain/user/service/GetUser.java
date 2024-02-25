@@ -33,6 +33,11 @@ public class GetUser {
                 .flatMap(userMapper::userToGetUserResponse);
     }
 
+    public Flux<GetUserResponse> getUserByClub(String club) {
+        return userRepository.findAllByDetail_ClubOrderByNameAsc(club)
+                .flatMap(userMapper::userToGetUserResponse);
+    }
+
     public Mono<GetUserResponse> getCurrentUser() {
         return userFacade.currentUser()
                 .flatMap(userMapper::userToGetUserResponse);
