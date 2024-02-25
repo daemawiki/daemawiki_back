@@ -72,7 +72,7 @@ public class UserController {
 
     @PatchMapping("/club")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateClub(@RequestBody UpdateClubRequest request) {
+    public Mono<Void> updateClub(@Valid @RequestBody UpdateClubRequest request) {
         return updateClub.execute(request);
     }
 
