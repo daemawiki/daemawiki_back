@@ -85,7 +85,7 @@ public class S3UploadObject {
                             });
                 })
                 .flatMap(response -> createFile(key, filename, type, fileType.toLowerCase()))
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> e instanceof FileUploadFailedException ? e : ExecuteFailedException.EXCEPTION);
     }
 
     private Mono<File> createFile(UUID key, String fileName, MediaType mediaType, String filetype) {
