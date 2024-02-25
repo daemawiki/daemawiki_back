@@ -34,7 +34,7 @@ public class AuthMailRepository {
     }
 
     public Mono<Void> delete(String mail) {
-        return redisOperations.delete(mail)
+        return redisOperations.delete(AUTHMAIL + mail)
                 .then();
     }
 
