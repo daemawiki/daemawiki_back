@@ -56,7 +56,7 @@ public class UpdateDocument {
                                 .documentId(d.getId())
                                 .title(d.getTitle())
                                 .build()))
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> e instanceof VersionMismatchException ? e : ExecuteFailedException.EXCEPTION);
     }
 
 }
