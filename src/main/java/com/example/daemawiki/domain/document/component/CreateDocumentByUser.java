@@ -29,7 +29,6 @@ public class CreateDocumentByUser {
 
     public Mono<DefaultDocument> execute(User user) {
         return documentRepository.save(createDocument(user))
-                .onErrorResume(Mono::error)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.CREATE)
                         .documentId(document.getId())
