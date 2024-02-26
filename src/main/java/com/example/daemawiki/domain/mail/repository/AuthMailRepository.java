@@ -23,7 +23,7 @@ public class AuthMailRepository {
         return redisOperations.opsForValue()
                 .set(AUTHMAIL + authMail.getMail(),
                         authMail.getMail(),
-                        Duration.ofHours(9))
+                        Duration.ofHours(3))
                 .then();
     }
 
