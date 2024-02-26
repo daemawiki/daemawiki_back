@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.mail.service;
 
 import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
-import com.example.daemawiki.domain.mail.model.MailType;
+import com.example.daemawiki.domain.mail.model.type.MailType;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
