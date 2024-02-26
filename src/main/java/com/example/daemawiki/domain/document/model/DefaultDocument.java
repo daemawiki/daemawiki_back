@@ -1,16 +1,20 @@
 package com.example.daemawiki.domain.document.model;
 
 import com.example.daemawiki.domain.document.model.type.DocumentType;
+import com.example.daemawiki.domain.info.model.Info;
 import com.example.daemawiki.global.datetime.model.EditDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.eclipse.collections.api.factory.Lists;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+@Setter
 @Getter
 @Document
 @NoArgsConstructor
@@ -25,6 +29,8 @@ public class DefaultDocument {
 
     private EditDateTime dateTime;
 
+    private List<Info> info = Lists.mutable.of();
+
     private List<List<String>> groups;
 
     private DocumentEditor editor;
@@ -35,10 +41,11 @@ public class DefaultDocument {
     private Integer version;
 
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<List<String>> groups, DocumentEditor documentEditor, String content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, String content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
+        this.info = info;
         this.groups = groups;
         this.editor = documentEditor;
         this.content = content;

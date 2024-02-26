@@ -16,6 +16,7 @@ public class DocumentMapper {
                 .title(document.getTitle())
                 .type(document.getType())
                 .dateTime(document.getDateTime())
+                .info(document.getInfo())
                 .groups(document.getGroups())
                 .editor(document.getEditor())
                 .content(document.getContent())
