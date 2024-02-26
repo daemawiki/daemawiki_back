@@ -44,7 +44,9 @@ public class MailSend {
     private static final Random rand = new Random();
 
     public Mono<Void> execute(AuthCodeRequest request) {
-        Mono<User> userMono = userFacade.findByEmail(request.mail())
+        String mail = request.mail();
+
+        Mono<User> userMono = userFacade.findByEmail(mail)
                 .flatMap(user -> {
                     if (Objects.equals(request.type(), MailType.CHANGE_PW.getType())) {
                         return Mono.empty();
@@ -54,7 +56,6 @@ public class MailSend {
                 });
 
         String authCode = getRandomCode();
-        String mail = request.mail();
 
         Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(scheduler);
         Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(scheduler);
