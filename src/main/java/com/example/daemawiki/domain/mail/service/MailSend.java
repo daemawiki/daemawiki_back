@@ -74,7 +74,7 @@ public class MailSend {
     }
 
     private Mono<Void> sendMail(String to, String authCode) {
-        return Mono.fromCallable(() ->
+        return Mono.fromRunnable(() ->
                         CompletableFuture.runAsync(() -> {
                             try {
                                 MimeMessage message = mailSender.createMimeMessage();
