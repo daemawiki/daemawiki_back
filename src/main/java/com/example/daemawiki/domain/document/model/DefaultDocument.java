@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.document.model;
 
+import com.example.daemawiki.domain.content.model.Contents;
 import com.example.daemawiki.domain.document.model.type.DocumentType;
 import com.example.daemawiki.domain.info.model.Info;
 import com.example.daemawiki.global.datetime.model.EditDateTime;
@@ -35,13 +36,13 @@ public class DefaultDocument {
 
     private DocumentEditor editor;
 
-    private String content;
+    private List<Contents> content;
 
     @Version
     private Integer version;
 
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, String content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, List<Contents> content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
@@ -51,10 +52,9 @@ public class DefaultDocument {
         this.content = content;
     }
 
-    public void update(String title, DocumentType type, String content, List<List<String>> groups) {
+    public void update(String title, DocumentType type, List<List<String>> groups) {
         this.title = title;
         this.type = type;
-        this.content = content;
         this.groups = groups;
     }
 

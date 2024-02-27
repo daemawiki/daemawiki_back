@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.document.dto.request;
 
+import com.example.daemawiki.domain.content.model.Contents;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,8 +14,8 @@ public record SaveDocumentRequest(
         String title,
         @NotBlank(message = "문서의 유형이 비어있습니다.")
         String type,
-        @NotBlank(message = "문서의 내용이 비어있습니다.")
-        String content,
+        @Nullable
+        Contents content,
         @NotNull(message = "문서의 분류가 비어있습니다.")
         List<List<String>> groups,
         @Nullable

@@ -1,5 +1,9 @@
 package com.example.daemawiki.domain.document.api;
 
+import com.example.daemawiki.domain.content.dto.AddContentRequest;
+import com.example.daemawiki.domain.content.dto.WriteContentRequest;
+import com.example.daemawiki.domain.content.service.AddContentTable;
+import com.example.daemawiki.domain.content.service.WriteContent;
 import com.example.daemawiki.domain.document.component.service.CreateDocument;
 import com.example.daemawiki.domain.document.component.service.DeleteDocument;
 import com.example.daemawiki.domain.document.component.service.GetDocument;
@@ -25,13 +29,17 @@ public class DocumentController {
     private final DeleteDocument deleteDocumentService;
     private final UpdateDocument updateDocumentService;
     private final UpdateInfo updateInfoService;
+    private final WriteContent writeContentService;
+    private final AddContentTable addContentTableService;
 
-    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService) {
+    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService, WriteContent writeContentService, AddContentTable addContentTableService) {
         this.createDocumentService = createDocument;
         this.getDocumentService = getDocument;
         this.deleteDocumentService = deleteDocument;
         this.updateDocumentService = updateDocument;
         this.updateInfoService = updateInfoService;
+        this.writeContentService = writeContentService;
+        this.addContentTableService = addContentTableService;
     }
 
     @PostMapping
@@ -76,6 +84,18 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateInfo(@RequestBody UpdateInfoRequest request) {
         return updateInfoService.execute(request);
+    }
+
+    @PatchMapping("/content")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> writeContent(@RequestBody WriteContentRequest request) {
+        return writeContentService.execute(request);
+    }
+
+    @PatchMapping("/content/table")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> addContentTable(@RequestBody AddContentRequest request) {
+        return addContentTableService.execute(request);
     }
 
 }

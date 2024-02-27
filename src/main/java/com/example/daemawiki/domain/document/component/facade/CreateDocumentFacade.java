@@ -10,6 +10,7 @@ import com.example.daemawiki.global.datetime.model.EditDateTime;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 @Component
 public class CreateDocumentFacade {
@@ -37,7 +38,7 @@ public class CreateDocumentFacade {
                         .createdUser(userDetail)
                         .updatedUser(userDetail)
                         .build())
-                .content(request.content())
+                .content(Collections.singletonList(request.content()))
                 .groups(request.groups())
                 .build();
     }

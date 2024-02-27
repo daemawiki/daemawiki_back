@@ -39,7 +39,7 @@ public class DocumentMapper {
                 .title(document.getTitle())
                 .type(document.getType())
                 .dateTime(document.getDateTime())
-                .content(document.getContent().substring(0, Math.min(document.getContent().length(), 100)))
+                .content(document.getContent().getFirst().getContent().substring(0, Math.min(document.getContent().getFirst().getContent().length(), 100)))
                 .build());
     }
 

@@ -43,8 +43,9 @@ public class UpdateDocument {
 
                             document.update(request.title(),
                                     getDocumentType.execute(request.type()),
-                                    request.content(),
                                     request.groups());
+
+                            document.getContent().add(request.content());
 
                             return document;
                         })
