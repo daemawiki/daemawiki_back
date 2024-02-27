@@ -26,14 +26,14 @@ public class RevisionHistoryController {
         return revisionService.getAllRevisionPaging(lastRevision);
     }
 
-    @GetMapping("/{documentId}")
-    public Flux<RevisionHistory> getRevisionByDocument(@NotBlank @PathVariable String documentId, @RequestParam("lastRevision") String lastRevision) {
-        return revisionService.getAllRevisionByDocument(documentId, lastRevision);
+    @GetMapping("/document")
+    public Flux<RevisionHistory> getRevisionByDocument(@NotBlank @RequestParam String value, @RequestParam("lastRevision") String lastRevision) {
+        return revisionService.getAllRevisionByDocument(value, lastRevision);
     }
 
-    @GetMapping("/users")
-    public Flux<RevisionHistory> getRevisionByUser(@NotBlank @RequestParam("user") String user, @RequestParam("lastRevision") String lastRevision) {
-        return revisionService.getAllRevisionByUser(user, lastRevision);
+    @GetMapping("/user")
+    public Flux<RevisionHistory> getRevisionByUser(@NotBlank @RequestParam String value, @RequestParam("lastRevision") String lastRevision) {
+        return revisionService.getAllRevisionByUser(value, lastRevision);
     }
 
 }
