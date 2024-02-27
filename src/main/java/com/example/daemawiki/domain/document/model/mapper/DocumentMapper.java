@@ -1,11 +1,14 @@
 package com.example.daemawiki.domain.document.model.mapper;
 
+import com.example.daemawiki.domain.content.model.Contents;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SearchDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Component
 public class DocumentMapper {
@@ -39,8 +42,14 @@ public class DocumentMapper {
                 .title(document.getTitle())
                 .type(document.getType())
                 .dateTime(document.getDateTime())
-                .content(document.getContent().getFirst().getContent().substring(0, Math.min(document.getContent().getFirst().getContent().length(), 100)))
+                .content(Optional.ofNullable(document.getContent())
+                        .filter(contents -> !contents.isEmpty())
+                        .map(contents -> contents.get(0))
+                        .map(Contents::getContent)
+                        .map(content -> content.substring(0, Math.min(content.length(), 100)))
+                        .orElse(""))
                 .build());
+
     }
 
 }
