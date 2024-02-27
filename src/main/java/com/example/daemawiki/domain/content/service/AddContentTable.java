@@ -8,6 +8,7 @@ import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -64,7 +65,8 @@ public class AddContentTable {
                         .type(RevisionType.UPDATE)
                         .documentId(request.documentId())
                         .title(document.getTitle())
-                        .build()));
+                        .build()))
+                .onErrorMap(e -> e instanceof VersionMismatchException ? e : ExecuteFailedException.EXCEPTION);
     }
 
 }
