@@ -7,12 +7,14 @@ import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import com.example.daemawiki.global.exception.h404.ContentNotFoundException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,13 +44,15 @@ public class WriteContent {
                         return Mono.error(ContentNotFoundException.EXCEPTION);
                     }
                 })
+                .filter(document -> Objects.equals(document.getVersion(), request.version()))
+                .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
                 .flatMap(documentRepository::save)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.UPDATE)
                         .documentId(request.documentId())
                         .title(document.getTitle())
                         .build()))
-                .onErrorMap(e -> e instanceof ContentNotFoundException ? e : ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> e instanceof ContentNotFoundException || e instanceof VersionMismatchException ? e : ExecuteFailedException.EXCEPTION);
     }
 
 }

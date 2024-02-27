@@ -7,10 +7,12 @@ import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 @Service
 public class AddContentTable {
@@ -55,6 +57,8 @@ public class AddContentTable {
 
                     return document;
                 })
+                .filter(document -> Objects.equals(document.getVersion(), request.version()))
+                .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
                 .flatMap(documentRepository::save)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.UPDATE)

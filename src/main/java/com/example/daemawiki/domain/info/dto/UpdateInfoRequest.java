@@ -6,6 +6,7 @@ import java.util.List;
 
 public record UpdateInfoRequest(
         String documentId,
-        List<Info> infoList
+        List<Info> infoList,
+        Integer version
 ) {
 }

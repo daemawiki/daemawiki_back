@@ -6,9 +6,11 @@ import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
-import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Service
 public class UpdateInfo {
@@ -24,6 +26,8 @@ public class UpdateInfo {
 
     public Mono<Void> execute(UpdateInfoRequest request) {
         return documentFacade.findDocumentById(request.documentId())
+                .filter(document -> Objects.equals(document.getVersion(), request.version()))
+                .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
                 .flatMap(document -> {
                     document.setInfo(request.infoList());
                     return documentRepository.save(document);
