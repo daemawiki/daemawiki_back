@@ -58,4 +58,9 @@ public class DefaultDocument {
         this.groups = groups;
     }
 
+    public void updateByUserEdit(String title, List<List<String>> groups) {
+        this.title = title;
+        this.groups = groups;
+    }
+
 }
