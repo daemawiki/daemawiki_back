@@ -20,6 +20,7 @@ public enum ErrorCode {
     DOCUMENT_GROUP_NOT_FOUND(404, "해당 분류 그룹을 찾지 못했습니다."),
     STUDENT_INFO_NOT_FOUND(404, "해당 학생 정보를 찾지 못했습니다."),
     FILE_NOT_FOUND(404, "해당 id로 파일을 찾지 못했습니다."),
+    CONTENT_NOT_FOUND(404, "해당 인덱스의 목차를 찾지 못했습니다."),
 
     ALREADY_EXISTS_EMAIL(409, "이 이메일을 사용 중인 유저가 존재합니다."),
 
