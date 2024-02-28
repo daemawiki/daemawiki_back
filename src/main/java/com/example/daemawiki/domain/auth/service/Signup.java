@@ -12,7 +12,6 @@ import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.h403.UnVerifiedEmailException;
 import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
-import org.eclipse.collections.api.factory.Lists;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -66,12 +65,8 @@ public class Signup {
 
                                             return userRepository.save(user)
                                                     .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
-                                                            .doOnNext(document -> {
-                                                                document.getEditor().setCanEdit(Lists.mutable.of(user.getId()));
-                                                                savedUser.setDocumentId(document.getId());
-                                                            })
-                                                            .flatMap(document -> Mono.when(userRepository.save(savedUser),
-                                                                    documentRepository.save(document)))
+                                                            .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                                                            .flatMap(document -> userRepository.save(savedUser))
                                                             .then(authMailRepository.delete(savedUser.getEmail())));
                                         })
                                         .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
