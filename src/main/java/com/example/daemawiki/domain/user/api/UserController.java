@@ -50,9 +50,9 @@ public class UserController {
         return changePasswordService.nonLoggedInUser(request);
     }
 
-    @GetMapping("/gen/{gen}")
-    public Flux<GetUserResponse> getUserByGen(@NotNull @PathVariable Integer gen) {
-        return getUser.getUserByGen(gen);
+    @GetMapping("/generation/{generation}")
+    public Flux<GetUserResponse> getUserByGen(@NotNull @PathVariable Integer generation) {
+        return getUser.getUserByGen(generation);
     }
 
     @GetMapping("/major/{major}")
