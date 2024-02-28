@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.auth.service;
 
 import com.example.daemawiki.domain.auth.dto.request.SignupRequest;
 import com.example.daemawiki.domain.document.component.CreateDocumentByUser;
+import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.file.model.DefaultProfile;
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
 import com.example.daemawiki.domain.user.model.User;
@@ -11,6 +12,7 @@ import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.global.exception.h403.UnVerifiedEmailException;
 import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
+import org.eclipse.collections.api.factory.Lists;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -25,8 +27,9 @@ public class Signup {
     private final GetMajorType getMajorType;
     private final CreateDocumentByUser createDocumentByUser;
     private final DefaultProfile defaultProfile;
+    private final DocumentRepository documentRepository;
 
-    public Signup(UserRepository userRepository,AuthMailRepository authMailRepository, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentByUser createDocumentByUser, DefaultProfile defaultProfile) {
+    public Signup(UserRepository userRepository,AuthMailRepository authMailRepository, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentByUser createDocumentByUser, DefaultProfile defaultProfile, DocumentRepository documentRepository) {
         this.userRepository = userRepository;
         this.authMailRepository = authMailRepository;
         this.passwordEncoder = passwordEncoder;
@@ -34,6 +37,7 @@ public class Signup {
         this.getMajorType = getMajorType;
         this.createDocumentByUser = createDocumentByUser;
         this.defaultProfile = defaultProfile;
+        this.documentRepository = documentRepository;
     }
 
     public Mono<Void> execute(SignupRequest request) {
@@ -62,9 +66,13 @@ public class Signup {
 
                                             return userRepository.save(user)
                                                     .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
-                                                            .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                                                            .flatMap(document -> userRepository.save(savedUser)))
-                                                    .flatMap(savedUser -> authMailRepository.delete(savedUser.getEmail()));
+                                                            .doOnNext(document -> {
+                                                                document.getEditor().setCanEdit(Lists.mutable.of(user.getId()));
+                                                                savedUser.setDocumentId(document.getId());
+                                                            })
+                                                            .flatMap(document -> Mono.when(userRepository.save(savedUser),
+                                                                    documentRepository.save(document)))
+                                                            .then(authMailRepository.delete(savedUser.getEmail())));
                                         })
                                         .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
                             }))).then();
