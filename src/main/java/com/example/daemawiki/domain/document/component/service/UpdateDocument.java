@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.document.component.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
+import com.example.daemawiki.domain.document.model.Editor;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -36,7 +37,12 @@ public class UpdateDocument {
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                            if (!document.getEditor().getCanEdit().contains(user.getId())) {
+                            if (!document.getEditor()
+                                    .getCanEdit()
+                                    .contains(Editor.builder()
+                                    .email(user.getEmail())
+                                    .id(user.getId())
+                                    .build())) {
                                 throw NoEditPermissionUserException.EXCEPTION;
                             }
 

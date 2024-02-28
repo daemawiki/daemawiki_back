@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.document.component.facade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentEditor;
+import com.example.daemawiki.domain.document.model.Editor;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.model.User;
@@ -38,7 +39,10 @@ public class CreateDocumentFacade {
                 .documentEditor(DocumentEditor.builder()
                         .createdUser(userDetail)
                         .updatedUser(userDetail)
-                        .canEdit(Lists.mutable.of(user.getId()))
+                        .canEdit(Lists.mutable.of(Editor.builder()
+                                .email(user.getEmail())
+                                .id(user.getId())
+                                .build()))
                         .build())
                 .content(Collections.singletonList(request.content()))
                 .groups(request.groups())

@@ -16,7 +16,7 @@ public class DocumentEditor {
 
     private UserDetailResponse updatedUser;
 
-    private List<String> canEdit;
+    private List<Editor> canEdit;
 
     public void update(UserDetailResponse updatedUser) {
         this.updatedUser = updatedUser;
