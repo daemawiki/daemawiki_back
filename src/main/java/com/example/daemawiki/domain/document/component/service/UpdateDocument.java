@@ -36,9 +36,9 @@ public class UpdateDocument {
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                        if (!document.getEditor().canEdit(user.getEmail())) {
-                            throw NoEditPermissionUserException.EXCEPTION;
-                        }
+                            if (!document.getEditor().canEdit(user.getEmail())) {
+                                throw NoEditPermissionUserException.EXCEPTION;
+                            }
 
                             document.getEditor().update(UserDetailResponse.builder()
                                     .id(user.getId())
