@@ -70,7 +70,7 @@ public class UserController {
         return getUser.getCurrentUser();
     }
 
-    @PatchMapping("/club")
+    @PatchMapping("/my/club")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateClub(@Valid @RequestBody UpdateClubRequest request) {
         return updateClub.execute(request);
