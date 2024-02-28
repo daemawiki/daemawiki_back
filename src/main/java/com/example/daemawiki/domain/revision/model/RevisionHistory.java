@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.revision.model;
 import com.example.daemawiki.domain.editor.model.Editor;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 public class RevisionHistory {
 
     @Id
+    @JsonIgnore
     private String id;
 
     private RevisionType type;
