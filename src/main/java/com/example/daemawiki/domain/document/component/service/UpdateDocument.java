@@ -10,6 +10,7 @@ import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
+import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -35,6 +36,10 @@ public class UpdateDocument {
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
+                            if (!document.getEditor().getCanEdit().contains(user.getId())) {
+                                throw NoEditPermissionUserException.EXCEPTION;
+                            }
+
                             document.getEditor().update(UserDetailResponse.builder()
                                     .id(user.getId())
                                     .name(user.getName())
@@ -57,7 +62,7 @@ public class UpdateDocument {
                                 .documentId(d.getId())
                                 .title(d.getTitle())
                                 .build()))
-                .onErrorMap(e -> e instanceof VersionMismatchException ? e : ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
     }
 
 }
