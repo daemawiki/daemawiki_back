@@ -14,6 +14,8 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UpdateClub {
@@ -38,7 +40,17 @@ public class UpdateClub {
                 .doOnNext(user -> user.getDetail().setClub(request.club()))
                 .flatMap(userRepository::save)
                 .flatMap(user -> documentFacade.findDocumentById(user.getDocumentId())
-                        .doOnNext(document -> document.getGroups().add(Arrays.asList("동아리", request.club())))
+                        .doOnNext(document -> {
+                            if (!Objects.equals(request.club(), "*")) {
+                                document.getGroups().add(Arrays.asList("동아리", request.club()));
+                            } else {
+                                List<List<String>> newGroups = document.getGroups().stream()
+                                        .filter(g -> !g.contains("동아리"))
+                                        .toList();
+
+                                document.setGroups(newGroups);
+                            }
+                        })
                         .flatMap(documentRepository::save))
                 .subscribeOn(scheduler)
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
