@@ -1,7 +1,7 @@
 package com.example.daemawiki.domain.document.dto.response;
 
 import com.example.daemawiki.domain.content.model.Contents;
-import com.example.daemawiki.domain.document.model.DocumentEditor;
+import com.example.daemawiki.domain.document.model.editor.DocumentEditor;
 import com.example.daemawiki.domain.document.model.type.DocumentType;
 import com.example.daemawiki.domain.info.model.Info;
 import com.example.daemawiki.global.datetime.model.EditDateTime;

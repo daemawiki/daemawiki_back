@@ -1,4 +1,4 @@
-package com.example.daemawiki.domain.document.model;
+package com.example.daemawiki.domain.document.model.editor;
 
 import lombok.Builder;
 
