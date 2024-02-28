@@ -2,8 +2,8 @@ package com.example.daemawiki.domain.document.component.facade;
 
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
-import com.example.daemawiki.domain.document.model.editor.DocumentEditor;
-import com.example.daemawiki.domain.document.model.editor.Editor;
+import com.example.daemawiki.domain.editor.model.DocumentEditor;
+import com.example.daemawiki.domain.editor.model.Editor;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.model.User;
