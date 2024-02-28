@@ -14,14 +14,14 @@ public enum MajorType {
     DEVOPS("데브옵스"),
     DESIGN("디자인"),
     SECURITY("보안"),
-    GAME("게임-개발"),
+    GAME("게임"),
     EMBEDDED("임베디드"),
     SLAVE("노예"),
-    AI("인공지능-개발자"),
+    AI("인공지능"),
     CLEANER("청소부"),
     GITOPS("깃옵스"),
     DBA("데이터베이스-관리자"),
-    FULLSTACK("풀스택-개발자");
+    FULLSTACK("풀스택");
 
     private final String major;
 }
