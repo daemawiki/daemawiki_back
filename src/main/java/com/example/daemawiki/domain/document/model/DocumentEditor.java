@@ -22,4 +22,8 @@ public class DocumentEditor {
         this.updatedUser = updatedUser;
     }
 
+    public boolean canEdit(String email) {
+        return this.canEdit.stream().anyMatch(editor -> editor.email().equals(email));
+    }
+
 }
