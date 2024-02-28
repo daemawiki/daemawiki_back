@@ -14,6 +14,7 @@ public enum ErrorCode {
 
     DOCUMENT_DELETE_FAILED(403, "학생 문서는 삭제하지 못합니다."),
     UNVERIFIED_EMAIL(403, "이메일 인증을 하지 않은 사용자입니다."),
+    NO_EDIT_PERMISSION_USER(403, "수정 권한이 없는 유저입니다."),
 
     USER_NOT_FOUND(404, "해당 이메일로 가입된 유저를 찾지 못했습니다."),
     DOCUMENT_NOT_FOUND(404, "해당 문서를 찾지 못했습니다."),
