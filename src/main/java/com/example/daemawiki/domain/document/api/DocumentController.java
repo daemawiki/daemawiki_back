@@ -12,6 +12,8 @@ import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SearchDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import com.example.daemawiki.domain.editor.dto.AddEditorRequest;
+import com.example.daemawiki.domain.editor.service.AddEditor;
 import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
 import com.example.daemawiki.domain.info.service.UpdateInfo;
 import jakarta.validation.Valid;
@@ -31,8 +33,9 @@ public class DocumentController {
     private final UpdateInfo updateInfoService;
     private final WriteContent writeContentService;
     private final AddContentTable addContentTableService;
+    private final AddEditor addEditorService;
 
-    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService, WriteContent writeContentService, AddContentTable addContentTableService) {
+    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService, WriteContent writeContentService, AddContentTable addContentTableService, AddEditor addEditorService) {
         this.createDocumentService = createDocument;
         this.getDocumentService = getDocument;
         this.deleteDocumentService = deleteDocument;
@@ -40,6 +43,7 @@ public class DocumentController {
         this.updateInfoService = updateInfoService;
         this.writeContentService = writeContentService;
         this.addContentTableService = addContentTableService;
+        this.addEditorService = addEditorService;
     }
 
     @PostMapping
@@ -96,6 +100,12 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> addContentTable(@RequestBody AddContentRequest request) {
         return addContentTableService.execute(request);
+    }
+
+    @PatchMapping("/editor")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> addEditor(@RequestBody AddEditorRequest request) {
+        return addEditorService.execute(request);
     }
 
 }
