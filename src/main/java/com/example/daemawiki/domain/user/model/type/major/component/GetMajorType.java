@@ -10,7 +10,8 @@ public class GetMajorType {
         return switch (major) {
             case "backend" -> MajorType.BACKEND;
             case "frontend" -> MajorType.FRONTEND;
-            case "app" -> MajorType.APP;
+            case "ios" -> MajorType.IOS;
+            case "android" -> MajorType.ANDROID;
             case "teacher" -> MajorType.SCAMMER;
             case "student" -> MajorType.SLAVE;
             case "devops" -> MajorType.DEVOPS;
