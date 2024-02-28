@@ -50,19 +50,19 @@ public class UserController {
         return changePasswordService.nonLoggedInUser(request);
     }
 
-    @GetMapping("/gen")
-    public Flux<GetUserResponse> getUserByGen(@NotNull @RequestParam Integer param) {
-        return getUser.getUserByGen(param);
+    @GetMapping("/gen/{gen}")
+    public Flux<GetUserResponse> getUserByGen(@NotNull @PathVariable Integer gen) {
+        return getUser.getUserByGen(gen);
     }
 
-    @GetMapping("/major")
-    public Flux<GetUserResponse> getUserByMajor(@NotBlank @RequestParam String param) {
-        return getUser.getUserByMajor(param);
+    @GetMapping("/major/{major}")
+    public Flux<GetUserResponse> getUserByMajor(@NotBlank @PathVariable String major) {
+        return getUser.getUserByMajor(major);
     }
 
-    @GetMapping("/club")
-    public Flux<GetUserResponse> getUserByClub(@NotNull @RequestParam String param) {
-        return getUser.getUserByClub(param);
+    @GetMapping("/club/{club}")
+    public Flux<GetUserResponse> getUserByClub(@NotNull @PathVariable String club) {
+        return getUser.getUserByClub(club);
     }
 
     @GetMapping
