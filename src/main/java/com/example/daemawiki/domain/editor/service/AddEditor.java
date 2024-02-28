@@ -23,18 +23,19 @@ public class AddEditor {
 
     public Mono<Void> execute(AddEditorRequest request) {
         return userFacade.currentUser()
-                .flatMap(user -> documentFacade.findDocumentById(user.getDocumentId())
+                .flatMap(user -> documentFacade.findDocumentById(request.documentId())
                         .filter(document -> document.getEditor().getCreatedUser().id().equals(user.getId()))
                         .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION))
                         .zipWith(userFacade.findByEmailNotNull(request.email()), (document, user2) -> {
-                            document.getEditor().getCanEdit().add(Editor.builder()
-                                            .user(user2.getEmail())
-                                            .id(user2.getId())
+                            document.getEditor().addEditor(Editor.builder()
+                                    .user(user2.getName())
+                                    .id(user2.getId())
                                     .build());
                             return document;
-                        })
-                        .flatMap(documentRepository::save))
+                        }))
+                .flatMap(documentRepository::save)
                 .then();
     }
+
 
 }

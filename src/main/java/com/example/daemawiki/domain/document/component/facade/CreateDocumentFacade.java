@@ -2,13 +2,12 @@ package com.example.daemawiki.domain.document.component.facade;
 
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
+import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.editor.model.DocumentEditor;
 import com.example.daemawiki.domain.editor.model.Editor;
-import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
 import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.global.datetime.model.EditDateTime;
-import org.eclipse.collections.api.factory.Lists;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -39,7 +38,7 @@ public class CreateDocumentFacade {
                 .documentEditor(DocumentEditor.builder()
                         .createdUser(userDetail)
                         .updatedUser(userDetail)
-                        .canEdit(Lists.mutable.of(Editor.builder()
+                        .canEdit(Collections.singletonList(Editor.builder()
                                 .user(user.getEmail())
                                 .id(user.getId())
                                 .build()))

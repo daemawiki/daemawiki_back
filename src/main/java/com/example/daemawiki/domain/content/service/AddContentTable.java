@@ -37,7 +37,7 @@ public class AddContentTable {
                         .filter(document -> Objects.equals(document.getVersion(), request.version()))
                         .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
                         .flatMap(document -> {
-                            if (!document.getEditor().canEdit(user.getEmail())) {
+                            if (document.getEditor().hasEditPermission(user.getEmail())) {
                                 return Mono.error(NoEditPermissionUserException.EXCEPTION);
                             }
                             Contents newContent = Contents.builder()

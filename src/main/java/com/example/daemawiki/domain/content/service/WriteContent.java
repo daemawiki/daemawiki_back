@@ -38,7 +38,7 @@ public class WriteContent {
         return userFacade.currentUser()
                 .flatMap(user -> documentFacade.findDocumentById(request.documentId())
                         .flatMap(document -> {
-                            if (!document.getEditor().canEdit(user.getEmail())) {
+                            if (document.getEditor().hasEditPermission(user.getEmail())) {
                                 return Mono.error(NoEditPermissionUserException.EXCEPTION);
                             }
 

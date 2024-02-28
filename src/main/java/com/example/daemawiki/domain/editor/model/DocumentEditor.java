@@ -22,8 +22,12 @@ public class DocumentEditor {
         this.updatedUser = updatedUser;
     }
 
-    public boolean canEdit(String email) {
-        return this.canEdit.stream().anyMatch(editor -> editor.user().equals(email));
+    public boolean hasEditPermission(String email) {
+        return this.canEdit.stream().noneMatch(editor -> editor.user().equals(email));
+    }
+
+    public void addEditor(Editor editor) {
+        this.canEdit.add(editor);
     }
 
 }
