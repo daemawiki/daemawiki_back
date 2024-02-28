@@ -40,7 +40,7 @@ public class CreateDocumentFacade {
                         .createdUser(userDetail)
                         .updatedUser(userDetail)
                         .canEdit(Lists.mutable.of(Editor.builder()
-                                .email(user.getEmail())
+                                .user(user.getEmail())
                                 .id(user.getId())
                                 .build()))
                         .build())

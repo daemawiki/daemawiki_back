@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.revision.component;
 
+import com.example.daemawiki.domain.editor.model.Editor;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
@@ -26,7 +27,10 @@ public class RevisionComponent {
                         .type(request.type())
                         .documentId(request.documentId())
                         .title(request.title())
-                        .editor(user.getId())
+                        .editor(Editor.builder()
+                                .user(user.getName())
+                                .id(user.getId())
+                                .build())
                         .createdDateTime(LocalDateTime.now())
                         .build())
                 .flatMap(revisionHistoryRepository::save)

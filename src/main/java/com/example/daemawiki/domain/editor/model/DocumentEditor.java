@@ -23,7 +23,7 @@ public class DocumentEditor {
     }
 
     public boolean canEdit(String email) {
-        return this.canEdit.stream().anyMatch(editor -> editor.email().equals(email));
+        return this.canEdit.stream().anyMatch(editor -> editor.user().equals(email));
     }
 
 }

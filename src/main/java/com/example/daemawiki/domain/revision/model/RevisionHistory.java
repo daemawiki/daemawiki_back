@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.revision.model;
 
+import com.example.daemawiki.domain.editor.model.Editor;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
@@ -24,13 +25,13 @@ public class RevisionHistory {
 
     private String title;
 
-    private String editor;
+    private Editor editor;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
     private LocalDateTime createdDateTime;
 
     @Builder
-    public RevisionHistory(RevisionType type, String documentId, String title, String editor, LocalDateTime createdDateTime) {
+    public RevisionHistory(RevisionType type, String documentId, String title, Editor editor, LocalDateTime createdDateTime) {
         this.type = type;
         this.documentId = documentId;
         this.title = title;
