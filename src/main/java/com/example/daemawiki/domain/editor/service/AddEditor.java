@@ -32,8 +32,8 @@ public class AddEditor {
                                     .id(user2.getId())
                                     .build());
                             return document;
-                        }))
-                .flatMap(documentRepository::save)
+                        })
+                        .flatMap(documentRepository::save))
                 .then();
     }
 
