@@ -74,7 +74,7 @@ public class DocumentController {
 
     @PatchMapping("/info")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateInfo(@RequestBody UpdateInfoRequest request) {
+    public Mono<Void> updateInfo(@Valid @RequestBody UpdateInfoRequest request) {
         return updateInfoService.execute(request);
     }
 
