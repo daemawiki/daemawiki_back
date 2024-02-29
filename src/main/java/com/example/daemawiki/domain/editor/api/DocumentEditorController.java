@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.editor.dto.AddEditorRequest;
 import com.example.daemawiki.domain.editor.dto.DeleteEditorRequest;
 import com.example.daemawiki.domain.editor.service.AddEditor;
 import com.example.daemawiki.domain.editor.service.DeleteEditor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -21,13 +22,13 @@ public class DocumentEditorController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> addEditor(@RequestBody AddEditorRequest request) {
+    public Mono<Void> addEditor(@Valid @RequestBody AddEditorRequest request) {
         return addEditorService.execute(request);
     }
 
     @PatchMapping("/remove")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteEditor(@RequestBody DeleteEditorRequest request) {
+    public Mono<Void> deleteEditor(@Valid @RequestBody DeleteEditorRequest request) {
         return deleteEditorService.execute(request);
     }
 
