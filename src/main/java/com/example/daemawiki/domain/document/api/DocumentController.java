@@ -6,8 +6,8 @@ import com.example.daemawiki.domain.document.component.service.GetDocument;
 import com.example.daemawiki.domain.document.component.service.UpdateDocument;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
-import com.example.daemawiki.domain.document.dto.response.SearchDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import com.example.daemawiki.domain.document.model.DocumentSearchResult;
 import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
 import com.example.daemawiki.domain.info.service.UpdateInfo;
 import jakarta.validation.Valid;
@@ -51,7 +51,7 @@ public class DocumentController {
     }
 
     @GetMapping("/search")
-    public Flux<SearchDocumentResponse> searchDocument(@NotBlank @RequestParam("text") String text) {
+    public Flux<DocumentSearchResult> searchDocument(@NotBlank @RequestParam("text") String text) {
         return getDocumentService.searchDocument(text);
     }
 

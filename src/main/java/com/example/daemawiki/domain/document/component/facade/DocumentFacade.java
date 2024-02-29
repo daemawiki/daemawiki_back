@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.document.component.facade;
 
 import com.example.daemawiki.domain.document.model.DefaultDocument;
+import com.example.daemawiki.domain.document.model.DocumentSearchResult;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.global.exception.h404.DocumentNotFoundException;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class DocumentFacade {
         return documentRepository.findRandomDocument();
     }
 
-    public Flux<DefaultDocument> searchDocument(String text) {
+    public Flux<DocumentSearchResult> searchDocument(String text) {
         return documentRepository.findByTextContaining(text);
     }
 

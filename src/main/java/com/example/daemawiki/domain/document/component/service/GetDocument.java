@@ -2,9 +2,10 @@ package com.example.daemawiki.domain.document.component.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
-import com.example.daemawiki.domain.document.dto.response.SearchDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import com.example.daemawiki.domain.document.model.DocumentSearchResult;
 import com.example.daemawiki.domain.document.model.mapper.DocumentMapper;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,9 +30,8 @@ public class GetDocument {
                 .flatMap(documentMapper::defaultDocumentToGetResponse);
     }
 
-    public Flux<SearchDocumentResponse> searchDocument(String text) {
-        return documentFacade.searchDocument(text)
-                .flatMap(documentMapper::defaultDocumentToSearchDocumentResponse);
+    public Flux<DocumentSearchResult> searchDocument(String text) {
+        return documentFacade.searchDocument(text);
     }
 
     public Flux<SimpleDocumentResponse> getDocumentTop10() {
