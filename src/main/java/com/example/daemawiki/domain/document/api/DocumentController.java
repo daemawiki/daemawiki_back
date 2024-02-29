@@ -12,7 +12,6 @@ import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SearchDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
-import com.example.daemawiki.domain.editor.dto.AddEditorRequest;
 import com.example.daemawiki.domain.editor.service.AddEditor;
 import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
 import com.example.daemawiki.domain.info.service.UpdateInfo;
@@ -100,12 +99,6 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> addContentTable(@RequestBody AddContentRequest request) {
         return addContentTableService.execute(request);
-    }
-
-    @PatchMapping("/editor")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> addEditor(@RequestBody AddEditorRequest request) {
-        return addEditorService.execute(request);
     }
 
 }
