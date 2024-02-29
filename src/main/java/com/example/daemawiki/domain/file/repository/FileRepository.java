@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface FileRepository extends ReactiveMongoRepository<File, UUID> {
 
-    Flux<File> findByFileName(String fileName);
+    Flux<File> findByFileNameContaining(String fileName);
 
 }

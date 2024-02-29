@@ -23,7 +23,7 @@ public class GetFile {
     }
 
     public Flux<File> getFileByName(String fileName) {
-        return fileRepository.findByFileName(fileName);
+        return fileRepository.findByFileNameContaining(fileName);
     }
 
 }
