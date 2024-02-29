@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.content.dto.AddContentRequest;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
 import com.example.daemawiki.domain.content.service.AddContentTable;
 import com.example.daemawiki.domain.content.service.WriteContent;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,7 @@ public class DocumentContentController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> writeContent(@RequestBody WriteContentRequest request) {
+    public Mono<Void> writeContent(@Valid @RequestBody WriteContentRequest request) {
         return writeContentService.execute(request);
     }
 
