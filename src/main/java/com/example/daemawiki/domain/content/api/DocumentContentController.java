@@ -28,7 +28,7 @@ public class DocumentContentController {
 
     @PatchMapping("/table")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> addContentTable(@RequestBody AddContentRequest request) {
+    public Mono<Void> addContentTable(@Valid @RequestBody AddContentRequest request) {
         return addContentTableService.execute(request);
     }
 
