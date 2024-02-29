@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/documents/content")
+@RequestMapping("/api/documents/contents")
 public class DocumentContentController {
     private final WriteContent writeContentService;
     private final AddContentTable addContentTableService;
