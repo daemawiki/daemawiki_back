@@ -30,6 +30,7 @@ public enum ErrorCode {
     TOKEN_REISSUE_FAILED(500, "토큰 재발급 실패"),
     FILE_UPLOAD_FAILED(500, "파일 업로드 실패ㅋ"),
     EXECUTE_FAILED(500, "서버 에러"),
+    REDIS_CONNECT_FAILED(500, "redis 연결 실패"),
 
 
     TEST(400, "TEST");

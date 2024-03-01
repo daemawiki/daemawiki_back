@@ -1,7 +1,10 @@
 package com.example.daemawiki.domain.mail.repository;
 
 import com.example.daemawiki.domain.mail.model.AuthCode;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
+import com.example.daemawiki.global.exception.h500.RedisConnectFailedException;
 import com.example.daemawiki.global.type.RedisKey;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
@@ -22,11 +25,13 @@ public class AuthCodeRepository {
         return redisOperations.opsForValue().get(AUTHCODE + mail)
                 .map(value -> AuthCode.builder()
                         .mail(mail)
-                        .code(value).build());
+                        .code(value).build())
+                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION);
     }
 
     public Mono<Void> delete(AuthCode authCode) {
         return redisOperations.delete(AUTHCODE + authCode.getMail())
+                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION)
                 .then();
     }
 
@@ -35,6 +40,7 @@ public class AuthCodeRepository {
                 .set(AUTHCODE + authCode.getMail(),
                         authCode.getCode(),
                         Duration.ofHours(3))
+                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION)
                 .then();
     }
 
