@@ -32,5 +32,5 @@ public class MailController {
     public Mono<ResponseEntity<AuthCodeVerifyResponse>> verify(@Valid @RequestBody AuthCodeVerifyRequest request) {
         return mailVerify.execute(request);
     }
-    
+
 }
