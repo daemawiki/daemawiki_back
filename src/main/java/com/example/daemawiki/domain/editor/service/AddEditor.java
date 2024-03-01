@@ -21,9 +21,9 @@ public class AddEditor {
         this.documentRepository = documentRepository;
     }
 
-    public Mono<Void> execute(AddEditorRequest request) {
+    public Mono<Void> execute(AddEditorRequest request, String documentId) {
         return userFacade.currentUser()
-                .flatMap(user -> documentFacade.findDocumentById(request.documentId())
+                .flatMap(user -> documentFacade.findDocumentById(documentId)
                         .filter(document -> document.getEditor().getCreatedUser().id().equals(user.getId()))
                         .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION))
                         .zipWith(userFacade.findByEmailNotNull(request.email()), (document, user2) -> {

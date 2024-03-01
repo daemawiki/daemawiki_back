@@ -22,9 +22,9 @@ public class DeleteEditor {
         this.documentRepository = documentRepository;
     }
 
-    public Mono<Void> execute(DeleteEditorRequest request) {
+    public Mono<Void> execute(DeleteEditorRequest request, String documentId) {
         return userFacade.currentUser()
-                .flatMap(user -> documentFacade.findDocumentById(request.documentId())
+                .flatMap(user -> documentFacade.findDocumentById(documentId)
                         .filter(document -> Objects.equals(user.getId(), document.getEditor().getCreatedUser().id()))
                         .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION))
                         .flatMap(document -> {
