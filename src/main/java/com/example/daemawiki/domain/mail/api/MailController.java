@@ -32,11 +32,5 @@ public class MailController {
     public Mono<ResponseEntity<AuthCodeVerifyResponse>> verify(@Valid @RequestBody AuthCodeVerifyRequest request) {
         return mailVerify.execute(request);
     }
-
-    @PostMapping("/reissue")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> reissue(@Valid @RequestBody AuthCodeRequest request) {
-        return mailSend.reissue(request);
-    }
-
+    
 }

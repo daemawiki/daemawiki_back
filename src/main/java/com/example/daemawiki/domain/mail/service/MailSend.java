@@ -63,13 +63,6 @@ public class MailSend {
         return Mono.when(sendMailMono, saveAuthCodeMono, userMono).then();
     }
 
-    public Mono<Void> reissue(AuthCodeRequest request) {
-        return getAuthCode(request.mail())
-                .flatMap(authCode -> codeRepository.delete(authCode)
-                        .then(execute(request)))
-                .switchIfEmpty(execute(request));
-    }
-
     private Mono<AuthCode> getAuthCode(String mail) {
         return codeRepository.findByMail(mail);
     }
