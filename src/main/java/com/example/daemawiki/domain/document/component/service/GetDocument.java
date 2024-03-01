@@ -41,4 +41,9 @@ public class GetDocument {
                 .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
     }
 
+    public Flux<SimpleDocumentResponse> getDocumentOrderByView() {
+        return documentFacade.getDocumentOrderByView()
+                .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
+    }
+
 }

@@ -60,6 +60,11 @@ public class DocumentController {
         return getDocumentService.getDocumentTop10();
     }
 
+    @GetMapping("/most-view")
+    public Flux<SimpleDocumentResponse> getDocumentOrderByView() {
+        return getDocumentService.getDocumentOrderByView();
+    }
+
     @DeleteMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteDocument(@NotBlank @PathVariable String documentId) {

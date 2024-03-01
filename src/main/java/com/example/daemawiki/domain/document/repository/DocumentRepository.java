@@ -21,4 +21,6 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     Mono<DefaultDocument> findRandomDocument();
 
     Flux<DefaultDocument> findTop10ByOrderByVersionDesc();
+
+    Flux<DefaultDocument> findAllByOrderByViewDesc();
 }

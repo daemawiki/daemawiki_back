@@ -39,4 +39,8 @@ public class DocumentFacade {
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
+    public Flux<DefaultDocument> getDocumentOrderByView() {
+        return documentRepository.findAllByOrderByViewDesc();
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.revision.component.service;
 
-import com.example.daemawiki.domain.revision.dto.response.RevisionDocumentDetailResponse;
+import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.model.mapper.RevisionMapper;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -27,11 +27,11 @@ public class RevisionService {
         this.userFacade = userFacade;
     }
 
-    public Flux<RevisionDocumentDetailResponse> getUpdatedTop10Revision() {
+    public Flux<SimpleDocumentResponse> getUpdatedTop10Revision() {
         List<RevisionType> types = List.of(RevisionType.UPDATE, RevisionType.CREATE);
         return revisionHistoryRepository.findTop10ByTypeInOrderByCreatedDateTimeDesc(types)
                 .distinct(RevisionHistory::getDocumentId)
-                .flatMap(revisionMapper::revisionToRevisionDocumentDetailResponse);
+                .flatMap(revisionMapper::revisionToRevisionSimpleDocumentResponse);
     }
 
     //        17077 92123
