@@ -48,6 +48,7 @@ public class EditUser {
                             }
 
                             document.updateByUserEdit(user.getName(), newGroups);
+                            document.increaseVersion();
 
                             return documentRepository.save(document);
                         }))

@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.document.component.service;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentSearchResult;
 import com.example.daemawiki.domain.document.model.mapper.DocumentMapper;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,9 @@ public class GetDocument {
 
     public Mono<GetDocumentResponse> getDocumentById(String id) {
         return documentFacade.findDocumentById(id)
-                        .flatMap(documentMapper::defaultDocumentToGetResponse);
+                .doOnSuccess(DefaultDocument::increaseView)
+                .flatMap(documentFacade::saveDocument)
+                .flatMap(documentMapper::defaultDocumentToGetResponse);
     }
 
     public Mono<GetDocumentResponse> getDocumentByRandom() {

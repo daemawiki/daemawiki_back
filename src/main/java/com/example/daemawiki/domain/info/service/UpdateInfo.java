@@ -39,6 +39,7 @@ public class UpdateInfo {
                                 return Mono.error(NoEditPermissionUserException.EXCEPTION);
                             }
                             document.setInfo(request.infoList());
+                            document.increaseVersion();
                             return documentRepository.save(document);
                         }))
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()

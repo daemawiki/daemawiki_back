@@ -50,6 +50,7 @@ public class UpdateClub {
 
                                 document.setGroups(newGroups);
                             }
+                            document.increaseVersion();
                         })
                         .flatMap(documentRepository::save))
                 .subscribeOn(scheduler)

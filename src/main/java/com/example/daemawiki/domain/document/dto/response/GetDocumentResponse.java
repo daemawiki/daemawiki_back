@@ -19,6 +19,7 @@ public record GetDocumentResponse(
         List<List<String>> groups,
         DocumentEditor editor,
         List<Contents> content,
+        Integer view,
 
         Integer version
 ) {

@@ -19,6 +19,7 @@ public class DocumentMapper {
                 .groups(document.getGroups())
                 .editor(document.getEditor())
                 .content(document.getContent())
+                .view(document.getView())
                 .version(document.getVersion())
                 .build());
     }
@@ -29,6 +30,7 @@ public class DocumentMapper {
                 .title(document.getTitle())
                 .numberOfUpdate(document.getVersion())
                 .updatedDate(document.getDateTime().getUpdated())
+                .view(document.getView())
                 .build());
     }
 

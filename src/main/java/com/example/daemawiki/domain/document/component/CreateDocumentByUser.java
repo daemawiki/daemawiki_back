@@ -2,9 +2,9 @@ package com.example.daemawiki.domain.document.component;
 
 import com.example.daemawiki.domain.content.model.Contents;
 import com.example.daemawiki.domain.document.component.facade.CreateDocumentFacade;
+import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
-import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -18,18 +18,18 @@ import java.util.List;
 
 @Component
 public class CreateDocumentByUser {
-    private final DocumentRepository documentRepository;
+    private final DocumentFacade documentFacade;
     private final CreateDocumentFacade createDocumentFacade;
     private final RevisionComponent revisionComponent;
 
-    public CreateDocumentByUser(DocumentRepository documentRepository, CreateDocumentFacade createDocumentFacade, RevisionComponent revisionComponent) {
-        this.documentRepository = documentRepository;
+    public CreateDocumentByUser(DocumentFacade documentFacade, CreateDocumentFacade createDocumentFacade, RevisionComponent revisionComponent) {
+        this.documentFacade = documentFacade;
         this.createDocumentFacade = createDocumentFacade;
         this.revisionComponent = revisionComponent;
     }
 
     public Mono<DefaultDocument> execute(User user) {
-        return documentRepository.save(createDocument(user))
+        return documentFacade.saveDocument(createDocument(user))
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.CREATE)
                         .documentId(document.getId())

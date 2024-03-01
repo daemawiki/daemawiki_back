@@ -65,6 +65,7 @@ public class AddContentTable {
                             };
 
                             document.getContent().sort(customComparator);
+                            document.increaseVersion();
 
                             return Mono.just(document);
                         })

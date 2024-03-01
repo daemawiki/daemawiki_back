@@ -4,6 +4,7 @@ import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.DocumentSearchResult;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.global.exception.h404.DocumentNotFoundException;
+import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,6 +32,11 @@ public class DocumentFacade {
 
     public Flux<DefaultDocument> getDocumentOrderByVersion() {
         return documentRepository.findTop10ByOrderByVersionDesc();
+    }
+
+    public Mono<DefaultDocument> saveDocument(DefaultDocument document) {
+        return documentRepository.save(document)
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
 }

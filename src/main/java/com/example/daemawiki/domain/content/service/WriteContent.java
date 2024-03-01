@@ -37,6 +37,8 @@ public class WriteContent {
     public Mono<Void> execute(WriteContentRequest request) {
         return userFacade.currentUser()
                 .flatMap(user -> documentFacade.findDocumentById(request.documentId())
+                        .filter(document -> Objects.equals(document.getVersion(), request.version()))
+                        .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
                         .flatMap(document -> {
                             if (document.getEditor().hasEditPermission(user.getEmail())) {
                                 return Mono.error(NoEditPermissionUserException.EXCEPTION);
@@ -48,13 +50,12 @@ public class WriteContent {
                             if (contentsMap.containsKey(request.index())) {
                                 Contents content = contentsMap.get(request.index());
                                 content.setContent(request.content());
+                                document.increaseVersion();
                                 return Mono.just(document);
                             } else {
                                 return Mono.error(ContentNotFoundException.EXCEPTION);
                             }
                         })
-                        .filter(document -> Objects.equals(document.getVersion(), request.version()))
-                        .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
                         .flatMap(documentRepository::save))
                 .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                         .type(RevisionType.UPDATE)

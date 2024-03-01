@@ -11,6 +11,7 @@ public record SimpleDocumentResponse(
         String title,
         Integer numberOfUpdate,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
-        LocalDateTime updatedDate
+        LocalDateTime updatedDate,
+        Integer view
 ) {
 }

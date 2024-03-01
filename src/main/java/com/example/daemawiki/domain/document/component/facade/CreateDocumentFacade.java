@@ -45,6 +45,7 @@ public class CreateDocumentFacade {
                         .build())
                 .content(Collections.singletonList(request.content()))
                 .groups(request.groups())
+                .view(0)
                 .build();
     }
 

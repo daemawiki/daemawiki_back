@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.eclipse.collections.api.factory.Lists;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -39,8 +38,9 @@ public class DefaultDocument {
 
     private List<Contents> content;
 
-    @Version
-    private Integer version;
+    private Integer view = 0;
+
+    private Integer version = 0;
 
     @Builder
     public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, List<Contents> content) {
@@ -51,6 +51,14 @@ public class DefaultDocument {
         this.groups = groups;
         this.editor = documentEditor;
         this.content = content;
+    }
+
+    public void increaseView() {
+        this.view++;
+    }
+
+    public void increaseVersion() {
+        this.version++;
     }
 
     public void update(String title, DocumentType type, List<List<String>> groups) {

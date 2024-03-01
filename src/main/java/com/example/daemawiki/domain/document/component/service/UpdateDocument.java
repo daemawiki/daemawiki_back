@@ -3,7 +3,6 @@ package com.example.daemawiki.domain.document.component.service;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
-import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -21,14 +20,12 @@ import java.util.Objects;
 public class UpdateDocument {
     private final DocumentFacade documentFacade;
     private final UserFacade userFacade;
-    private final DocumentRepository documentRepository;
     private final GetDocumentType getDocumentType;
     private final RevisionComponent revisionComponent;
 
-    public UpdateDocument(DocumentFacade documentFacade, UserFacade userFacade, DocumentRepository documentRepository, GetDocumentType getDocumentType, RevisionComponent revisionComponent) {
+    public UpdateDocument(DocumentFacade documentFacade, UserFacade userFacade, GetDocumentType getDocumentType, RevisionComponent revisionComponent) {
         this.documentFacade = documentFacade;
         this.userFacade = userFacade;
-        this.documentRepository = documentRepository;
         this.getDocumentType = getDocumentType;
         this.revisionComponent = revisionComponent;
     }
@@ -38,6 +35,9 @@ public class UpdateDocument {
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
                             if (document.getEditor().hasEditPermission(user.getEmail())) {
                                 throw NoEditPermissionUserException.EXCEPTION;
+                            }
+                            if (!Objects.equals(document.getVersion(), request.version())) {
+                                throw VersionMismatchException.EXCEPTION;
                             }
 
                             document.getEditor().update(UserDetailResponse.builder()
@@ -51,12 +51,11 @@ public class UpdateDocument {
                                     request.groups());
 
                             document.getContent().add(request.content());
+                            document.increaseVersion();
 
                             return document;
                         })
-                .filter(document -> Objects.equals(document.getVersion(), request.version()))
-                .switchIfEmpty(Mono.error(VersionMismatchException.EXCEPTION))
-                .flatMap(documentRepository::save)
+                .flatMap(documentFacade::saveDocument)
                 .flatMap(d -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                 .type(RevisionType.UPDATE)
                                 .documentId(d.getId())

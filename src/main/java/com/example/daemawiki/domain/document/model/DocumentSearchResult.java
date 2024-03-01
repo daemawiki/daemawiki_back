@@ -12,4 +12,5 @@ public class DocumentSearchResult {
     private DocumentType type;
     private EditDateTime dateTime;
     private Contents content;
+    private Integer view;
 }
