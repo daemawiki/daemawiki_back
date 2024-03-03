@@ -45,10 +45,6 @@ public class User {
         this.profile = fileResponse;
     }
 
-    public void changePassword(String password) {
-        this.password = password;
-    }
-
     public void update(String name, UserDetail detail) {
         this.name = name;
         this.detail = detail;
