@@ -40,12 +40,6 @@ public class Tokenizer {
                 .compact();
     }
 
-    public Mono<Boolean> verify(String token) {
-        return parse(token)
-                .map(jws -> true)
-                .onErrorReturn(false);
-    }
-
     private Mono<Jws<Claims>> parse(String token) {
         return Mono.fromCallable(() -> Jwts.parser().setSigningKey(secret)
                         .parseClaimsJws(token));
