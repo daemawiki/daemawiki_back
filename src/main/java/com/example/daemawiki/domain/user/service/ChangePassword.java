@@ -45,7 +45,7 @@ public class ChangePassword {
     private Mono<Void> changePasswordAndSaveUser(String newPassword, User user) {
         return encodePassword(newPassword)
                 .flatMap(password -> {
-                    user.changePassword(password);
+                    user.setPassword(password);
                     return userRepository.save(user);
                 })
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
