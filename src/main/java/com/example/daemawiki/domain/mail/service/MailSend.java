@@ -63,10 +63,6 @@ public class MailSend {
         return Mono.when(sendMailMono, saveAuthCodeMono, userMono).then();
     }
 
-    private Mono<AuthCode> getAuthCode(String mail) {
-        return codeRepository.findByMail(mail);
-    }
-
     private Mono<Void> sendMail(String to, String authCode) {
         return Mono.fromRunnable(() ->
                         CompletableFuture.runAsync(() -> {
