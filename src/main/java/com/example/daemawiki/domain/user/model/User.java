@@ -41,10 +41,6 @@ public class User {
         this.documentId = documentId;
     }
 
-    public void editProfile(File fileResponse) {
-        this.profile = fileResponse;
-    }
-
     public void update(String name, UserDetail detail) {
         this.name = name;
         this.detail = detail;

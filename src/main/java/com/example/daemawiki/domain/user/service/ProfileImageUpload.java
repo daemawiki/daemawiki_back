@@ -24,7 +24,7 @@ public class ProfileImageUpload {
     public Mono<Void> execute(FilePart filePart) {
         return userFacade.currentUser()
                 .zipWith(s3UploadObject.uploadObject(filePart, "profile"), (user, file) -> {
-                    user.editProfile(file);
+                    user.setProfile(file);
                     return user;
                 })
                 .flatMap(userRepository::save)
