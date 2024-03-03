@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException;
@@ -38,6 +39,11 @@ public class UpdateInfo {
                             if (document.getEditor().hasEditPermission(user.getEmail())) {
                                 return Mono.error(NoEditPermissionUserException.EXCEPTION);
                             }
+                            document.getEditor().setUpdatedUser(UserDetailResponse.builder()
+                                    .id(user.getId())
+                                    .name(user.getName())
+                                    .profile(user.getProfile())
+                                    .build());
                             document.setInfo(request.infoList());
                             document.increaseVersion();
                             return documentRepository.save(document);

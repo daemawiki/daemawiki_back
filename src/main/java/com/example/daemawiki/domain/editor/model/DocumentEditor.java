@@ -18,10 +18,6 @@ public class DocumentEditor {
 
     private List<Editor> canEdit;
 
-    public void update(UserDetailResponse updatedUser) {
-        this.updatedUser = updatedUser;
-    }
-
     public boolean hasEditPermission(String email) {
         return this.canEdit.stream().noneMatch(editor -> editor.user().equals(email));
     }

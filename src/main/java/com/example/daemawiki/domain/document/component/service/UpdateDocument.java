@@ -40,7 +40,7 @@ public class UpdateDocument {
                                 throw VersionMismatchException.EXCEPTION;
                             }
 
-                            document.getEditor().update(UserDetailResponse.builder()
+                            document.getEditor().setUpdatedUser(UserDetailResponse.builder()
                                     .id(user.getId())
                                     .name(user.getName())
                                     .profile(user.getProfile())
