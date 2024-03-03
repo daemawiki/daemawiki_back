@@ -48,8 +48,7 @@ public class Tokenizer {
 
     private Mono<Jws<Claims>> parse(String token) {
         return Mono.fromCallable(() -> Jwts.parser().setSigningKey(secret)
-                        .parseClaimsJws(token))
-                .onErrorMap(e -> InvalidTokenException.EXCEPTION);
+                        .parseClaimsJws(token));
     }
 
     private Mono<Claims> parseClaims(String token) {
