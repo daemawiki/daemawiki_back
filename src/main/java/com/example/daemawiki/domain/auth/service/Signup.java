@@ -2,7 +2,6 @@ package com.example.daemawiki.domain.auth.service;
 
 import com.example.daemawiki.domain.auth.dto.request.SignupRequest;
 import com.example.daemawiki.domain.document.component.CreateDocumentByUser;
-import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.file.model.DefaultProfile;
 import com.example.daemawiki.domain.mail.repository.AuthMailRepository;
 import com.example.daemawiki.domain.user.model.User;
@@ -26,9 +25,8 @@ public class Signup {
     private final GetMajorType getMajorType;
     private final CreateDocumentByUser createDocumentByUser;
     private final DefaultProfile defaultProfile;
-    private final DocumentRepository documentRepository;
 
-    public Signup(UserRepository userRepository,AuthMailRepository authMailRepository, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentByUser createDocumentByUser, DefaultProfile defaultProfile, DocumentRepository documentRepository) {
+    public Signup(UserRepository userRepository,AuthMailRepository authMailRepository, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentByUser createDocumentByUser, DefaultProfile defaultProfile) {
         this.userRepository = userRepository;
         this.authMailRepository = authMailRepository;
         this.passwordEncoder = passwordEncoder;
@@ -36,7 +34,6 @@ public class Signup {
         this.getMajorType = getMajorType;
         this.createDocumentByUser = createDocumentByUser;
         this.defaultProfile = defaultProfile;
-        this.documentRepository = documentRepository;
     }
 
     public Mono<Void> execute(SignupRequest request) {
