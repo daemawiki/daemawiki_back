@@ -82,12 +82,12 @@ public class AddContentTable {
 
                     return Mono.just(document);
                 })
-                .flatMap(documentFacade::saveDocument)
-                .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                        .type(RevisionType.UPDATE)
-                        .documentId(request.documentId())
-                        .title(document.getTitle())
-                        .build()))
+                .flatMap(document -> Mono.when(documentFacade.saveDocument(document),
+                            revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                                    .type(RevisionType.UPDATE)
+                                    .documentId(request.documentId())
+                                    .title(document.getTitle())
+                                    .build())))
                 .onErrorMap(e -> e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
     }
 
