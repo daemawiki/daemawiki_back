@@ -43,13 +43,13 @@ public class DocumentContentController {
 
     @PatchMapping("/remove")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteContent(@RequestBody DeleteContentRequest request, @NotBlank @PathVariable String documentId) {
+    public Mono<Void> deleteContent(@Valid @RequestBody DeleteContentRequest request, @NotBlank @PathVariable String documentId) {
         return deleteContentService.execute(request, documentId);
     }
 
     @PatchMapping("/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> editContentTitle(@RequestBody EditContentTableTitleRequest request, @PathVariable String documentId) {
+    public Mono<Void> editContentTitle(@Valid @RequestBody EditContentTableTitleRequest request, @PathVariable String documentId) {
         return editContentTableTitleService.execute(request, documentId);
     }
 
