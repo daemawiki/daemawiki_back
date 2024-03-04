@@ -50,13 +50,13 @@ public class EditUser {
                             document.updateByUserEdit(user.getName(), newGroups);
                             document.increaseVersion();
 
-                            return documentRepository.save(document);
-                        }))
-                .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                        .type(RevisionType.UPDATE)
-                        .documentId(document.getId())
-                        .title(document.getTitle())
-                        .build()));
+                            return documentRepository.save(document)
+                                    .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                                            .type(RevisionType.UPDATE)
+                                            .documentId(document.getId())
+                                            .title(document.getTitle())
+                                            .build()));
+                        }));
     }
 
 
