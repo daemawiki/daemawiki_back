@@ -53,8 +53,8 @@ public class UpdateInfo {
 
                     document.setInfo(request.infoList());
 
-                    document.increaseVersion()
-                    ;
+                    document.increaseVersion();
+                    
                     return documentRepository.save(document)
                             .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                     .type(RevisionType.UPDATE)
