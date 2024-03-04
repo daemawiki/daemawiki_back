@@ -2,9 +2,11 @@ package com.example.daemawiki.domain.content.api;
 
 import com.example.daemawiki.domain.content.dto.AddContentRequest;
 import com.example.daemawiki.domain.content.dto.DeleteContentRequest;
+import com.example.daemawiki.domain.content.dto.EditContentTableTitleRequest;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
 import com.example.daemawiki.domain.content.service.AddContentTable;
 import com.example.daemawiki.domain.content.service.DeleteContent;
+import com.example.daemawiki.domain.content.service.EditContentTableTitle;
 import com.example.daemawiki.domain.content.service.WriteContent;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -18,11 +20,13 @@ public class DocumentContentController {
     private final WriteContent writeContentService;
     private final AddContentTable addContentTableService;
     private final DeleteContent deleteContentService;
+    private final EditContentTableTitle editContentTableTitleService;
 
-    public DocumentContentController(WriteContent writeContentService, AddContentTable addContentTableService, DeleteContent deleteContentService) {
+    public DocumentContentController(WriteContent writeContentService, AddContentTable addContentTableService, DeleteContent deleteContentService, EditContentTableTitle editContentTableTitleService) {
         this.writeContentService = writeContentService;
         this.addContentTableService = addContentTableService;
         this.deleteContentService = deleteContentService;
+        this.editContentTableTitleService = editContentTableTitleService;
     }
 
     @PatchMapping
@@ -42,5 +46,11 @@ public class DocumentContentController {
     public Mono<Void> deleteContent(@RequestBody DeleteContentRequest request, @NotBlank @PathVariable String documentId) {
         return deleteContentService.execute(request, documentId);
     }
-    
+
+    @PatchMapping("/edit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> editContentTitle(@RequestBody EditContentTableTitleRequest request, @PathVariable String documentId) {
+        return editContentTableTitleService.execute(request, documentId);
+    }
+
 }
