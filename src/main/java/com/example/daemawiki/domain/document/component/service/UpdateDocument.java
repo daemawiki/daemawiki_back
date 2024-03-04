@@ -55,11 +55,12 @@ public class UpdateDocument {
 
                             return document;
                         })
-                .flatMap(document -> Mono.when(documentFacade.saveDocument(document), revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                        .type(RevisionType.UPDATE)
-                        .documentId(document.getId())
-                        .title(document.getTitle())
-                        .build())))
+                .flatMap(document -> documentFacade.saveDocument(document)
+                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                                        .type(RevisionType.UPDATE)
+                                        .documentId(document.getId())
+                                        .title(document.getTitle())
+                                        .build())))
                 .onErrorMap(e -> e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
     }
 

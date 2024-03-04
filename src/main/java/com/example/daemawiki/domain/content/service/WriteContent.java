@@ -68,12 +68,12 @@ public class WriteContent {
                         return Mono.error(ContentNotFoundException.EXCEPTION);
                     }
                 })
-                .flatMap(document -> Mono.when(documentFacade.saveDocument(document),
-                        revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                .type(RevisionType.UPDATE)
-                                .documentId(documentId)
-                                .title(document.getTitle())
-                                .build())))
+                .flatMap(document -> documentFacade.saveDocument(document)
+                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                                        .type(RevisionType.UPDATE)
+                                        .documentId(documentId)
+                                        .title(document.getTitle())
+                                        .build())))
                 .onErrorMap(e -> e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
     }
 

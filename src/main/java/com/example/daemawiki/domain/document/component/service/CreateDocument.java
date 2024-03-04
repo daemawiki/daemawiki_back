@@ -28,11 +28,12 @@ public class CreateDocument {
     public Mono<Void> execute(SaveDocumentRequest request) {
         return userFacade.currentUser()
                 .map(user -> createDocumentFacade.execute(request, user))
-                .flatMap(document -> Mono.when(documentFacade.saveDocument(document), revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                        .type(RevisionType.CREATE)
-                        .documentId(document.getId())
-                        .title(document.getTitle())
-                        .build())))
+                .flatMap(document -> documentFacade.saveDocument(document)
+                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                                        .type(RevisionType.CREATE)
+                                        .documentId(document.getId())
+                                        .title(document.getTitle())
+                                        .build())))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
