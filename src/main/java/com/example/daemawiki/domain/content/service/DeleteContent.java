@@ -41,7 +41,7 @@ public class DeleteContent {
                     document.getContent().removeIf(c -> c.getIndex().equals(request.index()));
                     return documentFacade.saveDocument(document)
                             .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                    .type(RevisionType.DELETE)
+                                    .type(RevisionType.UPDATE)
                                     .documentId(documentId)
                                     .title(document.getTitle())
                                     .build()));
