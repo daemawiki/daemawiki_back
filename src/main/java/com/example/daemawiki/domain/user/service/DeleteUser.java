@@ -30,8 +30,8 @@ public class DeleteUser {
                     String title = user.getName();
 
                     return Mono.when(documentRepository.deleteById(documentId),
-                            userRepository.delete(user),
-                            revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                            userRepository.delete(user))
+                            .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                     .type(RevisionType.DELETE)
                                     .documentId(documentId)
                                     .title(title)
