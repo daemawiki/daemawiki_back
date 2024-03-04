@@ -30,7 +30,7 @@ public class EditContentTableTitle {
                     commons.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
                     return document;
                 })
-                .flatMap(document -> {
+                .map(document -> {
                     document.getContent()
                             .stream()
                             .filter(c -> c.getIndex().equals(request.index()))
@@ -39,13 +39,15 @@ public class EditContentTableTitle {
 
                     document.increaseVersion();
 
-                    return documentFacade.saveDocument(document)
-                            .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                    .type(RevisionType.UPDATE)
-                                    .documentId(documentId)
-                                    .title(document.getTitle())
-                                    .build()));
-                });
+                    return document;
+                })
+                .flatMap(document -> documentFacade.saveDocument(document)
+                        .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                                .type(RevisionType.UPDATE)
+                                .documentId(documentId)
+                                .title(document.getTitle())
+                                .build()))
+                );
     }
 
 }
