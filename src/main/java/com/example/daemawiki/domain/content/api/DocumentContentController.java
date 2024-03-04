@@ -42,6 +42,5 @@ public class DocumentContentController {
     public Mono<Void> deleteContent(@RequestBody DeleteContentRequest request, @NotBlank @PathVariable String documentId) {
         return deleteContentService.execute(request, documentId);
     }
-
-
+    
 }
