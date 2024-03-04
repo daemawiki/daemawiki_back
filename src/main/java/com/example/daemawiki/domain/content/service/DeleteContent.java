@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 
 @Service
-public class DeleteContentTable {
+public class DeleteContent {
     private final DocumentFacade documentFacade;
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
 
-    public DeleteContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade) {
+    public DeleteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
