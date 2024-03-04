@@ -1,7 +1,6 @@
 package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
-import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -20,14 +19,12 @@ public class EditUser {
     private final UserFacade userFacade;
     private final DocumentFacade documentFacade;
     private final UserRepository userRepository;
-    private final DocumentRepository documentRepository;
     private final RevisionComponent revisionComponent;
 
-    public EditUser(UserFacade userFacade, DocumentFacade documentFacade, UserRepository userRepository, DocumentRepository documentRepository, RevisionComponent revisionComponent) {
+    public EditUser(UserFacade userFacade, DocumentFacade documentFacade, UserRepository userRepository, RevisionComponent revisionComponent) {
         this.userFacade = userFacade;
         this.documentFacade = documentFacade;
         this.userRepository = userRepository;
-        this.documentRepository = documentRepository;
         this.revisionComponent = revisionComponent;
     }
 
@@ -50,7 +47,7 @@ public class EditUser {
                             document.updateByUserEdit(user.getName(), newGroups);
                             document.increaseVersion();
 
-                            return documentRepository.save(document)
+                            return documentFacade.saveDocument(document)
                                     .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                             .type(RevisionType.UPDATE)
                                             .documentId(document.getId())
