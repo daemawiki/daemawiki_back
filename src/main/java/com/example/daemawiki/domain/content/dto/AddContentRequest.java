@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record AddContentRequest(
-        @NotBlank(message = "문서의 id를 입력해주세요.")
-        String documentId,
         @NotBlank(message = "추가할 목차의 인덱스를 입력해주세요.")
         String index,
         @NotBlank(message = "추가할 목차의 제목을 입력해주세요.")

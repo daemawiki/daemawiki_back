@@ -35,9 +35,9 @@ public class WriteContent {
         this.userFacade = userFacade;
     }
 
-    public Mono<Void> execute(WriteContentRequest request) {
+    public Mono<Void> execute(WriteContentRequest request, String documentId) {
         return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(request.documentId()), (user, document) -> {
+                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
                     if (!Objects.equals(document.getVersion(), request.version())) {
                         throw VersionMismatchException.EXCEPTION;
                     }
@@ -71,7 +71,7 @@ public class WriteContent {
                 .flatMap(document -> Mono.when(documentFacade.saveDocument(document),
                         revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                 .type(RevisionType.UPDATE)
-                                .documentId(request.documentId())
+                                .documentId(documentId)
                                 .title(document.getTitle())
                                 .build())))
                 .onErrorMap(e -> e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
