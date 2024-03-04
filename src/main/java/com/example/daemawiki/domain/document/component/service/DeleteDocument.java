@@ -32,7 +32,7 @@ public class DeleteDocument {
                     if (document.getType() == DocumentType.STUDENT) {
                         throw StudentDocumentDeleteFailedException.EXCEPTION;
                     }
-                    else if (!Objects.equals(document.getEditor().getCreatedUser().id(), user.getId())) {
+                    if (!Objects.equals(document.getEditor().getCreatedUser().id(), user.getId())) {
                         throw NoPermissionUserException.EXCEPTION;
                     }
                     return document;
