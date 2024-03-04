@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.content.service;
 
+import com.example.daemawiki.domain.common.Commons;
 import com.example.daemawiki.domain.content.dto.AddContentRequest;
 import com.example.daemawiki.domain.content.model.Contents;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
@@ -18,29 +19,26 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 @Service
 public class AddContentTable {
     private final DocumentFacade documentFacade;
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
+    private final Commons commons;
 
-    public AddContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade) {
+    public AddContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, Commons commons) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
+        this.commons = commons;
     }
 
     public Mono<Void> execute(AddContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                    if (!Objects.equals(document.getVersion(), request.version())) {
-                        throw VersionMismatchException.EXCEPTION;
-                    }
-                    if (document.getEditor().hasEditPermission(user.getEmail())) {
-                        throw NoEditPermissionUserException.EXCEPTION;
-                    }
+                    commons.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
+
                     return Tuples.of(document, user);
                 })
                 .flatMap(tuple -> {

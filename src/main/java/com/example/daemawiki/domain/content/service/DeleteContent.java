@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.content.service;
 
+import com.example.daemawiki.domain.common.Commons;
 import com.example.daemawiki.domain.content.dto.DeleteContentRequest;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -12,29 +13,24 @@ import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
-
 @Service
 public class DeleteContent {
     private final DocumentFacade documentFacade;
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
+    private final Commons commons;
 
-    public DeleteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade) {
+    public DeleteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, Commons commons) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
+        this.commons = commons;
     }
 
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                    if (!Objects.equals(document.getVersion(), request.version())) {
-                        throw VersionMismatchException.EXCEPTION;
-                    }
-                    if (document.getEditor().hasEditPermission(user.getEmail())) {
-                        throw NoEditPermissionUserException.EXCEPTION;
-                    }
+                    commons.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
                     return document;
                 })
                 .flatMap(document -> {
