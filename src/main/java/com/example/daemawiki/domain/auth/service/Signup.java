@@ -55,7 +55,7 @@ public class Signup {
                                                     .profile(defaultProfile.defaultProfile())
                                                     .detail(UserDetail.builder()
                                                             .gen(request.gen())
-                                                            .major(getMajorType.execute(request.major()))
+                                                            .major(getMajorType.execute(request.major().toLowerCase()))
                                                             .club("*")
                                                             .build())
                                                     .build();
