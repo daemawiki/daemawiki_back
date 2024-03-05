@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.content.service;
 
-import com.example.daemawiki.domain.common.Commons;
+import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.AddContentRequest;
 import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
@@ -25,19 +25,19 @@ public class AddContentTable {
     private final DocumentFacade documentFacade;
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
-    private final Commons commons;
+    private final UserFilter userFilter;
 
-    public AddContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, Commons commons) {
+    public AddContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
-        this.commons = commons;
+        this.userFilter = userFilter;
     }
 
     public Mono<Void> execute(AddContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                    commons.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
+                    userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
 
                     return Tuples.of(document, user);
                 })

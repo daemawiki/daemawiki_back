@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.component.service;
 
-import com.example.daemawiki.domain.common.Commons;
+import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.type.service.GetDocumentType;
@@ -21,20 +21,20 @@ public class UpdateDocument {
     private final UserFacade userFacade;
     private final GetDocumentType getDocumentType;
     private final RevisionComponent revisionComponent;
-    private final Commons commons;
+    private final UserFilter userFilter;
 
-    public UpdateDocument(DocumentFacade documentFacade, UserFacade userFacade, GetDocumentType getDocumentType, RevisionComponent revisionComponent, Commons commons) {
+    public UpdateDocument(DocumentFacade documentFacade, UserFacade userFacade, GetDocumentType getDocumentType, RevisionComponent revisionComponent, UserFilter userFilter) {
         this.documentFacade = documentFacade;
         this.userFacade = userFacade;
         this.getDocumentType = getDocumentType;
         this.revisionComponent = revisionComponent;
-        this.commons = commons;
+        this.userFilter = userFilter;
     }
 
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                            commons.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
+                            userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
 
                             document.getEditor().setUpdatedUser(UserDetailResponse.builder()
                                     .id(user.getId())

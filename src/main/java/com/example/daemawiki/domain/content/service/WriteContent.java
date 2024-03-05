@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.content.service;
 
-import com.example.daemawiki.domain.common.Commons;
+import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
 import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
@@ -28,19 +28,19 @@ public class WriteContent {
     private final DocumentFacade documentFacade;
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
-    private final Commons commons;
+    private final UserFilter userFilter;
 
-    public WriteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, Commons commons) {
+    public WriteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
-        this.commons = commons;
+        this.userFilter = userFilter;
     }
 
     public Mono<Void> execute(WriteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                    commons.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
+                    userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
                     return Tuples.of(user, document);
                 })
                 .flatMap(tuple -> {

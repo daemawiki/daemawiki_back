@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class Commons {
+public class UserFilter {
 
     public void userPermissionAndDocumentVersionCheck(DefaultDocument document, String userEmail, Integer requestVersion) {
         if (document.getEditor().hasEditPermission(userEmail)) {
