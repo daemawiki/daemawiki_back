@@ -5,7 +5,6 @@ import com.example.daemawiki.domain.revision.model.RevisionHistory;
 import com.example.daemawiki.domain.revision.model.mapper.RevisionMapper;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.revision.repository.RevisionHistoryRepository;
-import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -18,13 +17,11 @@ public class RevisionService {
     private final RevisionHistoryRepository revisionHistoryRepository;
     private final RevisionMapper revisionMapper;
     private final Scheduler scheduler;
-    private final UserFacade userFacade;
 
-    public RevisionService(RevisionHistoryRepository revisionHistoryRepository, RevisionMapper revisionMapper, Scheduler scheduler, UserFacade userFacade) {
+    public RevisionService(RevisionHistoryRepository revisionHistoryRepository, RevisionMapper revisionMapper, Scheduler scheduler) {
         this.revisionHistoryRepository = revisionHistoryRepository;
         this.revisionMapper = revisionMapper;
         this.scheduler = scheduler;
-        this.userFacade = userFacade;
     }
 
     public Flux<SimpleDocumentResponse> getUpdatedTop10Revision() {
