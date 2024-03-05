@@ -43,7 +43,7 @@ public class UpdateDocument {
                                     .build());
 
                             document.update(request.title(),
-                                    getDocumentType.execute(request.type()),
+                                    getDocumentType.execute(request.type().toLowerCase()),
                                     request.groups());
 
                             document.getContent().add(request.content());

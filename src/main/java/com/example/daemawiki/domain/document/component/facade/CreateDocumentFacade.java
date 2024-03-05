@@ -30,7 +30,7 @@ public class CreateDocumentFacade {
 
         return DefaultDocument.builder()
                 .title(request.title())
-                .type(getDocumentType.execute(request.type()))
+                .type(getDocumentType.execute(request.type().toLowerCase()))
                 .dateTime(EditDateTime.builder()
                         .created(LocalDateTime.now())
                         .updated(LocalDateTime.now())
