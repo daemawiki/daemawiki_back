@@ -46,7 +46,7 @@ public class UpdateDocument {
                                     getDocumentType.execute(request.type().toLowerCase()),
                                     request.groups());
 
-                            document.getContent().add(request.content());
+                            document.getContents().add(request.content());
                             document.increaseVersion();
 
                             return document;

@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.content.service;
 
 import com.example.daemawiki.domain.common.Commons;
 import com.example.daemawiki.domain.content.dto.AddContentRequest;
-import com.example.daemawiki.domain.content.model.Contents;
+import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -45,15 +45,15 @@ public class AddContentTable {
                     DefaultDocument document = tuple.getT1();
                     User user = tuple.getT2();
 
-                    Contents newContent = Contents.builder()
+                    Content newContent = Content.builder()
                             .index(request.index())
                             .title(request.title())
-                            .content("빈 내용")
+                            .detail("빈 내용")
                             .build();
 
-                    document.getContent().add(newContent);
+                    document.getContents().add(newContent);
 
-                    Comparator<Contents> customComparator = (c1, c2) -> {
+                    Comparator<Content> customComparator = (c1, c2) -> {
                         String[] index1 = c1.getIndex().split("\\.");
                         String[] index2 = c2.getIndex().split("\\.");
 
@@ -75,7 +75,7 @@ public class AddContentTable {
                             .profile(user.getProfile())
                             .build());
 
-                    document.getContent().sort(customComparator);
+                    document.getContents().sort(customComparator);
                     document.increaseVersion();
 
                     return Mono.just(document);

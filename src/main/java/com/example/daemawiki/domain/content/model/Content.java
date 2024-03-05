@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Contents {
+public class Content {
 
     private String index;
 
     private String title;
 
-    private String content;
+    private String detail;
 
 }

@@ -12,7 +12,7 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
             "{ $unwind: '$content' }",
             "{ $match: { $or: [ " +
                     "{ 'title': { $regex: '?0', $options: 'i' } }, " +
-                    "{ 'content.content': { $regex: '?0', $options: 'i' } }" +
+                    "{ 'contents.detail': { $regex: '?0', $options: 'i' } }" +
                     "] } }"
     })
     Flux<DocumentSearchResult> findByTextContaining(String text);

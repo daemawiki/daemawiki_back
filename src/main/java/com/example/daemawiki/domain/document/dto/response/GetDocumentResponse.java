@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.dto.response;
 
-import com.example.daemawiki.domain.content.model.Contents;
+import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.editor.model.DocumentEditor;
 import com.example.daemawiki.domain.document.model.type.DocumentType;
 import com.example.daemawiki.domain.info.model.Info;
@@ -18,7 +18,7 @@ public record GetDocumentResponse(
         List<Info> info,
         List<List<String>> groups,
         DocumentEditor editor,
-        List<Contents> content,
+        List<Content> content,
         Integer view,
 
         Integer version

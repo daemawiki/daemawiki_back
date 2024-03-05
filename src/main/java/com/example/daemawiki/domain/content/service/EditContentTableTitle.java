@@ -31,7 +31,7 @@ public class EditContentTableTitle {
                     return document;
                 })
                 .map(document -> {
-                    document.getContent()
+                    document.getContents()
                             .stream()
                             .filter(c -> c.getIndex().equals(request.index()))
                             .findFirst()

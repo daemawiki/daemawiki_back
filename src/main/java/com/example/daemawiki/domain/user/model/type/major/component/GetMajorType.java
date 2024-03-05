@@ -23,6 +23,7 @@ public class GetMajorType {
             case "embedded" -> MajorType.EMBEDDED;
             case "dba" -> MajorType.DBA;
             case "fullstack" -> MajorType.FULLSTACK;
+            case "flutter" -> MajorType.FLUTTER;
 
             case null, default -> MajorType.CLEANER;
         };

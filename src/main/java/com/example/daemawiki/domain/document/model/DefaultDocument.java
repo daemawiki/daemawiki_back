@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.model;
 
-import com.example.daemawiki.domain.content.model.Contents;
+import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.model.type.DocumentType;
 import com.example.daemawiki.domain.editor.model.DocumentEditor;
 import com.example.daemawiki.domain.info.model.Info;
@@ -36,21 +36,21 @@ public class DefaultDocument {
 
     private DocumentEditor editor;
 
-    private List<Contents> content;
+    private List<Content> contents;
 
     private Integer view = 0;
 
     private Integer version = 0;
 
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, List<Contents> content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, List<Content> content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
         this.info = info;
         this.groups = groups;
         this.editor = documentEditor;
-        this.content = content;
+        this.contents = content;
     }
 
     public void increaseView() {

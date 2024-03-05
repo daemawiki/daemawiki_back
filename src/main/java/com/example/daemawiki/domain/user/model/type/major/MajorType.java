@@ -21,6 +21,8 @@ public enum MajorType {
     CLEANER("청소부"),
     GITOPS("깃옵스"),
     DBA("데이터베이스-관리자"),
+    FLUTTER("플러터"),
+    GUARD("지킴이"),
     FULLSTACK("풀스택");
 
     private final String major;

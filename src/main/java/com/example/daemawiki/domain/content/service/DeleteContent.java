@@ -34,7 +34,7 @@ public class DeleteContent {
                     return document;
                 })
                 .flatMap(document -> {
-                    document.getContent().removeIf(c -> c.getIndex().equals(request.index()));
+                    document.getContents().removeIf(c -> c.getIndex().equals(request.index()));
                     return documentFacade.saveDocument(document)
                             .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                     .type(RevisionType.UPDATE)

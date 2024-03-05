@@ -1,6 +1,6 @@
 package com.example.daemawiki.domain.document.component;
 
-import com.example.daemawiki.domain.content.model.Contents;
+import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.component.facade.CreateDocumentFacade;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
@@ -48,10 +48,10 @@ public class CreateDocumentByUser {
         return createDocumentFacade.execute(SaveDocumentRequest.builder()
                         .title(user.getName())
                         .type("student")
-                        .content(Contents.builder()
+                        .content(Content.builder()
                                 .index("1")
                                 .title("개요")
-                                .content("회원가입을 통해 자동 생성된 문서입니다.")
+                                .detail("회원가입을 통해 자동 생성된 문서입니다.")
                                 .build())
                         .groups(groups)
                 .build(), user);

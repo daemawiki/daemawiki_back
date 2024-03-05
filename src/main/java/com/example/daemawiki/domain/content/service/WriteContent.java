@@ -2,7 +2,7 @@ package com.example.daemawiki.domain.content.service;
 
 import com.example.daemawiki.domain.common.Commons;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
-import com.example.daemawiki.domain.content.model.Contents;
+import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -47,12 +47,12 @@ public class WriteContent {
                     DefaultDocument document = tuple.getT2();
                     User user = tuple.getT1();
 
-                    Map<String, Contents> contentsMap = document.getContent().stream()
-                            .collect(Collectors.toMap(Contents::getIndex, Function.identity()));
+                    Map<String, Content> contentsMap = document.getContents().stream()
+                            .collect(Collectors.toMap(Content::getIndex, Function.identity()));
 
                     if (contentsMap.containsKey(request.index())) {
-                        Contents content = contentsMap.get(request.index());
-                        content.setContent(request.content());
+                        Content content = contentsMap.get(request.index());
+                        content.setDetail(request.content());
                         document.getEditor().setUpdatedUser(UserDetailResponse.builder()
                                 .id(user.getId())
                                 .name(user.getName())
