@@ -14,6 +14,6 @@ public interface RevisionHistoryRepository extends ReactiveMongoRepository<Revis
 
     Flux<RevisionHistory> findAllByDocumentId(String id);
 
-    Flux<RevisionHistory> findAllByEditorOrderByCreatedDateTimeDesc(String editor);
+    Flux<RevisionHistory> findAllByEditor_IdOrderByCreatedDateTimeDesc(String editor);
 
 }
