@@ -63,11 +63,4 @@ public class RevisionService {
         ).subscribeOn(scheduler);
     }
 
-    public Flux<RevisionHistory> getAllRevisionByCurrentUser(String lastRevisionId) {
-        return userFacade.currentUser()
-                .map(user -> getAllRevisionByUser(user.getId(), lastRevisionId))
-                .flatMap(Flux::collectList)
-                .flatMapMany(Flux::fromIterable);
-    }
-
 }
