@@ -54,7 +54,7 @@ public class GetUser {
         Query query = new Query();
 
         if(gen != 0) query.addCriteria(Criteria.where("detail.gen").is(gen));
-        if(major != null && !major.isEmpty()) query.addCriteria(Criteria.where("detail.major").is(major));
+        if(major != null && !major.isEmpty()) query.addCriteria(Criteria.where("detail.major").is(getMajorType.execute(major.toLowerCase())));
         if(club != null && !club.isEmpty()) query.addCriteria(Criteria.where("detail.club").is(club));
 
         return reactiveMongoTemplate.find(query, User.class)
