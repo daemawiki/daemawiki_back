@@ -32,7 +32,7 @@ public class EditContentTableTitle {
                 })
                 .map(document -> {
                     document.getContents()
-                            .stream()
+                            .parallelStream()
                             .filter(c -> c.getIndex().equals(request.index()))
                             .findFirst()
                             .ifPresent(contents -> contents.setTitle(request.newTitle()));
