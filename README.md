@@ -2,7 +2,8 @@
 
 <s>같이 태국 갈 팟 구함</s>
 
-
+<div align="center">
+  
 ## People and Roles
 | Developer |
 | :-: |
@@ -11,6 +12,8 @@
 
 ## Product Spec
 <img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/bdfb06d5-2953-40e5-bd65-9efab7a77713">
+
+</div>
 
 대마위키 백엔드 성능 개선 블로그
 
