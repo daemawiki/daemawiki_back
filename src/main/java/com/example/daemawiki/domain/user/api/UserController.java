@@ -65,6 +65,11 @@ public class UserController {
         return getUser.getUserByClub(club);
     }
 
+    @GetMapping("/find")
+    public Flux<GetUserResponse> getUser(@RequestParam Integer gen, @RequestParam String major, @RequestParam String club) {
+        return getUser.getUserByGenAndMajorAndClub(gen, major, club);
+    }
+
     @GetMapping
     public Mono<GetUserResponse> getCurrentUser() {
         return getUser.getCurrentUser();
