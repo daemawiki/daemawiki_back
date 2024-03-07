@@ -63,8 +63,8 @@ public class GetUser {
         if(club != null && !club.isEmpty()) {
             query.addCriteria(Criteria.where("detail.club").is(club));
         }
-        if (sort != null && !sort.isEmpty() && (orderBy != null && !orderBy.isEmpty())) {
-                if (sort.equalsIgnoreCase("desc")) {
+        if ((orderBy != null && !orderBy.isEmpty())) {
+                if (sort != null &&  sort.equalsIgnoreCase("desc")) {
                     query.with(Sort.by(Sort.Direction.DESC, orderBy));
                 } else {
                     query.with(Sort.by(Sort.Direction.ASC, orderBy));

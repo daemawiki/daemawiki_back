@@ -7,6 +7,7 @@ import com.example.daemawiki.domain.user.service.ChangePassword;
 import com.example.daemawiki.domain.user.service.GetUser;
 import com.example.daemawiki.domain.user.service.ProfileImageUpload;
 import com.example.daemawiki.domain.user.service.UpdateClub;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @GetMapping("/find")
-    public Flux<GetUserResponse> getUser(@RequestParam Integer gen, @RequestParam String major, @RequestParam String club, @RequestParam String orderBy, @RequestParam String sort) {
+    public Flux<GetUserResponse> getUser(@RequestParam Integer gen, @RequestParam String major, @RequestParam String club, @RequestParam String orderBy, @Nullable @RequestParam String sort) {
         return getUser.getUserByGenAndMajorAndClub(gen, major, club, orderBy, sort);
     }
 
