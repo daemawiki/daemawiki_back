@@ -36,7 +36,7 @@ public class DefaultDocument {
 
     private DocumentEditor editor;
 
-    private List<Content> contents;
+    private List<Content> contents = Lists.mutable.of();
 
     private Integer view = 0;
 
