@@ -66,8 +66,8 @@ public class UserController {
     }
 
     @GetMapping("/find")
-    public Flux<GetUserResponse> getUser(@RequestParam Integer gen, @RequestParam String major, @RequestParam String club) {
-        return getUser.getUserByGenAndMajorAndClub(gen, major, club);
+    public Flux<GetUserResponse> getUser(@RequestParam Integer gen, @RequestParam String major, @RequestParam String club, @RequestParam String orderBy, @RequestParam String sort) {
+        return getUser.getUserByGenAndMajorAndClub(gen, major, club, orderBy, sort);
     }
 
     @GetMapping

@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/users/generation/{generation}").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/users/major/{major}").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/users/club/{club}").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/users/find").permitAll()
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)

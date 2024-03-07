@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.user.model.mapper.UserMapper;
 import com.example.daemawiki.domain.user.model.type.major.component.GetMajorType;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -50,12 +51,25 @@ public class GetUser {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    public Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club) {
+    public Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort) {
         Query query = new Query();
 
-        if(gen != 0) query.addCriteria(Criteria.where("detail.gen").is(gen));
-        if(major != null && !major.isEmpty()) query.addCriteria(Criteria.where("detail.major").is(getMajorType.execute(major.toLowerCase())));
-        if(club != null && !club.isEmpty()) query.addCriteria(Criteria.where("detail.club").is(club));
+        if(gen != 0) {
+            query.addCriteria(Criteria.where("detail.gen").is(gen));
+        }
+        if(major != null && !major.isEmpty()) {
+            query.addCriteria(Criteria.where("detail.major").is(getMajorType.execute(major.toLowerCase())));
+        }
+        if(club != null && !club.isEmpty()) {
+            query.addCriteria(Criteria.where("detail.club").is(club));
+        }
+        if (sort != null && !sort.isEmpty() && (orderBy != null && !orderBy.isEmpty())) {
+                if (sort.equalsIgnoreCase("desc")) {
+                    query.with(Sort.by(Sort.Direction.DESC, orderBy));
+                } else {
+                    query.with(Sort.by(Sort.Direction.ASC, orderBy));
+                }
+        }
 
         return reactiveMongoTemplate.find(query, User.class)
                 .flatMap(userMapper::userToGetUserResponse);
