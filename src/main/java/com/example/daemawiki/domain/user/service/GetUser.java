@@ -54,7 +54,7 @@ public class GetUser {
     public Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort) {
         Query query = new Query();
 
-        if(gen != 0) {
+        if(gen != null) {
             query.addCriteria(Criteria.where("detail.gen").is(gen));
         }
         if(major != null && !major.isBlank()) {
