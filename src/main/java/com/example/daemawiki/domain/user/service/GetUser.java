@@ -57,13 +57,13 @@ public class GetUser {
         if(gen != 0) {
             query.addCriteria(Criteria.where("detail.gen").is(gen));
         }
-        if(major != null && !major.isEmpty()) {
+        if(major != null && !major.isBlank()) {
             query.addCriteria(Criteria.where("detail.major").is(getMajorType.execute(major.toLowerCase())));
         }
-        if(club != null && !club.isEmpty()) {
+        if(club != null && !club.isBlank()) {
             query.addCriteria(Criteria.where("detail.club").is(club));
         }
-        if ((orderBy != null && !orderBy.isEmpty())) {
+        if ((orderBy != null && !orderBy.isBlank())) {
                 if (sort != null &&  sort.equalsIgnoreCase("desc")) {
                     query.with(Sort.by(Sort.Direction.DESC, orderBy));
                 } else {
