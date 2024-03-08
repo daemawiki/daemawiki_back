@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -48,12 +49,16 @@ public class EditUser {
                             document.increaseVersion();
 
                             return documentFacade.saveDocument(document)
-                                    .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                            .type(RevisionType.UPDATE)
-                                            .documentId(document.getId())
-                                            .title(document.getTitle())
-                                            .build()));
+                                    .then(createRevision(document));
                         }));
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.UPDATE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
     }
 
 }
