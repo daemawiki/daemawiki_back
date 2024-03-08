@@ -5,6 +5,7 @@ import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
+import com.example.daemawiki.domain.info.model.Info;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -17,6 +18,8 @@ import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
+
+import java.util.List;
 
 @Service
 public class UpdateInfo {
@@ -45,20 +48,24 @@ public class UpdateInfo {
                     DefaultDocument document = tuple.getT1();
                     User user = tuple.getT2();
 
-                    document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                            .id(user.getId())
-                            .name(user.getName())
-                            .profile(user.getProfile())
-                            .build());
-
-                    document.setInfo(request.infoList());
-
-                    document.increaseVersion();
+                    setDocument(document, user, request.infoList());
 
                     return documentRepository.save(document)
                             .then(createRevision(document));
                 })
                 .onErrorMap(this::mapException);
+    }
+
+    private void setDocument(DefaultDocument document, User user, List<Info> infoList) {
+        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .profile(user.getProfile())
+                .build());
+
+        document.setInfo(infoList);
+
+        document.increaseVersion();
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
