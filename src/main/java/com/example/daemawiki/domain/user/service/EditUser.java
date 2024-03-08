@@ -6,6 +6,7 @@ import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.user.dto.request.EditUserRequest;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import org.springframework.stereotype.Service;
@@ -37,13 +38,7 @@ public class EditUser {
                 })
                 .flatMap(user -> documentFacade.findDocumentById(user.getDocumentId())
                         .flatMap(document -> {
-                            List<List<String>> newGroups = new ArrayList<>();
-                            newGroups.add(Arrays.asList("학생", user.getDetail().getGen() + "기", user.getName()));
-                            newGroups.add(Arrays.asList("전공", user.getDetail().getMajor().getMajor()));
-
-                            if (!user.getDetail().getClub().isBlank()) {
-                                newGroups.add(Arrays.asList("동아리", user.getDetail().getClub()));
-                            }
+                            List<List<String>> newGroups = createNewGroups(user);
 
                             document.updateByUserEdit(user.getName(), newGroups);
                             document.increaseVersion();
@@ -51,6 +46,18 @@ public class EditUser {
                             return documentFacade.saveDocument(document)
                                     .then(createRevision(document));
                         }));
+    }
+
+    private List<List<String>> createNewGroups(User user) {
+        List<List<String>> newGroups = new ArrayList<>();
+        newGroups.add(Arrays.asList("학생", user.getDetail().getGen() + "기", user.getName()));
+        newGroups.add(Arrays.asList("전공", user.getDetail().getMajor().getMajor()));
+
+        if (!user.getDetail().getClub().isBlank()) {
+            newGroups.add(Arrays.asList("동아리", user.getDetail().getClub()));
+        }
+
+        return newGroups;
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
