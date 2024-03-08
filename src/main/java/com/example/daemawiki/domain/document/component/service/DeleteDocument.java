@@ -28,7 +28,8 @@ public class DeleteDocument {
     }
 
     public Mono<Void> execute(String documentId) {
-        return Mono.zip(userFacade.currentUser(), documentRepository.findById(documentId))
+        return userFacade.currentUser()
+                .zipWith(documentRepository.findById(documentId))
                 .flatMap(tuple -> {
                     if (tuple.getT2().getType() == DocumentType.STUDENT) {
                         return Mono.error(StudentDocumentDeleteFailedException.EXCEPTION);
