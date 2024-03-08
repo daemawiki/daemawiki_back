@@ -24,13 +24,17 @@ public class DeleteEditor {
 
     public Mono<Void> execute(DeleteEditorRequest request, String documentId) {
         return userFacade.currentUser()
-                .flatMap(user -> documentFacade.findDocumentById(documentId)
-                        .filter(document -> Objects.equals(user.getId(), document.getEditor().getCreatedUser().id()))
-                        .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION))
-                        .flatMap(document -> {
-                            document.getEditor().getCanEdit().removeIf(e -> e.id().equals(request.userId()));
-                            return documentRepository.save(document);
-                        }))
+                .zipWith(documentFacade.findDocumentById(documentId))
+                .flatMap(tuple -> {
+                    if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getEditor().getCreatedUser().id())) {
+                        return Mono.error(NoPermissionUserException.EXCEPTION);
+                    }
+                    return Mono.just(tuple.getT2());
+                })
+                .flatMap(document -> {
+                    document.getEditor().getCanEdit().removeIf(e -> e.id().equals(request.userId()));
+                    return documentRepository.save(document);
+                })
                 .then();
     }
 
