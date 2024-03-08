@@ -32,6 +32,7 @@ public class DeleteContent {
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> userFilter.checkUserAndDocument(user, document, request.version()))
                 .flatMap(document -> {
                     document.getContents().removeIf(c -> c.getIndex().equals(request.index()));
+                    document.increaseVersion();
                     return documentFacade.saveDocument(document)
                             .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                     .type(RevisionType.UPDATE)
@@ -39,7 +40,11 @@ public class DeleteContent {
                                     .title(document.getTitle())
                                     .build()));
                 })
-                .onErrorMap(e -> e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+                .onErrorMap(this::mapException);
+    }
+
+    private Throwable mapException(Throwable e) {
+        return e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION;
     }
 
 }
