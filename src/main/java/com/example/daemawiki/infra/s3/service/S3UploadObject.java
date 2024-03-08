@@ -19,6 +19,8 @@ import software.amazon.awssdk.services.s3.model.CompletedPart;
 import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
 import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -37,7 +39,7 @@ public class S3UploadObject {
     private String bucket;
 
     public Mono<File> uploadObject(FilePart filePart, String fileType) {
-        String filename = filePart.filename();
+        String filename = URLEncoder.encode(filePart.filename(), StandardCharsets.UTF_8);
         UUID key = UUID.randomUUID();
         String keyString = key.toString();
         Map<String, String> metadata = Map.of("filename", filename);
