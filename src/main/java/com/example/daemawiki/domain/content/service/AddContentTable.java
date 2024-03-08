@@ -45,13 +45,7 @@ public class AddContentTable {
                     DefaultDocument document = tuple.getT1();
                     User user = tuple.getT2();
 
-                    Content newContent = Content.builder()
-                            .index(request.index())
-                            .title(request.title())
-                            .detail("빈 내용")
-                            .build();
-
-                    document.getContents().add(newContent);
+                    setDocumentContent(document, request.index(), request.title());
                     setDocument(document, user);
 
                     return Mono.just(document);
@@ -59,6 +53,19 @@ public class AddContentTable {
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private void setDocumentContent(DefaultDocument document, String index, String title) {
+        Content newContent = createContent(index, title);
+        document.getContents().add(newContent);
+    }
+
+    private Content createContent(String index, String title) {
+        return Content.builder()
+                .index(index)
+                .title(title)
+                .detail("빈 내용")
+                .build();
     }
 
     private static final Comparator<Content> customComparator = (c1, c2) -> {
