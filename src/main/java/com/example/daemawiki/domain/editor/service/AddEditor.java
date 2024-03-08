@@ -29,15 +29,16 @@ public class AddEditor {
                         return Mono.error(NoPermissionUserException.EXCEPTION);
                     }
                     return Mono.just(tuple.getT2());
-                }).zipWith(userFacade.findByEmailNotNull(request.email()), (document, user2) -> {
-                    document.getEditor().addEditor(Editor.builder()
-                            .user(user2.getName())
-                            .id(user2.getId())
+                })
+                .zipWith(userFacade.findByEmailNotNull(request.email()))
+                .map(tuple -> {
+                    tuple.getT1().getEditor().addEditor(Editor.builder()
+                            .user(tuple.getT2().getName())
+                            .id(tuple.getT2().getId())
                             .build());
-                    return document;
+                    return tuple.getT1();
                 })
                 .flatMap(documentRepository::save).then();
     }
-
 
 }
