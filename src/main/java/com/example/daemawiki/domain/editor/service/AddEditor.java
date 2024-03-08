@@ -22,7 +22,8 @@ public class AddEditor {
     }
 
     public Mono<Void> execute(AddEditorRequest request, String documentId) {
-        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+        return userFacade.currentUser()
+                .zipWith(documentFacade.findDocumentById(documentId))
                 .flatMap(tuple -> {
                     if (!tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId())) {
                         return Mono.error(NoPermissionUserException.EXCEPTION);
