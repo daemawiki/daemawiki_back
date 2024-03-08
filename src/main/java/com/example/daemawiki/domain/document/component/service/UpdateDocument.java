@@ -54,7 +54,7 @@ public class UpdateDocument {
                         })
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
-                .onErrorMap(e -> e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+                .onErrorMap(this::mapException);
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
@@ -63,6 +63,10 @@ public class UpdateDocument {
                 .documentId(document.getId())
                 .title(document.getTitle())
                 .build());
+    }
+
+    private Throwable mapException(Throwable e) {
+        return e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION;
     }
 
 }
