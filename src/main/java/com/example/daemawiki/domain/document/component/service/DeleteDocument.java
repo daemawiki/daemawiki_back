@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.document.component.service;
 
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.model.type.DocumentType;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -38,12 +39,16 @@ public class DeleteDocument {
                     return document;
                 })
                 .flatMap(document -> documentRepository.delete(document)
-                        .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                .type(RevisionType.DELETE)
-                                .documentId(documentId)
-                                .title(document.getTitle())
-                                .build())))
+                        .then(createRevision(document)))
                 .onErrorMap(e -> e instanceof StudentDocumentDeleteFailedException || e instanceof NoPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.DELETE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
     }
 
 }
