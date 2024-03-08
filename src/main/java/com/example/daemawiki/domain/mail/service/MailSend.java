@@ -64,26 +64,26 @@ public class MailSend {
     }
 
     private Mono<Void> sendMail(String to, String authCode) {
-        return Mono.fromRunnable(() ->
-                        CompletableFuture.runAsync(() -> {
-                            try {
-                                MimeMessage message = mailSender.createMimeMessage();
-                                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-                                helper.setTo(to);
-                                helper.setSubject("DSM 메일 인증");
+                helper.setTo(to);
+                helper.setSubject("DSM 메일 인증");
 
-                                String mail = getMailTemplate(authCode);
+                String mail = getMailTemplate(authCode);
 
-                                helper.setText(mail, true);
-                                helper.setFrom(new InternetAddress(admin, "DSM-MAIL-AUTH"));
+                helper.setText(mail, true);
+                helper.setFrom(new InternetAddress(admin, "DSM-MAIL-AUTH"));
 
-                                mailSender.send(message);
-                            } catch (MessagingException | UnsupportedEncodingException e) {
-                                throw MailSendFailedException.EXCEPTION;
-                            }
-                        })
-                )
+                mailSender.send(message);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                throw MailSendFailedException.EXCEPTION;
+            }
+        });
+
+        return Mono.fromFuture(future)
                 .onErrorMap(e -> MailSendFailedException.EXCEPTION)
                 .then();
     }
