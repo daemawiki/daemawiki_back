@@ -56,13 +56,17 @@ public class UpdateInfo {
                     document.increaseVersion();
 
                     return documentRepository.save(document)
-                            .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                    .type(RevisionType.UPDATE)
-                                    .documentId(request.documentId())
-                                    .title(document.getTitle())
-                                    .build()));
+                            .then(createRevision(document));
                 })
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.UPDATE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
     }
 
     private Throwable mapException(Throwable e) {
