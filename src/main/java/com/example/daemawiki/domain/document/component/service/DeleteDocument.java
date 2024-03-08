@@ -28,19 +28,19 @@ public class DeleteDocument {
     }
 
     public Mono<Void> execute(String documentId) {
-        return userFacade.currentUser()
-                .zipWith(documentRepository.findById(documentId), (user, document) -> {
-                    if (document.getType() == DocumentType.STUDENT) {
-                        throw StudentDocumentDeleteFailedException.EXCEPTION;
+        return Mono.zip(userFacade.currentUser(), documentRepository.findById(documentId))
+                .flatMap(tuple -> {
+                    if (tuple.getT2().getType() == DocumentType.STUDENT) {
+                        return Mono.error(StudentDocumentDeleteFailedException.EXCEPTION);
                     }
-                    if (!Objects.equals(document.getEditor().getCreatedUser().id(), user.getId())) {
-                        throw NoPermissionUserException.EXCEPTION;
+                    if (!Objects.equals(tuple.getT2().getEditor().getCreatedUser().id(), tuple.getT1().getId())) {
+                        return Mono.error(NoPermissionUserException.EXCEPTION);
                     }
-                    return document;
+                    return Mono.just(tuple.getT2());
                 })
                 .flatMap(document -> documentRepository.delete(document)
                         .then(createRevision(document)))
-                .onErrorMap(e -> e instanceof StudentDocumentDeleteFailedException || e instanceof NoPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+                .onErrorMap(this::mapException);
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
@@ -49,6 +49,10 @@ public class DeleteDocument {
                 .documentId(document.getId())
                 .title(document.getTitle())
                 .build());
+    }
+
+    private Throwable mapException(Throwable e) {
+        return e instanceof StudentDocumentDeleteFailedException || e instanceof NoPermissionUserException ? e : ExecuteFailedException.EXCEPTION;
     }
 
 }
