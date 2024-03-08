@@ -22,19 +22,20 @@ public class AddEditor {
     }
 
     public Mono<Void> execute(AddEditorRequest request, String documentId) {
-        return userFacade.currentUser()
-                .flatMap(user -> documentFacade.findDocumentById(documentId)
-                        .filter(document -> document.getEditor().getCreatedUser().id().equals(user.getId()))
-                        .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION))
-                        .zipWith(userFacade.findByEmailNotNull(request.email()), (document, user2) -> {
-                            document.getEditor().addEditor(Editor.builder()
-                                    .user(user2.getName())
-                                    .id(user2.getId())
-                                    .build());
-                            return document;
-                        })
-                        .flatMap(documentRepository::save))
-                .then();
+        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+                .flatMap(tuple -> {
+                    if (tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId())) {
+                        return Mono.error(NoPermissionUserException.EXCEPTION);
+                    }
+                    return Mono.just(tuple.getT2());
+                }).zipWith(userFacade.findByEmailNotNull(request.email()), (document, user2) -> {
+                    document.getEditor().addEditor(Editor.builder()
+                            .user(user2.getName())
+                            .id(user2.getId())
+                            .build());
+                    return document;
+                })
+                .flatMap(documentRepository::save).then();
     }
 
 
