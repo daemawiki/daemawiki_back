@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.user.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -34,18 +35,7 @@ public class UpdateClub {
                 .doOnNext(user -> user.getDetail().setClub(request.club()))
                 .flatMap(userRepository::save)
                 .flatMap(user -> documentFacade.findDocumentById(user.getDocumentId())
-                        .doOnNext(document -> {
-                            if (!Objects.equals(request.club(), "*")) {
-                                document.getGroups().add(Arrays.asList("동아리", request.club()));
-                            } else {
-                                List<List<String>> newGroups = document.getGroups().stream()
-                                        .filter(g -> !g.contains("동아리"))
-                                        .toList();
-
-                                document.setGroups(newGroups);
-                            }
-                            document.increaseVersion();
-                        })
+                        .doOnNext(document -> setDocument(document, request.club()))
                         .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                         .type(RevisionType.UPDATE)
@@ -53,6 +43,19 @@ public class UpdateClub {
                                         .title(document.getTitle())
                                         .build()))))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+    }
+
+    private void setDocument(DefaultDocument document, String requestClub) {
+        if (!Objects.equals(requestClub, "*")) {
+            document.getGroups().add(Arrays.asList("동아리", requestClub));
+        } else {
+            List<List<String>> newGroups = document.getGroups().stream()
+                    .filter(g -> !g.contains("동아리"))
+                    .toList();
+
+            document.setGroups(newGroups);
+        }
+        document.increaseVersion();
     }
 
 }
