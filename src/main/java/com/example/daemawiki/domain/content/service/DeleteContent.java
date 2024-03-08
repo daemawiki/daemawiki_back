@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.content.service;
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.DeleteContentRequest;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -31,8 +32,7 @@ public class DeleteContent {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> userFilter.checkUserAndDocument(user, document, request.version()))
                 .flatMap(document -> {
-                    document.getContents().removeIf(c -> c.getIndex().equals(request.index()));
-                    document.increaseVersion();
+                    removeContent(document, request.index());
                     return documentFacade.saveDocument(document)
                             .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
                                     .type(RevisionType.UPDATE)
@@ -41,6 +41,11 @@ public class DeleteContent {
                                     .build()));
                 })
                 .onErrorMap(this::mapException);
+    }
+
+    private void removeContent(DefaultDocument document, String index) {
+        document.getContents().removeIf(c -> c.getIndex().equals(index));
+        document.increaseVersion();
     }
 
     private Throwable mapException(Throwable e) {
