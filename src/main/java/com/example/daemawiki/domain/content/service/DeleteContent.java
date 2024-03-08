@@ -29,8 +29,8 @@ public class DeleteContent {
     }
 
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
-        return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> userFilter.checkUserAndDocument(user, document, request.version()))
+        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+                .map(tuple -> userFilter.checkUserAndDocument(tuple.getT1(), tuple.getT2(), request.version()))
                 .map(document -> removeContent(document, request.index()))
                 .flatMap(document -> documentFacade.saveDocument(document)
                         .then(createRevision(document)))
