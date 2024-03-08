@@ -29,7 +29,8 @@ public class EditContentTableTitle {
     }
 
     public Mono<Void> execute(EditContentTableTitleRequest request, String documentId) {
-        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+        return userFacade.currentUser()
+                .zipWith(documentFacade.findDocumentById(documentId))
                 .map(tuple -> userFilter.checkUserAndDocument(tuple.getT1(), tuple.getT2(), request.version()))
                 .map(document -> updateDocument(document, request))
                 .subscribeOn(scheduler)
