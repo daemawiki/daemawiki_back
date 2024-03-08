@@ -29,10 +29,7 @@ public class DeleteContent {
 
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
         return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
-                    return document;
-                })
+                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> userFilter.checkUserAndDocument(user, document, request.version()))
                 .flatMap(document -> {
                     document.getContents().removeIf(c -> c.getIndex().equals(request.index()));
                     return documentFacade.saveDocument(document)
