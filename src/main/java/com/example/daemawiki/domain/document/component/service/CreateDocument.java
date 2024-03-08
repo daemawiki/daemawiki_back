@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.document.component.service;
 import com.example.daemawiki.domain.document.component.facade.CreateDocumentFacade;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -29,12 +30,16 @@ public class CreateDocument {
         return userFacade.currentUser()
                 .map(user -> createDocumentFacade.execute(request, user))
                 .flatMap(document -> documentFacade.saveDocument(document)
-                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                        .type(RevisionType.CREATE)
-                                        .documentId(document.getId())
-                                        .title(document.getTitle())
-                                        .build())))
+                                .then(createRevision(document)))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                    .type(RevisionType.CREATE)
+                    .documentId(document.getId())
+                    .title(document.getTitle())
+                    .build());
     }
 
 }
