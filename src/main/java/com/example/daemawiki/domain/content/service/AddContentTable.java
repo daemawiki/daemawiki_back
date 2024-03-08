@@ -34,7 +34,8 @@ public class AddContentTable {
     }
 
     public Mono<Void> execute(AddContentRequest request, String documentId) {
-        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+        return userFacade.currentUser()
+                .zipWith(documentFacade.findDocumentById(documentId))
                 .map(tuple -> {
                     userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
                     return tuple;
