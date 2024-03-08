@@ -17,7 +17,6 @@ import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuples;
 
 import java.util.List;
 
@@ -39,14 +38,14 @@ public class UpdateInfo {
 
     public Mono<Void> execute(UpdateInfoRequest request) {
         return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(request.documentId()), (user, document) -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
-
-                    return Tuples.of(document, user);
+                .zipWith(documentFacade.findDocumentById(request.documentId()))
+                .map(tuple -> {
+                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+                    return tuple;
                 })
                 .flatMap(tuple -> {
-                    DefaultDocument document = tuple.getT1();
-                    User user = tuple.getT2();
+                    DefaultDocument document = tuple.getT2();
+                    User user = tuple.getT1();
 
                     setDocument(document, user, request.infoList());
 
