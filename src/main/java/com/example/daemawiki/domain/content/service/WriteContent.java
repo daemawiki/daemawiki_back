@@ -17,7 +17,6 @@ import com.example.daemawiki.global.exception.h404.ContentNotFoundException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuples;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -38,10 +37,10 @@ public class WriteContent {
     }
 
     public Mono<Void> execute(WriteContentRequest request, String documentId) {
-        return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
-                    return Tuples.of(user, document);
+        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+                .map(tuple -> {
+                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+                    return tuple;
                 })
                 .flatMap(tuple -> {
                     DefaultDocument document = tuple.getT2();
@@ -53,21 +52,27 @@ public class WriteContent {
                     if (contentsMap.containsKey(request.index())) {
                         Content content = contentsMap.get(request.index());
                         content.setDetail(request.content());
-                        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                                .id(user.getId())
-                                .name(user.getName())
-                                .profile(user.getProfile())
-                                .build());
-                        document.increaseVersion();
-                        return Mono.just(document);
+                        setDocument(document, user);
+
+                        return documentFacade.saveDocument(document)
+                                .then(createRevision(document));
                     } else {
                         return Mono.error(ContentNotFoundException.EXCEPTION);
                     }
                 })
-                .flatMap(document -> documentFacade.saveDocument(document)
-                                .then(createRevision(document)))
                 .onErrorMap(this::mapException);
     }
+
+    private void setDocument(DefaultDocument document, User user) {
+        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .profile(user.getProfile())
+                .build());
+
+        document.increaseVersion();
+    }
+
 
     private Mono<Void> createRevision(DefaultDocument document) {
         return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
