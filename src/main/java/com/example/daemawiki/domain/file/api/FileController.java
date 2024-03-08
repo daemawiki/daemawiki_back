@@ -48,4 +48,9 @@ public class FileController {
         return getFile.getFileByName(name);
     }
 
+    @GetMapping("/list")
+    public Flux<File> getAll() {
+        return getFile.getAll();
+    }
+
 }

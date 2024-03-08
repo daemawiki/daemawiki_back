@@ -26,4 +26,8 @@ public class GetFile {
         return fileRepository.findByFileNameContaining(fileName);
     }
 
+    public Flux<File> getAll() {
+        return fileRepository.findAll();
+    }
+
 }
