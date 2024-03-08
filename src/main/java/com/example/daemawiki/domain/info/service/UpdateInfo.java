@@ -62,7 +62,11 @@ public class UpdateInfo {
                                     .title(document.getTitle())
                                     .build()));
                 })
-                .onErrorMap(e -> e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+                .onErrorMap(this::mapException);
+    }
+
+    private Throwable mapException(Throwable e) {
+        return e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION;
     }
 
 }
