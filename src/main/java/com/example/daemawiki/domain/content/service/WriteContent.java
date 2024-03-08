@@ -65,12 +65,20 @@ public class WriteContent {
                     }
                 })
                 .flatMap(document -> documentFacade.saveDocument(document)
-                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                        .type(RevisionType.UPDATE)
-                                        .documentId(documentId)
-                                        .title(document.getTitle())
-                                        .build())))
-                .onErrorMap(e -> e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+                                .then(createRevision(document)))
+                .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.UPDATE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
+    }
+
+    private Throwable mapException(Throwable e) {
+        return e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION;
     }
 
 }
