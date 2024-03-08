@@ -31,11 +31,9 @@ public class DeleteContent {
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> userFilter.checkUserAndDocument(user, document, request.version()))
-                .flatMap(document -> {
-                    removeContent(document, request.index());
-                    return documentFacade.saveDocument(document)
-                            .then(createRevision(document));
-                })
+                .map(document -> removeContent(document, request.index()))
+                .flatMap(document -> documentFacade.saveDocument(document)
+                        .then(createRevision(document)))
                 .onErrorMap(this::mapException);
     }
 
@@ -47,9 +45,10 @@ public class DeleteContent {
                 .build());
     }
 
-    private void removeContent(DefaultDocument document, String index) {
+    private DefaultDocument removeContent(DefaultDocument document, String index) {
         document.getContents().removeIf(c -> c.getIndex().equals(index));
         document.increaseVersion();
+        return document;
     }
 
     private Throwable mapException(Throwable e) {
