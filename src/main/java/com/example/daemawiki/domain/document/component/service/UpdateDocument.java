@@ -9,6 +9,7 @@ import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException;
@@ -33,28 +34,32 @@ public class UpdateDocument {
     }
 
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
-        return userFacade.currentUser()
-                .zipWith(documentFacade.findDocumentById(documentId), (user, document) -> {
-                            userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
-
-                            document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                                    .id(user.getId())
-                                    .name(user.getName())
-                                    .profile(user.getProfile())
-                                    .build());
-
-                            document.update(request.title(),
-                                    getDocumentType.execute(request.type().toLowerCase()),
-                                    request.groups());
-
-                            document.getContents().add(request.content());
-                            document.increaseVersion();
-
-                            return document;
-                        })
+        return Mono.zip(userFacade.currentUser(), documentFacade.findDocumentById(documentId))
+                .map(tuple -> {
+                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+                    return tuple;
+                })
+                .map(tuple -> setDocument(tuple.getT2(), tuple.getT1(), request))
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private DefaultDocument setDocument(DefaultDocument document, User user, SaveDocumentRequest request) {
+        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .profile(user.getProfile())
+                .build());
+
+        document.update(request.title(),
+                getDocumentType.execute(request.type().toLowerCase()),
+                request.groups());
+
+        document.getContents().add(request.content());
+        document.increaseVersion();
+
+        return document;
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
