@@ -52,41 +52,51 @@ public class AddContentTable {
                             .build();
 
                     document.getContents().add(newContent);
-
-                    Comparator<Content> customComparator = (c1, c2) -> {
-                        String[] index1 = c1.getIndex().split("\\.");
-                        String[] index2 = c2.getIndex().split("\\.");
-
-                        for (int i = 0; i < Math.max(index1.length, index2.length); i++) {
-                            int part1 = i < index1.length ? Integer.parseInt(index1[i]) : 0;
-                            int part2 = i < index2.length ? Integer.parseInt(index2[i]) : 0;
-
-                            if (part1 != part2) {
-                                return part1 - part2;
-                            }
-                        }
-
-                        return 0;
-                    };
-
-                    document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                            .id(user.getId())
-                            .name(user.getName())
-                            .profile(user.getProfile())
-                            .build());
-
-                    document.getContents().sort(customComparator);
-                    document.increaseVersion();
+                    setDocument(document, user);
 
                     return Mono.just(document);
                 })
                 .flatMap(document -> documentFacade.saveDocument(document)
-                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                        .type(RevisionType.UPDATE)
-                                        .documentId(documentId)
-                                        .title(document.getTitle())
-                                        .build())))
+                                .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private static final Comparator<Content> customComparator = (c1, c2) -> {
+        String[] index1 = c1.getIndex().split("\\.");
+        String[] index2 = c2.getIndex().split("\\.");
+
+        for (int i = 0; i < Math.max(index1.length, index2.length); i++) {
+            int part1 = i < index1.length ? Integer.parseInt(index1[i]) : 0;
+            int part2 = i < index2.length ? Integer.parseInt(index2[i]) : 0;
+
+            if (part1 != part2) {
+                return part1 - part2;
+            }
+        }
+
+        return 0;
+    };
+
+    private void sortContents(DefaultDocument document) {
+        document.getContents().sort(customComparator);
+    }
+
+    private void setDocument(DefaultDocument document, User user) {
+        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .profile(user.getProfile())
+                .build());
+        sortContents(document);
+        document.increaseVersion();
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.UPDATE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
     }
 
     private Throwable mapException(Throwable e) {
