@@ -34,13 +34,17 @@ public class DeleteContent {
                 .flatMap(document -> {
                     removeContent(document, request.index());
                     return documentFacade.saveDocument(document)
-                            .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                    .type(RevisionType.UPDATE)
-                                    .documentId(documentId)
-                                    .title(document.getTitle())
-                                    .build()));
+                            .then(createRevision(document));
                 })
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.UPDATE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
     }
 
     private void removeContent(DefaultDocument document, String index) {
