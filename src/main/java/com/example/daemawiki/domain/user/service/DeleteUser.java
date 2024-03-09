@@ -27,16 +27,19 @@ public class DeleteUser {
         return userFacade.currentUser()
                 .flatMap(user -> {
                     String documentId = user.getDocumentId();
-                    String title = user.getName();
 
                     return Mono.when(documentRepository.deleteById(documentId),
                             userRepository.delete(user))
-                            .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                    .type(RevisionType.DELETE)
-                                    .documentId(documentId)
-                                    .title(title)
-                                    .build()));
+                            .then(createRevision(documentId, user.getName()));
                 });
+    }
+
+    private Mono<Void> createRevision(String id, String title) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.DELETE)
+                .documentId(id)
+                .title(title)
+                .build());
     }
 
 }
