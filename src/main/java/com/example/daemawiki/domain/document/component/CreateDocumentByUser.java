@@ -30,13 +30,14 @@ public class CreateDocumentByUser {
 
     public Mono<DefaultDocument> execute(User user) {
         return documentFacade.saveDocument(createDocument(user))
-                .flatMap(document -> revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                        .type(RevisionType.CREATE)
-                        .documentId(document.getId())
-                        .title(document.getTitle())
-                        .build())
+                .flatMap(document -> createRevision(document)
                         .thenReturn(document))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest
+                .create(RevisionType.CREATE, document.getId(), document.getTitle()));
     }
 
     private DefaultDocument createDocument(User user) {
