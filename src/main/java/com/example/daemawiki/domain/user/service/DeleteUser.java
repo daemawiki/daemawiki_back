@@ -1,6 +1,5 @@
 package com.example.daemawiki.domain.user.service;
 
-import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
@@ -35,9 +34,9 @@ public class DeleteUser {
                 });
     }
 
-    private Mono<Void> createRevision(DefaultDocument document) {
+    private Mono<Void> createRevision(String documentId, String name) {
         return revisionComponent.saveHistory(SaveRevisionHistoryRequest
-                .create(RevisionType.DELETE, document.getId(), document.getTitle()));
+                .create(RevisionType.DELETE, documentId, name));
     }
 
 }
