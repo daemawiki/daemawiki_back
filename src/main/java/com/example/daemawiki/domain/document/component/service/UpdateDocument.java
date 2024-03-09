@@ -47,11 +47,7 @@ public class UpdateDocument {
     }
 
     private DefaultDocument setDocument(DefaultDocument document, User user, SaveDocumentRequest request) {
-        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .profile(user.getProfile())
-                .build());
+        document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
 
         document.update(request.title(),
                 getDocumentType.execute(request.type().toLowerCase()),
