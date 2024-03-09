@@ -9,4 +9,13 @@ public record SaveRevisionHistoryRequest(
         String documentId,
         String title
 ) {
+
+    public static SaveRevisionHistoryRequest create(RevisionType type, String documentId, String title) {
+        return SaveRevisionHistoryRequest.builder()
+                .type(type)
+                .documentId(documentId)
+                .title(title)
+                .build();
+    }
+
 }
