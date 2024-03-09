@@ -56,14 +56,9 @@ public class UpdateInfo {
     }
 
     private void setDocument(DefaultDocument document, User user, List<Info> infoList) {
-        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .profile(user.getProfile())
-                .build());
+        document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
 
         document.setInfo(infoList);
-
         document.increaseVersion();
     }
 
