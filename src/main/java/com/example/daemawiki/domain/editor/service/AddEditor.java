@@ -32,10 +32,7 @@ public class AddEditor {
                 })
                 .zipWith(userFacade.findByEmailNotNull(request.email()))
                 .map(tuple -> {
-                    tuple.getT1().getEditor().addEditor(Editor.builder()
-                            .user(tuple.getT2().getName())
-                            .id(tuple.getT2().getId())
-                            .build());
+                    tuple.getT1().getEditor().addEditor(Editor.createEditor(tuple.getT2().getName(), tuple.getT2().getId()));
                     return tuple.getT1();
                 })
                 .flatMap(documentRepository::save).then();
