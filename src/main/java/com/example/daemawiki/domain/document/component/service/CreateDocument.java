@@ -35,11 +35,8 @@ public class CreateDocument {
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
-        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                    .type(RevisionType.CREATE)
-                    .documentId(document.getId())
-                    .title(document.getTitle())
-                    .build());
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest
+                .create(RevisionType.CREATE, document.getId(), document.getTitle()));
     }
 
 }
