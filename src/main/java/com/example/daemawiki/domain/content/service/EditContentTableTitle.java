@@ -51,11 +51,8 @@ public class EditContentTableTitle {
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
-        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                .type(RevisionType.UPDATE)
-                .documentId(document.getId())
-                .title(document.getTitle())
-                .build());
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest
+                .create(RevisionType.UPDATE, document.getId(), document.getTitle()));
     }
 
 }
