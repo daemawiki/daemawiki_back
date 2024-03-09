@@ -45,11 +45,8 @@ public class DeleteDocument {
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
-        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                .type(RevisionType.DELETE)
-                .documentId(document.getId())
-                .title(document.getTitle())
-                .build());
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest
+                .create(RevisionType.DELETE, document.getId(), document.getTitle()));
     }
 
     private Throwable mapException(Throwable e) {
