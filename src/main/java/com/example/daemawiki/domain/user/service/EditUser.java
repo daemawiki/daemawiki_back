@@ -38,14 +38,18 @@ public class EditUser {
                 })
                 .flatMap(user -> documentFacade.findDocumentById(user.getDocumentId())
                         .flatMap(document -> {
-                            List<List<String>> newGroups = createNewGroups(user);
-
-                            document.updateByUserEdit(user.getName(), newGroups);
-                            document.increaseVersion();
+                            setDocument(document, user);
 
                             return documentFacade.saveDocument(document)
                                     .then(createRevision(document));
                         }));
+    }
+
+    private void setDocument(DefaultDocument document, User user) {
+        List<List<String>> newGroups = createNewGroups(user);
+
+        document.updateByUserEdit(user.getName(), newGroups);
+        document.increaseVersion();
     }
 
     private List<List<String>> createNewGroups(User user) {
