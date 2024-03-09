@@ -22,11 +22,7 @@ public class CreateDocumentFacade {
     }
 
     public DefaultDocument execute(SaveDocumentRequest request, User user) {
-        UserDetailResponse userDetail = UserDetailResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .profile(user.getProfile())
-                .build();
+        UserDetailResponse userDetail = UserDetailResponse.create(user);
 
         return DefaultDocument.builder()
                 .title(request.title())
@@ -38,7 +34,7 @@ public class CreateDocumentFacade {
                 .documentEditor(DocumentEditor.builder()
                         .createdUser(userDetail)
                         .updatedUser(userDetail)
-                        .canEdit(Collections.singletonList(Editor.createEditor(user.getEmail(), user.getId())))
+                        .canEdit(Collections.singletonList(Editor.create(user.getEmail(), user.getId())))
                         .build())
                 .content(Collections.singletonList(request.content()))
                 .groups(request.groups())
