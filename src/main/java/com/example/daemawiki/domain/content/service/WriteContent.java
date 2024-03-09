@@ -65,12 +65,7 @@ public class WriteContent {
     }
 
     private void setDocument(DefaultDocument document, User user) {
-        document.getEditor().setUpdatedUser(UserDetailResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .profile(user.getProfile())
-                .build());
-
+        document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
         document.increaseVersion();
     }
 
