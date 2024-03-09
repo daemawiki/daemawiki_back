@@ -37,11 +37,7 @@ public class UpdateClub {
                 .flatMap(user -> documentFacade.findDocumentById(user.getDocumentId())
                         .doOnNext(document -> setDocument(document, request.club()))
                         .flatMap(document -> documentFacade.saveDocument(document)
-                                .then(revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
-                                        .type(RevisionType.UPDATE)
-                                        .documentId(document.getId())
-                                        .title(document.getTitle())
-                                        .build()))))
+                                .then(createRevision(document))))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
@@ -56,6 +52,14 @@ public class UpdateClub {
             document.setGroups(newGroups);
         }
         document.increaseVersion();
+    }
+
+    private Mono<Void> createRevision(DefaultDocument document) {
+        return revisionComponent.saveHistory(SaveRevisionHistoryRequest.builder()
+                .type(RevisionType.UPDATE)
+                .documentId(document.getId())
+                .title(document.getTitle())
+                .build());
     }
 
 }
