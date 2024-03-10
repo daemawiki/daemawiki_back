@@ -49,11 +49,7 @@ public class CreateDocumentByUser {
         return createDocumentFacade.execute(SaveDocumentRequest.builder()
                         .title(user.getName())
                         .type("student")
-                        .content(Content.builder()
-                                .index("1")
-                                .title("개요")
-                                .detail("회원가입을 통해 자동 생성된 문서입니다.")
-                                .build())
+                        .content(Content.create("1", "개요", "회원가입을 통해 자동 생성된 문서입니다."))
                         .groups(groups)
                 .build(), user);
     }
