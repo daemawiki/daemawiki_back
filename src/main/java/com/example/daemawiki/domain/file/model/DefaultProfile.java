@@ -22,15 +22,10 @@ public class DefaultProfile {
     private String defaultImageType;
 
     public File defaultProfile() {
-        return File.builder()
-                .id(defaultImageId)
-                .fileName(defaultImageName)
-                .fileType(defaultImageType)
-                .detail(FileDetail.builder()
-                        .type(FileType.PROFILE)
-                        .url(defaultImageURL)
-                        .build())
-                .build();
+        return File.create(defaultImageId,
+                defaultImageName,
+                defaultImageType,
+                FileDetail.create(FileType.PROFILE, defaultImageURL));
     }
 
 }
