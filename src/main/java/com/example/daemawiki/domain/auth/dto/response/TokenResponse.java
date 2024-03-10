@@ -6,4 +6,9 @@ import lombok.Builder;
 public record TokenResponse(
         String token
 ) {
+
+    public static TokenResponse create(String token) {
+        return TokenResponse.builder().token(token).build();
+    }
+
 }
