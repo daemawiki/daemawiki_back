@@ -91,19 +91,14 @@ public class S3UploadObject {
     }
 
     private Mono<File> createFile(UUID key, String fileName, MediaType mediaType, String filetype) {
-        return Mono.just(File.builder()
-                        .id(key)
-                        .fileName(fileName)
-                        .fileType(mediaType.toString())
-                        .detail(FileDetail.builder()
-                                .type(switch (filetype) {
-                                    case "content" -> FileType.CONTENT;
-                                    case "profile" -> FileType.PROFILE;
-                                    case null, default -> FileType.OTHER;
-                                })
-                                .url("https://" + bucket + ".s3.amazonaws.com/" + key)
-                                .build())
-                        .build())
+        return Mono.just(File.create(key,
+                        fileName,
+                        mediaType.toString(),
+                        FileDetail.create(switch (filetype) {
+                            case "content" -> FileType.CONTENT;
+                            case "profile" -> FileType.PROFILE;
+                            case null, default -> FileType.OTHER;
+                        }, "https://" + bucket + ".s3.amazonaws.com/" + key)))
                 .flatMap(fileRepository::save);
     }
 
