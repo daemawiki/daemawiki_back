@@ -60,11 +60,7 @@ public class AddContentTable {
     }
 
     private Content createContent(String index, String title) {
-        return Content.builder()
-                .index(index)
-                .title(title)
-                .detail("빈 내용")
-                .build();
+        return Content.create(index, title, "빈 내용");
     }
 
     private static final Comparator<Content> customComparator = (c1, c2) -> {
