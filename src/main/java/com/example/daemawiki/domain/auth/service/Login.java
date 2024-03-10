@@ -29,9 +29,7 @@ public class Login {
                         .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
                         .switchIfEmpty(Mono.error(PasswordMismatchException.EXCEPTION))
                         .flatMap(u -> tokenizer.createToken(u.getEmail())
-                                .map(token -> TokenResponse.builder()
-                                        .token(token)
-                                        .build())));
+                                .map(TokenResponse::create)));
     }
 
 }
