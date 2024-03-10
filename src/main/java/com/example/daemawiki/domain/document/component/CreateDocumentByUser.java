@@ -46,12 +46,11 @@ public class CreateDocumentByUser {
                 Arrays.asList("전공", user.getDetail().getMajor().getMajor())
         );
 
-        return createDocumentFacade.execute(SaveDocumentRequest.builder()
-                        .title(user.getName())
-                        .type("student")
-                        .content(Content.create("1", "개요", "회원가입을 통해 자동 생성된 문서입니다."))
-                        .groups(groups)
-                .build(), user);
+        return createDocumentFacade.execute(SaveDocumentRequest
+                        .create(user.getName(),
+                                "student",
+                                Content.create("1", "개요", "회원가입을 통해 자동 생성된 문서입니다."),
+                                groups), user);
     }
 
 }
