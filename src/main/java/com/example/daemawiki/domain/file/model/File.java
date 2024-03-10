@@ -30,4 +30,13 @@ public class File {
         this.detail = detail;
     }
 
+    public static File create(UUID id, String fileName, String fileType, FileDetail detail) {
+        return File.builder()
+                .id(id)
+                .fileName(fileName)
+                .fileType(fileType)
+                .detail(detail)
+                .build();
+    }
+
 }
