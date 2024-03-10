@@ -17,9 +17,7 @@ public class Reissue {
 
     public Mono<TokenResponse> execute(ReissueRequest request) {
         return tokenizer.reissue(request.token())
-                .map(token -> TokenResponse.builder()
-                        .token(token)
-                        .build())
+                .map(TokenResponse::create)
                 .switchIfEmpty(Mono.error(TokenReissueFailedException.EXCEPTION));
     }
 
