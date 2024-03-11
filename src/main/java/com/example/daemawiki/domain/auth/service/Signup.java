@@ -42,7 +42,7 @@ public class Signup {
                 .switchIfEmpty(Mono.defer(() -> authMailRepository.findByMail(request.email())
                         .filter(verified -> verified)
                         .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
-                        .flatMap(verified -> Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
+                        .flatMap(verified -> Mono.fromSupplier(() -> passwordEncoder.encode(request.password()))
                                 .subscribeOn(scheduler)
                                 .flatMap(password -> createUser(request, password))
                                 .flatMap(user -> userRepository.save(user)
