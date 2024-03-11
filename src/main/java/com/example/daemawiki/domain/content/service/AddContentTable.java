@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.content.service;
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.AddContentRequest;
 import com.example.daemawiki.domain.content.model.Content;
+import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -25,12 +26,15 @@ public class AddContentTable {
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
     private final UserFilter userFilter;
+    private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
 
-    public AddContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter) {
+
+    public AddContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
         this.userFilter = userFilter;
+        this.updateDocumentEditorAndUpdatedDate = updateDocumentEditorAndUpdatedDate;
     }
 
     public Mono<Void> execute(AddContentRequest request, String documentId) {
@@ -44,6 +48,7 @@ public class AddContentTable {
                     DefaultDocument document = tuple.getT2();
                     User user = tuple.getT1();
 
+                    updateDocumentEditorAndUpdatedDate.execute(document, user);
                     setDocumentContent(document, request.index(), request.title());
                     setDocument(document, user);
 
@@ -64,6 +69,14 @@ public class AddContentTable {
     }
 
     private static final Comparator<Content> customComparator = (c1, c2) -> {
+        if (c1 == null && c2 == null) {
+            return 0;
+        } else if (c1 == null) {
+            return -1;
+        } else if (c2 == null) {
+            return 1;
+        }
+
         String[] index1 = c1.getIndex().split("\\.");
         String[] index2 = c2.getIndex().split("\\.");
 
