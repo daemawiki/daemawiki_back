@@ -4,7 +4,6 @@ import com.example.daemawiki.domain.mail.dto.AuthCodeRequest;
 import com.example.daemawiki.domain.mail.model.AuthCode;
 import com.example.daemawiki.domain.mail.model.type.MailType;
 import com.example.daemawiki.domain.mail.repository.AuthCodeRepository;
-import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h409.EmailAlreadyExistsException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
@@ -46,21 +45,23 @@ public class MailSend {
     public Mono<Void> execute(AuthCodeRequest request) {
         String mail = request.mail();
 
-        Mono<User> userMono = userFacade.findByEmail(mail)
+        return userFacade.findByEmail(mail)
                 .flatMap(user -> {
                     if (Objects.equals(request.type(), MailType.CHANGE_PW.getType())) {
                         return Mono.empty();
+                    } else {
+                        return Mono.error(EmailAlreadyExistsException.EXCEPTION);
                     }
+                })
+                .then(Mono.defer(() -> {
+                    String authCode = getRandomCode();
+                    
+                    sendMail(mail, authCode)
+                            .subscribeOn(scheduler)
+                            .subscribe();
 
-                    return Mono.error(EmailAlreadyExistsException.EXCEPTION);
-                });
-
-        String authCode = getRandomCode();
-
-        Mono<Void> sendMailMono = sendMail(mail, authCode).subscribeOn(scheduler);
-        Mono<Void> saveAuthCodeMono = saveAuthCode(mail, authCode).subscribeOn(scheduler);
-
-        return Mono.when(sendMailMono, saveAuthCodeMono, userMono).then();
+                    return saveAuthCode(mail, authCode);
+                }));
     }
 
     private Mono<Void> sendMail(String to, String authCode) {
