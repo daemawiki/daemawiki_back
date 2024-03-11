@@ -9,10 +9,13 @@ import com.example.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import com.example.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import com.example.daemawiki.domain.document.model.DocumentSearchResult;
 import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
+import com.example.daemawiki.domain.info.service.DocumentImageUpload;
 import com.example.daemawiki.domain.info.service.UpdateInfo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,13 +28,15 @@ public class DocumentController {
     private final DeleteDocument deleteDocumentService;
     private final UpdateDocument updateDocumentService;
     private final UpdateInfo updateInfoService;
+    private final DocumentImageUpload documentImageUpload;
 
-    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService) {
+    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService, DocumentImageUpload documentImageUpload) {
         this.createDocumentService = createDocument;
         this.getDocumentService = getDocument;
         this.deleteDocumentService = deleteDocument;
         this.updateDocumentService = updateDocument;
         this.updateInfoService = updateInfoService;
+        this.documentImageUpload = documentImageUpload;
     }
 
     @PostMapping
@@ -81,6 +86,12 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateInfo(@Valid @RequestBody UpdateInfoRequest request) {
         return updateInfoService.execute(request);
+    }
+
+    @PatchMapping(value = "/{documentId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> updateImage(@PathVariable String documentId, @RequestPart(value = "file", required = true) FilePart filePart) {
+        return documentImageUpload.execute(filePart, documentId);
     }
 
 }
