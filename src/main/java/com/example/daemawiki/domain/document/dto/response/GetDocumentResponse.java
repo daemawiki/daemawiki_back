@@ -15,7 +15,7 @@ public record GetDocumentResponse(
         String title,
         DocumentType type,
         EditDateTime dateTime,
-        List<Info> info,
+        Info info,
         List<List<String>> groups,
         DocumentEditor editor,
         List<Content> content,
