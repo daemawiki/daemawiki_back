@@ -3,12 +3,12 @@ package com.example.daemawiki.domain.content.service;
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
 import com.example.daemawiki.domain.content.model.Content;
+import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
-import com.example.daemawiki.domain.user.dto.response.UserDetailResponse;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
@@ -28,12 +28,14 @@ public class WriteContent {
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
     private final UserFilter userFilter;
+    private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
 
-    public WriteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter) {
+    public WriteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
         this.userFilter = userFilter;
+        this.updateDocumentEditorAndUpdatedDate = updateDocumentEditorAndUpdatedDate;
     }
 
     public Mono<Void> execute(WriteContentRequest request, String documentId) {
@@ -65,7 +67,8 @@ public class WriteContent {
     }
 
     private void setDocument(DefaultDocument document, User user) {
-        document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
+        updateDocumentEditorAndUpdatedDate.execute(document, user);
+
         document.increaseVersion();
     }
 
