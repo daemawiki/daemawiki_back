@@ -46,7 +46,7 @@ public class CreateDocumentFacade {
                         .updatedUser(userDetail)
                         .canEdit(Collections.singletonList(Editor.create(user.getEmail(), user.getId())))
                         .build())
-                .content(Collections.singletonList(request.content()))
+                .content(Lists.mutable.of())
                 .groups(request.groups())
                 .build();
     }
