@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.content.service;
 
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.EditContentTableTitleRequest;
+import com.example.daemawiki.domain.content.model.Content;
 import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.function.Tuple2;
+
+import java.util.List;
 
 @Service
 public class EditContentTableTitle {
@@ -50,11 +53,12 @@ public class EditContentTableTitle {
         DefaultDocument document = tuple.getT2();
         User user = tuple.getT1();
 
-        document.getContents()
+        List<Content> contents = document.getContents()
                 .stream()
                 .filter(c -> c.getIndex().equals(request.index()))
-                .findFirst()
-                .ifPresent(contents -> contents.setTitle(request.newTitle()));
+                .toList();
+
+        contents.getFirst().setTitle(request.newTitle());
 
         document.increaseVersion();
         updateDocumentEditorAndUpdatedDate.execute(document, user);
