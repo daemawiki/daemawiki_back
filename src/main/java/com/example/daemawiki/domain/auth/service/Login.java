@@ -9,6 +9,7 @@ import com.example.daemawiki.global.security.Tokenizer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class Login {
@@ -24,6 +25,7 @@ public class Login {
 
     public Mono<TokenResponse> execute(LoginRequest request) {
         return userRepository.findByEmail(request.email())
+                .subscribeOn(Schedulers.boundedElastic())
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                 .flatMap(user -> Mono.just(user)
                         .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
