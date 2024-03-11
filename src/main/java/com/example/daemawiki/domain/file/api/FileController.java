@@ -44,7 +44,7 @@ public class FileController {
     }
 
     @GetMapping
-    public Flux<File> getFileByName(@NotBlank @RequestParam("name") String name) {
+    public Flux<File> getFileByName(@NotBlank @RequestParam String name) {
         return getFile.getFileByName(name);
     }
 
