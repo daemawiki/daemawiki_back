@@ -26,8 +26,10 @@ public class RevisionService {
 
     public Flux<SimpleDocumentResponse> getUpdatedTop10Revision() {
         List<RevisionType> types = List.of(RevisionType.UPDATE, RevisionType.CREATE);
-        return revisionHistoryRepository.findTop10ByTypeInOrderByCreatedDateTimeDesc(types)
+        return revisionHistoryRepository.findAllByTypeInOrderByCreatedDateTimeDesc(types)
+                .subscribeOn(scheduler)
                 .distinct(RevisionHistory::getDocumentId)
+                .take(10)
                 .flatMap(revisionMapper::revisionToRevisionSimpleDocumentResponse);
     }
 
