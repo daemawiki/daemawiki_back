@@ -40,34 +40,32 @@ public class Signup {
         return userRepository.findByEmail(request.email())
                 .flatMap(user -> Mono.error(EmailAlreadyExistsException.EXCEPTION))
                 .switchIfEmpty(Mono.defer(() -> authMailRepository.findByMail(request.email())
-                            .flatMap(verified -> {
-                                if (!verified) {
-                                    return Mono.error(UnVerifiedEmailException.EXCEPTION);
-                                }
+                        .filter(verified -> verified)
+                        .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
+                        .flatMap(verified -> Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
+                                .subscribeOn(scheduler)
+                                .flatMap(password -> createUser(request, password))
+                                .flatMap(user -> userRepository.save(user)
+                                            .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
+                                                    .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                                                    .flatMap(document -> userRepository.save(savedUser))
+                                                    .then(authMailRepository.delete(savedUser.getEmail()))))
+                                .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
+                        ))).then();
+    }
 
-                                return Mono.fromCallable(() -> passwordEncoder.encode(request.password()))
-                                        .subscribeOn(scheduler)
-                                        .flatMap(password -> {
-                                            User user = User.builder()
-                                                    .name(request.name())
-                                                    .email(request.email())
-                                                    .password(password)
-                                                    .profile(defaultProfile.defaultProfile())
-                                                    .detail(UserDetail.builder()
-                                                            .gen(request.gen())
-                                                            .major(getMajorType.execute(request.major().toLowerCase()))
-                                                            .club("*")
-                                                            .build())
-                                                    .build();
-
-                                            return userRepository.save(user)
-                                                    .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
-                                                            .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                                                            .flatMap(document -> userRepository.save(savedUser))
-                                                            .then(authMailRepository.delete(savedUser.getEmail())));
-                                        })
-                                        .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
-                            }))).then();
+    private Mono<User> createUser(SignupRequest request, String password) {
+        return Mono.just(User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(password)
+                .profile(defaultProfile.defaultProfile())
+                .detail(UserDetail.builder()
+                        .gen(request.gen())
+                        .major(getMajorType.execute(request.major().toLowerCase()))
+                        .club("*")
+                        .build())
+                .build());
     }
 
 }
