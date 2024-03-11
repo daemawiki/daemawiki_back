@@ -2,6 +2,7 @@ package com.example.daemawiki.domain.content.service;
 
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.DeleteContentRequest;
+import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
@@ -20,19 +21,28 @@ public class DeleteContent {
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
     private final UserFilter userFilter;
+    private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
 
-    public DeleteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter) {
+    public DeleteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
         this.userFilter = userFilter;
+        this.updateDocumentEditorAndUpdatedDate = updateDocumentEditorAndUpdatedDate;
     }
 
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> userFilter.checkUserAndDocument(tuple.getT1(), tuple.getT2(), request.version()))
-                .map(document -> removeContent(document, request.index()))
+                .map(tuple -> {
+                    userFilter.checkUserAndDocument(tuple.getT1(), tuple.getT2(), request.version());
+                    return tuple;
+                })
+                .map(tuple -> {
+                    removeContent(tuple.getT2(), request.index());
+                    updateDocumentEditorAndUpdatedDate.execute(tuple.getT2(), tuple.getT1());
+                    return tuple.getT2();
+                })
                 .flatMap(document -> documentFacade.saveDocument(document)
                         .then(createRevision(document)))
                 .onErrorMap(this::mapException);
@@ -43,10 +53,9 @@ public class DeleteContent {
                 .create(RevisionType.UPDATE, document.getId(), document.getTitle()));
     }
 
-    private DefaultDocument removeContent(DefaultDocument document, String index) {
+    private void removeContent(DefaultDocument document, String index) {
         document.getContents().removeIf(c -> c.getIndex().equals(index));
         document.increaseVersion();
-        return document;
     }
 
     private Throwable mapException(Throwable e) {
