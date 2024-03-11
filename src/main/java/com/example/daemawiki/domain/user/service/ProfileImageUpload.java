@@ -1,5 +1,6 @@
 package com.example.daemawiki.domain.user.service;
 
+import com.example.daemawiki.domain.file.model.type.FileType;
 import com.example.daemawiki.domain.user.repository.UserRepository;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
@@ -23,7 +24,7 @@ public class ProfileImageUpload {
 
     public Mono<Void> execute(FilePart filePart) {
         return userFacade.currentUser()
-                .zipWith(s3UploadObject.uploadObject(filePart, "profile"), (user, file) -> {
+                .zipWith(s3UploadObject.uploadObject(filePart, FileType.PROFILE.toString()), (user, file) -> {
                     user.setProfile(file);
                     return user;
                 })
