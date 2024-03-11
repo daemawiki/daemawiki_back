@@ -30,7 +30,7 @@ public class DefaultDocument {
 
     private EditDateTime dateTime;
 
-    private List<Info> info = Lists.mutable.of();
+    private Info info;
 
     private List<List<String>> groups;
 
@@ -43,7 +43,7 @@ public class DefaultDocument {
     private Integer version = 0;
 
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, List<Info> info, List<List<String>> groups, DocumentEditor documentEditor, List<Content> content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, Info info, List<List<String>> groups, DocumentEditor documentEditor, List<Content> content) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
