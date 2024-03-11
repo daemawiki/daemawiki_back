@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocument, String> {
     @Aggregation(pipeline = {
-            "{ $unwind: '$content' }",
+            "{ $unwind: '$contents' }",
             "{ $match: { $or: [ " +
                     "{ 'title': { $regex: '?0', $options: 'i' } }, " +
                     "{ 'contents.detail': { $regex: '?0', $options: 'i' } }" +
