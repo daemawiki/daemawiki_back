@@ -28,4 +28,11 @@ public class DefaultProfile {
                 FileDetail.create(FileType.PROFILE, defaultImageURL));
     }
 
+    public File defaultDocumentImage() {
+        return File.create(defaultImageId,
+                defaultImageName ,
+                defaultImageType,
+                FileDetail.create(FileType.DOCUMENT, defaultImageURL));
+    }
+
 }
