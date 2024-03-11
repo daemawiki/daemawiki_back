@@ -5,7 +5,7 @@ import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.info.dto.UpdateInfoRequest;
-import com.example.daemawiki.domain.info.model.Info;
+import com.example.daemawiki.domain.info.model.Detail;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
@@ -47,7 +47,7 @@ public class UpdateInfo {
                     DefaultDocument document = tuple.getT2();
                     User user = tuple.getT1();
 
-                    setDocument(document, user, request.infoList());
+                    setDocument(document, user, request.subTitle(), request.details());
 
                     return documentRepository.save(document)
                             .then(createRevision(document));
@@ -55,10 +55,10 @@ public class UpdateInfo {
                 .onErrorMap(this::mapException);
     }
 
-    private void setDocument(DefaultDocument document, User user, List<Info> infoList) {
+    private void setDocument(DefaultDocument document, User user, String subTitle, List<Detail> details) {
         document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
 
-        document.setInfo(infoList);
+        document.getInfo().update(subTitle, details);
         document.increaseVersion();
     }
 
