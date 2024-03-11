@@ -1,12 +1,25 @@
 package com.example.daemawiki.domain.info.model;
 
+import com.example.daemawiki.domain.file.model.File;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 @Getter
+@Setter
+@Builder
 public class Info {
 
-    private String title;
+    private File documentImage;
+    private String subTitle;
 
-    private String content;
+    private List<Detail> details;
+
+    public void update(String subTitle, List<Detail> details) {
+        this.subTitle = subTitle;
+        this.details = details;
+    }
 
 }
