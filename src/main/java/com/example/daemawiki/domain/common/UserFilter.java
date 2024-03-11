@@ -12,11 +12,15 @@ import java.util.Objects;
 public class UserFilter {
 
     public void userPermissionAndDocumentVersionCheck(DefaultDocument document, String userEmail, Integer requestVersion) {
-        if (document.getEditor().hasEditPermission(userEmail)) {
-            throw NoEditPermissionUserException.EXCEPTION;
-        }
+        userPermissionCheck(document, userEmail);
         if (!Objects.equals(document.getVersion(), requestVersion)) {
             throw VersionMismatchException.EXCEPTION;
+        }
+    }
+
+    public void userPermissionCheck(DefaultDocument document, String userEmail) {
+        if (document.getEditor().hasEditPermission(userEmail)) {
+            throw NoEditPermissionUserException.EXCEPTION;
         }
     }
 
