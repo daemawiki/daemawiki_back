@@ -12,6 +12,7 @@ import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.global.datetime.model.EditDateTime;
 import org.eclipse.collections.api.factory.Lists;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -26,10 +27,10 @@ public class CreateDocumentFacade {
         this.defaultProfile = defaultProfile;
     }
 
-    public DefaultDocument execute(SaveDocumentRequest request, User user) {
+    public Mono<DefaultDocument> execute(SaveDocumentRequest request, User user) {
         UserDetailResponse userDetail = UserDetailResponse.create(user);
 
-        return DefaultDocument.builder()
+        return Mono.just(DefaultDocument.builder()
                 .title(request.title())
                 .type(getDocumentType.execute(request.type().toLowerCase()))
                 .dateTime(EditDateTime.builder()
@@ -48,7 +49,7 @@ public class CreateDocumentFacade {
                         .build())
                 .content(Lists.mutable.of())
                 .groups(request.groups())
-                .build();
+                .build());
     }
 
 }

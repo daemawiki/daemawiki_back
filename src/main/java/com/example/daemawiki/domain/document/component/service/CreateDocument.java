@@ -28,7 +28,7 @@ public class CreateDocument {
 
     public Mono<Void> execute(SaveDocumentRequest request) {
         return userFacade.currentUser()
-                .map(user -> createDocumentFacade.execute(request, user))
+                .flatMap(user -> createDocumentFacade.execute(request, user))
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);

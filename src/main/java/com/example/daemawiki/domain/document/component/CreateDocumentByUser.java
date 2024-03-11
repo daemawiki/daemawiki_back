@@ -29,7 +29,8 @@ public class CreateDocumentByUser {
     }
 
     public Mono<DefaultDocument> execute(User user) {
-        return documentFacade.saveDocument(createDocument(user))
+        return createDocument(user)
+                .flatMap(documentFacade::saveDocument)
                 .flatMap(document -> createRevision(document)
                         .thenReturn(document))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
@@ -40,7 +41,7 @@ public class CreateDocumentByUser {
                 .create(RevisionType.CREATE, document.getId(), document.getTitle()));
     }
 
-    private DefaultDocument createDocument(User user) {
+    private Mono<DefaultDocument> createDocument(User user) {
         List<List<String>> groups = Arrays.asList(
                 Arrays.asList("학생", user.getDetail().getGen() + "기", user.getName()),
                 Arrays.asList("전공", user.getDetail().getMajor().getMajor())
