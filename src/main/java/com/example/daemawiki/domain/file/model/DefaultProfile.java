@@ -21,14 +21,14 @@ public class DefaultProfile {
     @Value("${profile.image.type}")
     private String defaultImageType;
 
-    public File defaultProfile() {
+    public final File defaultProfile() {
         return File.create(defaultImageId,
                 defaultImageName,
                 defaultImageType,
                 FileDetail.create(FileType.PROFILE, defaultImageURL));
     }
 
-    public File defaultDocumentImage() {
+    public final File defaultDocumentImage() {
         return File.create(defaultImageId,
                 defaultImageName ,
                 defaultImageType,
