@@ -25,7 +25,6 @@ public class Login {
 
     public Mono<TokenResponse> execute(LoginRequest request) {
         return userRepository.findByEmail(request.email())
-                .subscribeOn(Schedulers.boundedElastic())
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                 .flatMap(user -> Mono.just(user)
                         .filter(u -> passwordEncoder.matches(request.password(), u.getPassword()))
