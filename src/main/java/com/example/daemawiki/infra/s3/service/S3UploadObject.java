@@ -19,6 +19,7 @@ import software.amazon.awssdk.services.s3.model.CompletedPart;
 import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
 import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -86,7 +87,7 @@ public class S3UploadObject {
                                         .onErrorMap(e -> FileUploadFailedException.EXCEPTION);
                             });
                 })
-                .flatMap(response -> createFile(key, filename, type, fileType.toLowerCase()))
+                .flatMap(response -> createFile(key, URLDecoder.decode(filename), type, fileType.toLowerCase()))
                 .onErrorMap(e -> e instanceof FileUploadFailedException ? e : ExecuteFailedException.EXCEPTION);
     }
 
