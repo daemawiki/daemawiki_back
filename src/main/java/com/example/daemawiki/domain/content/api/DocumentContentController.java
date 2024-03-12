@@ -47,7 +47,7 @@ public class DocumentContentController {
         return deleteContentService.execute(request, documentId);
     }
 
-    @PatchMapping("/edit")
+    @PatchMapping("/title/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> editContentTitle(@Valid @RequestBody EditContentTableTitleRequest request, @PathVariable String documentId) {
         return editContentTableTitleService.execute(request, documentId);
