@@ -70,7 +70,21 @@ public class Tokenizer {
                 })
                 .onErrorResume(ExpiredJwtException.class, e -> {
                     String user = e.getClaims().getSubject();
-                    return Mono.justOrEmpty(tokenize(user));
+                    // TO DO: 만료 후 2시간 동안 재발급 가능
+                    Date expiration = e.getClaims().getExpiration();
+                    Date now = new Date();
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(expiration);
+                    cal.add(Calendar.HOUR_OF_DAY, 2);
+
+                    Date twoHoursLater = cal.getTime();
+
+                    if (now.before(twoHoursLater)) {
+                        return Mono.justOrEmpty(tokenize(user));
+                    } else {
+                        return Mono.error(InvalidTokenException.EXCEPTION);
+                    }
                 })
                 .onErrorResume(JwtException.class, e ->
                         Mono.error(InvalidTokenException.EXCEPTION));
