@@ -1,9 +1,11 @@
 package com.example.daemawiki.domain.editor.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.editor.dto.AddEditorRequest;
 import com.example.daemawiki.domain.editor.model.Editor;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h403.NoPermissionUserException;
 import org.springframework.stereotype.Service;
@@ -25,15 +27,21 @@ public class AddEditor {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
                 .flatMap(tuple -> {
-                    if (!tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId())) {
+                    DefaultDocument document = tuple.getT2();
+                    User user = tuple.getT1();
+
+                    if (!document.getEditor().getCreatedUser().id().equals(user.getId())) {
                         return Mono.error(NoPermissionUserException.EXCEPTION);
                     }
-                    return Mono.just(tuple.getT2());
+                    return Mono.just(document);
                 })
                 .zipWith(userFacade.findByEmailNotNull(request.email()))
                 .map(tuple -> {
-                    tuple.getT1().getEditor().addEditor(Editor.create(tuple.getT2().getName(), tuple.getT2().getId()));
-                    return tuple.getT1();
+                    DefaultDocument document = tuple.getT1();
+                    User user = tuple.getT2();
+
+                    document.getEditor().addEditor(Editor.create(user.getName(), user.getId()));
+                    return document;
                 })
                 .flatMap(documentRepository::save).then();
     }
