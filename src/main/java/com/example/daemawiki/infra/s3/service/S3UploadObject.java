@@ -99,7 +99,7 @@ public class S3UploadObject {
                             case "content" -> FileType.CONTENT;
                             case "profile" -> FileType.PROFILE;
                             case null, default -> FileType.OTHER;
-                        }, "https://" + bucket + ".s3.amazonaws.com/" + key)))
+                        }, String.format("https://%s.s3.amazonaws.com/%s", bucket, key))))
                 .flatMap(fileRepository::save);
     }
 
