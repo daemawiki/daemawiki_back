@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface RevisionComponent {
     /**
-     *
+     * @author 김승원
      * @param saveRevisionHistoryRequest
      * @return void
      * @exception ExecuteFailedException
