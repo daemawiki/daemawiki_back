@@ -41,14 +41,14 @@ public class AddContentTable {
     public Mono<Void> execute(AddContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .flatMap(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
-                .flatMap(tuple -> addDocumentContentTable(tuple, request))
+                .map(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
+                .map(tuple -> addDocumentContentTable(tuple, request))
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(this::mapException);
     }
 
-    private Mono<DefaultDocument> addDocumentContentTable(Tuple2<User, DefaultDocument> tuple, AddContentRequest request) {
+    private DefaultDocument addDocumentContentTable(Tuple2<User, DefaultDocument> tuple, AddContentRequest request) {
         DefaultDocument document = tuple.getT2();
         User user = tuple.getT1();
 
@@ -56,12 +56,12 @@ public class AddContentTable {
         setDocumentContent(document, request.index(), request.title());
         setDocument(document, user);
 
-        return Mono.just(document);
+        return document;
     }
 
-    private Mono<Tuple2<User, DefaultDocument>> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
+    private Tuple2<User, DefaultDocument> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
         userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), version);
-        return Mono.just(tuple);
+        return tuple;
     }
 
     private void setDocumentContent(DefaultDocument document, String index, String title) {
