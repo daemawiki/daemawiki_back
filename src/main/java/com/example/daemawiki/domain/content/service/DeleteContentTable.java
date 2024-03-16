@@ -8,12 +8,14 @@ import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h400.VersionMismatchException;
 import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Service
 public class DeleteContentTable {
@@ -34,19 +36,25 @@ public class DeleteContentTable {
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> {
-                    userFilter.checkUserAndDocument(tuple.getT1(), tuple.getT2(), request.version());
-                    return tuple;
-                })
-                .map(tuple -> {
-                    removeContent(tuple.getT2(), request.index());
-                    updateDocumentEditorAndUpdatedDate.execute(tuple.getT2(), tuple.getT1());
-                    return tuple.getT2();
-                })
+                .map(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
+                .map(tuple -> deleteDocumentContentTable(tuple, request))
                 .flatMap(document -> documentFacade.saveDocument(document)
                         .then(createRevision(document)))
                 .onErrorMap(this::mapException);
     }
+
+    private DefaultDocument deleteDocumentContentTable(Tuple2<User, DefaultDocument> tuple, DeleteContentRequest request) {
+        removeContent(tuple.getT2(), request.index());
+        updateDocumentEditorAndUpdatedDate.execute(tuple.getT2(), tuple.getT1());
+
+        return tuple.getT2();
+    }
+
+    private Tuple2<User, DefaultDocument> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), version);
+        return tuple;
+    }
+
 
     private Mono<Void> createRevision(DefaultDocument document) {
         return revisionComponent.saveHistory(SaveRevisionHistoryRequest
