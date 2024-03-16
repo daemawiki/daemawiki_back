@@ -17,6 +17,7 @@ import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.Comparator;
 
@@ -40,10 +41,7 @@ public class AddContentTable {
     public Mono<Void> execute(AddContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
-                    return tuple;
-                })
+                .flatMap(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
                 .flatMap(tuple -> {
                     DefaultDocument document = tuple.getT2();
                     User user = tuple.getT1();
@@ -57,6 +55,11 @@ public class AddContentTable {
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Tuple2<User, DefaultDocument>> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), version);
+        return Mono.just(tuple);
     }
 
     private void setDocumentContent(DefaultDocument document, String index, String title) {
