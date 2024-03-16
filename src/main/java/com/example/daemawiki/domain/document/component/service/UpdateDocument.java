@@ -33,7 +33,7 @@ public class UpdateDocument {
         this.getDocumentType = getDocumentType;
         this.revisionComponent = revisionComponent;
         this.userFilter = userFilter;
-        this.updateDocumentEditorAndUpdatedDate = updateDocumentEditorAndUpdatedDate;
+        this.updateDocumentComponent = updateDocumentComponent;
     }
 
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {

@@ -35,7 +35,7 @@ public class EditContentTableTitle {
         this.userFacade = userFacade;
         this.userFilter = userFilter;
         this.scheduler = scheduler;
-        this.updateDocumentEditorAndUpdatedDate = updateDocumentEditorAndUpdatedDate;
+        this.updateDocumentComponent = updateDocumentComponent;
     }
 
     public Mono<Void> execute(EditContentTableTitleRequest request, String documentId) {
