@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.content.service;
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
 import com.example.daemawiki.domain.content.model.Content;
+import com.example.daemawiki.domain.document.component.UpdateDocumentComponent;
 import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
@@ -29,14 +30,14 @@ public class WriteContent {
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
     private final UserFilter userFilter;
-    private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
+    private final UpdateDocumentComponent updateDocumentComponent;
 
-    public WriteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
+    public WriteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
         this.userFilter = userFilter;
-        this.updateDocumentEditorAndUpdatedDate = updateDocumentEditorAndUpdatedDate;
+        this.updateDocumentComponent = updateDocumentComponent;
     }
 
     public Mono<Void> execute(WriteContentRequest request, String documentId) {
@@ -69,7 +70,7 @@ public class WriteContent {
     }
 
     private void setDocument(DefaultDocument document, User user) {
-        updateDocumentEditorAndUpdatedDate.execute(document, user);
+        updateDocumentComponent.updateEditorAndUpdatedDate(document, user);
         document.increaseVersion();
     }
 

@@ -3,6 +3,7 @@ package com.example.daemawiki.domain.content.service;
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.content.dto.EditContentTableTitleRequest;
 import com.example.daemawiki.domain.content.model.Content;
+import com.example.daemawiki.domain.document.component.UpdateDocumentComponent;
 import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
@@ -26,9 +27,9 @@ public class EditContentTableTitle {
     private final UserFacade userFacade;
     private final UserFilter userFilter;
     private final Scheduler scheduler;
-    private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
+    private final UpdateDocumentComponent updateDocumentComponent;
 
-    public EditContentTableTitle(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, Scheduler scheduler, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
+    public EditContentTableTitle(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, Scheduler scheduler, UpdateDocumentComponent updateDocumentComponent) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;
@@ -64,7 +65,7 @@ public class EditContentTableTitle {
         }
 
         document.increaseVersion();
-        updateDocumentEditorAndUpdatedDate.execute(document, user);
+        updateDocumentComponent.updateEditorAndUpdatedDate(document, user);
 
         return Mono.just(document);
     }

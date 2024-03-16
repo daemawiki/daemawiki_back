@@ -1,6 +1,7 @@
 package com.example.daemawiki.domain.document.component.service;
 
 import com.example.daemawiki.domain.common.UserFilter;
+import com.example.daemawiki.domain.document.component.UpdateDocumentComponent;
 import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
@@ -24,9 +25,9 @@ public class UpdateDocument {
     private final GetDocumentType getDocumentType;
     private final RevisionComponent revisionComponent;
     private final UserFilter userFilter;
-    private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
+    private final UpdateDocumentComponent updateDocumentComponent;
 
-    public UpdateDocument(DocumentFacade documentFacade, UserFacade userFacade, GetDocumentType getDocumentType, RevisionComponent revisionComponent, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
+    public UpdateDocument(DocumentFacade documentFacade, UserFacade userFacade, GetDocumentType getDocumentType, RevisionComponent revisionComponent, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
         this.documentFacade = documentFacade;
         this.userFacade = userFacade;
         this.getDocumentType = getDocumentType;
@@ -55,7 +56,7 @@ public class UpdateDocument {
 
         document.getContents().add(request.content());
         document.increaseVersion();
-        updateDocumentEditorAndUpdatedDate.execute(document, user);
+        updateDocumentComponent.updateEditorAndUpdatedDate(document, user);
 
         return document;
     }

@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class UpdateDocumentEditorAndUpdatedDate {
+public class UpdateDocumentEditorAndUpdatedDate implements UpdateDocumentComponent {
 
-    public void execute(DefaultDocument document, User user) {
+    @Override
+    public void updateEditorAndUpdatedDate(DefaultDocument document, User user) {
         document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
         document.getDateTime().setUpdated(LocalDateTime.now());
     }
