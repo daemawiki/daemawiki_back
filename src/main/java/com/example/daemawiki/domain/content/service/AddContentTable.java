@@ -42,19 +42,21 @@ public class AddContentTable {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
                 .flatMap(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
-                .flatMap(tuple -> {
-                    DefaultDocument document = tuple.getT2();
-                    User user = tuple.getT1();
-
-                    updateDocumentEditorAndUpdatedDate.execute(document, user);
-                    setDocumentContent(document, request.index(), request.title());
-                    setDocument(document, user);
-
-                    return Mono.just(document);
-                })
+                .flatMap(tuple -> addDocumentContentTable(tuple, request))
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<DefaultDocument> addDocumentContentTable(Tuple2<User, DefaultDocument> tuple, AddContentRequest request) {
+        DefaultDocument document = tuple.getT2();
+        User user = tuple.getT1();
+
+        updateDocumentEditorAndUpdatedDate.execute(document, user);
+        setDocumentContent(document, request.index(), request.title());
+        setDocument(document, user);
+
+        return Mono.just(document);
     }
 
     private Mono<Tuple2<User, DefaultDocument>> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
