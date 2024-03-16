@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public class DeleteContent {
+public class DeleteContentTable {
     private final DocumentFacade documentFacade;
     private final RevisionComponent revisionComponent;
     private final UserFacade userFacade;
     private final UserFilter userFilter;
     private final UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate;
 
-    public DeleteContent(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
+    public DeleteContentTable(DocumentFacade documentFacade, RevisionComponent revisionComponent, UserFacade userFacade, UserFilter userFilter, UpdateDocumentEditorAndUpdatedDate updateDocumentEditorAndUpdatedDate) {
         this.documentFacade = documentFacade;
         this.revisionComponent = revisionComponent;
         this.userFacade = userFacade;

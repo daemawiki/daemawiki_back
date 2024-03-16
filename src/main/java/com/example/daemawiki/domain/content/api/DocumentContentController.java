@@ -5,7 +5,7 @@ import com.example.daemawiki.domain.content.dto.DeleteContentRequest;
 import com.example.daemawiki.domain.content.dto.EditContentTableTitleRequest;
 import com.example.daemawiki.domain.content.dto.WriteContentRequest;
 import com.example.daemawiki.domain.content.service.AddContentTable;
-import com.example.daemawiki.domain.content.service.DeleteContent;
+import com.example.daemawiki.domain.content.service.DeleteContentTable;
 import com.example.daemawiki.domain.content.service.EditContentTableTitle;
 import com.example.daemawiki.domain.content.service.WriteContent;
 import jakarta.validation.Valid;
@@ -19,13 +19,13 @@ import reactor.core.publisher.Mono;
 public class DocumentContentController {
     private final WriteContent writeContentService;
     private final AddContentTable addContentTableService;
-    private final DeleteContent deleteContentService;
+    private final DeleteContentTable deleteContentTableService;
     private final EditContentTableTitle editContentTableTitleService;
 
-    public DocumentContentController(WriteContent writeContentService, AddContentTable addContentTableService, DeleteContent deleteContentService, EditContentTableTitle editContentTableTitleService) {
+    public DocumentContentController(WriteContent writeContentService, AddContentTable addContentTableService, DeleteContentTable deleteContentTableService, EditContentTableTitle editContentTableTitleService) {
         this.writeContentService = writeContentService;
         this.addContentTableService = addContentTableService;
-        this.deleteContentService = deleteContentService;
+        this.deleteContentTableService = deleteContentTableService;
         this.editContentTableTitleService = editContentTableTitleService;
     }
 
@@ -44,7 +44,7 @@ public class DocumentContentController {
     @PatchMapping("/remove")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteContent(@Valid @RequestBody DeleteContentRequest request, @NotBlank @PathVariable String documentId) {
-        return deleteContentService.execute(request, documentId);
+        return deleteContentTableService.execute(request, documentId);
     }
 
     @PatchMapping("/title/edit")
