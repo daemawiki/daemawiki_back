@@ -39,19 +39,15 @@ public class EditContentTableTitle {
     public Mono<Void> execute(EditContentTableTitleRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
-                .flatMap(tuple -> updateDocument(tuple, request))
+                .flatMap(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .subscribeOn(scheduler)
                 .flatMap(document -> documentFacade.saveDocument(document)
                         .then(createRevision(document)));
     }
 
-    private Tuple2<User, DefaultDocument> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
-        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), version);
-        return tuple;
-    }
+    private Mono<DefaultDocument> checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, EditContentTableTitleRequest request) {
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
 
-    private Mono<DefaultDocument> updateDocument(Tuple2<User, DefaultDocument> tuple, EditContentTableTitleRequest request) {
         DefaultDocument document = tuple.getT2();
         User user = tuple.getT1();
 
