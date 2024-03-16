@@ -39,19 +39,27 @@ public class Signup {
     public Mono<Void> execute(SignupRequest request) {
         return userRepository.findByEmail(request.email())
                 .flatMap(user -> Mono.error(EmailAlreadyExistsException.EXCEPTION))
-                .switchIfEmpty(Mono.defer(() -> authMailRepository.findByMail(request.email())
-                        .filter(verified -> verified)
-                        .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
-                        .flatMap(verified -> Mono.fromSupplier(() -> passwordEncoder.encode(request.password()))
-                                .subscribeOn(scheduler)
-                                .flatMap(password -> createUser(request, password))
-                                .flatMap(user -> userRepository.save(user)
-                                            .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
-                                                    .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                                                    .flatMap(document -> userRepository.save(savedUser))
-                                                    .then(authMailRepository.delete(savedUser.getEmail()))))
-                                .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
-                        ))).then();
+                .switchIfEmpty(Mono.defer(() -> checkAndCreateUser(request)))
+                .then();
+    }
+
+    private Mono<Void> checkAndCreateUser(SignupRequest request) {
+        return authMailRepository.findByMail(request.email())
+                .filter(verified -> verified)
+                .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
+                .flatMap(verified -> Mono.fromSupplier(() -> passwordEncoder.encode(request.password()))
+                        .subscribeOn(scheduler)
+                        .flatMap(password -> createUser(request, password))
+                        .flatMap(this::saveUserAndCreateDocument)
+                        .then(authMailRepository.delete(request.email()))
+                        .onErrorMap(e -> ExecuteFailedException.EXCEPTION));
+    }
+
+    private Mono<User> saveUserAndCreateDocument(User user) {
+        return userRepository.save(user)
+                .flatMap(savedUser -> createDocumentByUser.execute(savedUser)
+                        .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                        .flatMap(document -> userRepository.save(savedUser)));
     }
 
     private Mono<User> createUser(SignupRequest request, String password) {
