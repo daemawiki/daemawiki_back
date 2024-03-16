@@ -24,9 +24,8 @@ public class UserFilter {
         }
     }
 
-    public DefaultDocument checkUserAndDocument(User user, DefaultDocument document, Integer version) {
+    public void checkUserAndDocument(User user, DefaultDocument document, Integer version) {
         userPermissionAndDocumentVersionCheck(document, user.getEmail(), version);
-        return document;
     }
 
 }
