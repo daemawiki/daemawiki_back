@@ -1,12 +1,15 @@
 package com.example.daemawiki.domain.editor.service;
 
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
+import com.example.daemawiki.domain.document.model.DefaultDocument;
 import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.editor.dto.DeleteEditorRequest;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h403.NoPermissionUserException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.Objects;
 
@@ -25,17 +28,21 @@ public class DeleteEditor {
     public Mono<Void> execute(DeleteEditorRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .flatMap(tuple -> {
-                    if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getEditor().getCreatedUser().id())) {
-                        return Mono.error(NoPermissionUserException.EXCEPTION);
-                    }
-                    return Mono.just(tuple.getT2());
-                })
-                .flatMap(document -> {
-                    document.getEditor().getCanEdit().removeIf(e -> e.id().equals(request.userId()));
-                    return documentRepository.save(document);
-                })
+                .flatMap(this::checkPermission)
+                .flatMap(document -> updateDocument(document, request.userId()));
+    }
+
+    private Mono<Void> updateDocument(DefaultDocument document, String userId) {
+        document.getEditor().getCanEdit().removeIf(e -> e.id().equals(userId));
+        return documentRepository.save(document)
                 .then();
+    }
+
+    private Mono<DefaultDocument> checkPermission(Tuple2<User, DefaultDocument> tuple) {
+        if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getEditor().getCreatedUser().id())) {
+            return Mono.error(NoPermissionUserException.EXCEPTION);
+        }
+        return Mono.just(tuple.getT2());
     }
 
 }
