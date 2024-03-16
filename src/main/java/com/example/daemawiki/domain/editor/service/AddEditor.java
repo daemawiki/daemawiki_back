@@ -10,6 +10,7 @@ import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h403.NoPermissionUserException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Service
 public class AddEditor {
@@ -26,24 +27,27 @@ public class AddEditor {
     public Mono<Void> execute(AddEditorRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .flatMap(tuple -> {
-                    DefaultDocument document = tuple.getT2();
-                    User user = tuple.getT1();
-
-                    if (!document.getEditor().getCreatedUser().id().equals(user.getId())) {
-                        return Mono.error(NoPermissionUserException.EXCEPTION);
-                    }
-                    return Mono.just(document);
-                })
+                .flatMap(this::checkPermission)
                 .zipWith(userFacade.findByEmailNotNull(request.email()))
-                .map(tuple -> {
-                    DefaultDocument document = tuple.getT1();
-                    User user = tuple.getT2();
-
-                    document.getEditor().addEditor(Editor.create(user.getName(), user.getId()));
-                    return document;
-                })
+                .map(this::updateDocument)
                 .flatMap(documentRepository::save).then();
+    }
+
+    private DefaultDocument updateDocument(Tuple2<DefaultDocument, User> tuple) {
+        DefaultDocument document = tuple.getT1();
+        User user = tuple.getT2();
+
+        document.getEditor().addEditor(Editor.create(user.getName(), user.getId()));
+
+        return document;
+    }
+
+    private Mono<DefaultDocument> checkPermission(Tuple2<User, DefaultDocument> tuple) {
+        if (!tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId())) {
+            return Mono.error(NoPermissionUserException.EXCEPTION);
+        }
+
+        return Mono.just(tuple.getT2());
     }
 
 }
