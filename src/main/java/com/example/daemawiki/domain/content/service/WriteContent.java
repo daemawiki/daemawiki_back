@@ -17,6 +17,7 @@ import com.example.daemawiki.global.exception.h404.ContentNotFoundException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -41,37 +42,36 @@ public class WriteContent {
     public Mono<Void> execute(WriteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
-                    return tuple;
-                })
-                .flatMap(tuple -> {
-                    DefaultDocument document = tuple.getT2();
-                    User user = tuple.getT1();
-
-                    Map<String, Content> contentsMap = document.getContents().stream()
-                            .collect(Collectors.toMap(Content::getIndex, Function.identity()));
-
-                    if (contentsMap.containsKey(request.index())) {
-                        Content content = contentsMap.get(request.index());
-                        content.setDetail(request.content());
-                        setDocument(document, user);
-
-                        return documentFacade.saveDocument(document)
-                                .then(createRevision(document));
-                    } else {
-                        return Mono.error(ContentNotFoundException.EXCEPTION);
-                    }
-                })
+                .flatMap(tuple -> checkPermissionAndWriteContent(tuple, request))
+                .flatMap(document -> documentFacade.saveDocument(document)
+                        .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<DefaultDocument> checkPermissionAndWriteContent(Tuple2<User, DefaultDocument> tuple, WriteContentRequest request) {
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+
+        DefaultDocument document = tuple.getT2();
+        User user = tuple.getT1();
+
+        Map<String, Content> contentsMap = document.getContents().stream()
+                .collect(Collectors.toMap(Content::getIndex, Function.identity()));
+
+        if (contentsMap.containsKey(request.index())) {
+            Content content = contentsMap.get(request.index());
+            content.setDetail(request.content());
+            setDocument(document, user);
+
+            return Mono.just(document);
+        } else {
+            return Mono.error(ContentNotFoundException.EXCEPTION);
+        }
     }
 
     private void setDocument(DefaultDocument document, User user) {
         updateDocumentEditorAndUpdatedDate.execute(document, user);
-
         document.increaseVersion();
     }
-
 
     private Mono<Void> createRevision(DefaultDocument document) {
         return revisionComponent.saveHistory(SaveRevisionHistoryRequest
@@ -79,7 +79,6 @@ public class WriteContent {
     }
 
     private Throwable mapException(Throwable e) {
-        return e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION;
+        return (e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException) ? e : ExecuteFailedException.EXCEPTION;
     }
-
 }
