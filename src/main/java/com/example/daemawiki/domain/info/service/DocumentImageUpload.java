@@ -8,11 +8,13 @@ import com.example.daemawiki.domain.file.model.type.FileType;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.infra.s3.service.S3UploadObject;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Service
 public class DocumentImageUpload {
@@ -33,20 +35,24 @@ public class DocumentImageUpload {
     public Mono<Void> execute(FilePart filePart, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> {
-                    userFilter.userPermissionCheck(tuple.getT2(), tuple.getT1().getId());
-                    return tuple.getT2();
-                })
+                .map(this::checkPermission)
                 .zipWith(s3UploadObject.uploadObject(filePart, FileType.DOCUMENT.toString()))
-                .flatMap(tuple -> {
-                    DefaultDocument document = tuple.getT1();
-                    File file = tuple.getT2();
+                .flatMap(this::updateDocument);
+    }
 
-                    document.getInfo().setDocumentImage(file);
+    private Mono<Void> updateDocument(Tuple2<DefaultDocument, File> tuple) {
+        DefaultDocument document = tuple.getT1();
+        File file = tuple.getT2();
 
-                    return documentFacade.saveDocument(document)
-                            .then(createRevision(document));
-                });
+        document.getInfo().setDocumentImage(file);
+
+        return documentFacade.saveDocument(document)
+                .then(createRevision(document));
+    }
+
+    private DefaultDocument checkPermission(Tuple2<User, DefaultDocument> tuple) {
+        userFilter.userPermissionCheck(tuple.getT2(), tuple.getT1().getId());
+        return tuple.getT2();
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
