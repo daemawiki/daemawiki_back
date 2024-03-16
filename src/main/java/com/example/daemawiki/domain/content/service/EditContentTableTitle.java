@@ -11,6 +11,7 @@ import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequ
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
 import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
+import com.example.daemawiki.global.exception.h404.ContentNotFoundException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -56,7 +57,11 @@ public class EditContentTableTitle {
                 .filter(c -> c.getIndex().equals(request.index()))
                 .toList();
 
-        contents.getFirst().setTitle(request.newTitle());
+        if (contents.getFirst() != null){
+            contents.getFirst().setTitle(request.newTitle());
+        } else {
+            return Mono.error(ContentNotFoundException.EXCEPTION);
+        }
 
         document.increaseVersion();
         updateDocumentEditorAndUpdatedDate.execute(document, user);
