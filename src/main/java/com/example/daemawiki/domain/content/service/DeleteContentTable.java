@@ -36,25 +36,20 @@ public class DeleteContentTable {
     public Mono<Void> execute(DeleteContentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> checkUserPermissionAndVersion(tuple, request.version()))
-                .map(tuple -> deleteDocumentContentTable(tuple, request))
+                .map(tuple -> checkPermissionAndDeleteDocumentContentTable(tuple, request))
                 .flatMap(document -> documentFacade.saveDocument(document)
                         .then(createRevision(document)))
                 .onErrorMap(this::mapException);
     }
 
-    private DefaultDocument deleteDocumentContentTable(Tuple2<User, DefaultDocument> tuple, DeleteContentRequest request) {
+    private DefaultDocument checkPermissionAndDeleteDocumentContentTable(Tuple2<User, DefaultDocument> tuple, DeleteContentRequest request) {
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+
         removeContent(tuple.getT2(), request.index());
         updateDocumentEditorAndUpdatedDate.execute(tuple.getT2(), tuple.getT1());
 
         return tuple.getT2();
     }
-
-    private Tuple2<User, DefaultDocument> checkUserPermissionAndVersion(Tuple2<User, DefaultDocument> tuple, int version) {
-        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), version);
-        return tuple;
-    }
-
 
     private Mono<Void> createRevision(DefaultDocument document) {
         return revisionComponent.saveHistory(SaveRevisionHistoryRequest
