@@ -6,12 +6,14 @@ import com.example.daemawiki.domain.document.repository.DocumentRepository;
 import com.example.daemawiki.domain.revision.component.RevisionComponent;
 import com.example.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import com.example.daemawiki.domain.revision.model.type.RevisionType;
+import com.example.daemawiki.domain.user.model.User;
 import com.example.daemawiki.domain.user.service.facade.UserFacade;
 import com.example.daemawiki.global.exception.h403.NoPermissionUserException;
 import com.example.daemawiki.global.exception.h403.StudentDocumentDeleteFailedException;
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.Objects;
 
@@ -30,18 +32,21 @@ public class DeleteDocument {
     public Mono<Void> execute(String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentRepository.findById(documentId))
-                .flatMap(tuple -> {
-                    if (tuple.getT2().getType() == DocumentType.STUDENT) {
-                        return Mono.error(StudentDocumentDeleteFailedException.EXCEPTION);
-                    }
-                    if (!Objects.equals(tuple.getT2().getEditor().getCreatedUser().id(), tuple.getT1().getId())) {
-                        return Mono.error(NoPermissionUserException.EXCEPTION);
-                    }
-                    return Mono.just(tuple.getT2());
-                })
+                .flatMap(this::getDefaultDocumentMono)
                 .flatMap(document -> documentRepository.delete(document)
                         .then(createRevision(document)))
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<DefaultDocument> getDefaultDocumentMono(Tuple2<User, DefaultDocument> tuple) {
+        if (tuple.getT2().getType() == DocumentType.STUDENT) {
+            return Mono.error(StudentDocumentDeleteFailedException.EXCEPTION);
+        }
+        if (!Objects.equals(tuple.getT2().getEditor().getCreatedUser().id(), tuple.getT1().getId())) {
+            return Mono.error(NoPermissionUserException.EXCEPTION);
+        }
+
+        return Mono.just(tuple.getT2());
     }
 
     private Mono<Void> createRevision(DefaultDocument document) {
