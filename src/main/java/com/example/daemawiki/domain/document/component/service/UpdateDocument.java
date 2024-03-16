@@ -2,7 +2,6 @@ package com.example.daemawiki.domain.document.component.service;
 
 import com.example.daemawiki.domain.common.UserFilter;
 import com.example.daemawiki.domain.document.component.UpdateDocumentComponent;
-import com.example.daemawiki.domain.document.component.UpdateDocumentEditorAndUpdatedDate;
 import com.example.daemawiki.domain.document.component.facade.DocumentFacade;
 import com.example.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import com.example.daemawiki.domain.document.model.DefaultDocument;
@@ -17,6 +16,7 @@ import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Service
 public class UpdateDocument {
@@ -39,17 +39,18 @@ public class UpdateDocument {
     public Mono<Void> execute(SaveDocumentRequest request, String documentId) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(documentId))
-                .map(tuple -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
-                    return tuple;
-                })
-                .map(tuple -> setDocument(tuple.getT2(), tuple.getT1(), request))
+                .map(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .flatMap(document -> documentFacade.saveDocument(document)
                                 .then(createRevision(document)))
                 .onErrorMap(this::mapException);
     }
 
-    private DefaultDocument setDocument(DefaultDocument document, User user, SaveDocumentRequest request) {
+    private DefaultDocument checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, SaveDocumentRequest request) {
+        DefaultDocument document = tuple.getT2();
+        User user = tuple.getT1();
+
+        userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
+
         document.update(request.title(),
                 getDocumentType.execute(request.type().toLowerCase()),
                 request.groups());
