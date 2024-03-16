@@ -17,6 +17,7 @@ import com.example.daemawiki.global.exception.h403.NoEditPermissionUserException
 import com.example.daemawiki.global.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.List;
 
@@ -39,25 +40,24 @@ public class UpdateInfo {
     public Mono<Void> execute(UpdateInfoRequest request) {
         return userFacade.currentUser()
                 .zipWith(documentFacade.findDocumentById(request.documentId()))
-                .map(tuple -> {
-                    userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
-                    return tuple;
-                })
-                .flatMap(tuple -> {
-                    DefaultDocument document = tuple.getT2();
-                    User user = tuple.getT1();
-
-                    setDocument(document, user, request.subTitle(), request.details());
-
-                    return documentRepository.save(document)
-                            .then(createRevision(document));
-                })
+                .flatMap(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, UpdateInfoRequest request) {
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+
+        DefaultDocument document = tuple.getT2();
+        User user = tuple.getT1();
+
+        setDocument(document, user, request.subTitle(), request.details());
+
+        return documentRepository.save(document)
+                .then(createRevision(document));
     }
 
     private void setDocument(DefaultDocument document, User user, String subTitle, List<Detail> details) {
         document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
-
         document.getInfo().update(subTitle, details);
         document.increaseVersion();
     }
