@@ -1,5 +1,8 @@
 package org.daemawiki.domain.mail.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.daemawiki.domain.mail.dto.AuthCodeRequest;
 import org.daemawiki.domain.mail.model.AuthCode;
 import org.daemawiki.domain.mail.model.type.MailType;
@@ -8,9 +11,6 @@ import org.daemawiki.domain.user.service.facade.UserFacade;
 import org.daemawiki.exception.h409.EmailAlreadyExistsException;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.MailSendFailedException;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

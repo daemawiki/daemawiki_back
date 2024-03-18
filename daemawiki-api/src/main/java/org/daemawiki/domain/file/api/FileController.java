@@ -1,12 +1,12 @@
 package org.daemawiki.domain.file.api;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.daemawiki.domain.file.component.service.GetFile;
 import org.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.daemawiki.domain.file.model.File;
-import org.daemawiki.infra.s3.service.S3DeleteObject;
-import org.daemawiki.infra.s3.service.S3UploadObject;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import org.daemawiki.domain.s3.service.S3DeleteObject;
+import org.daemawiki.domain.s3.service.S3UploadObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
