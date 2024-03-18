@@ -1,4 +1,4 @@
-package org.daemawiki.domain.document;
+package org.daemawiki.domain.common;
 
 import org.daemawiki.domain.file.model.File;
 import org.daemawiki.domain.file.model.FileDetail;

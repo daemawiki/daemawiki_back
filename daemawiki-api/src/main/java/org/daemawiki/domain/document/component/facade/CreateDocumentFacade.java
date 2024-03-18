@@ -2,7 +2,7 @@ package org.daemawiki.domain.document.component.facade;
 
 import org.daemawiki.datetime.model.EditDateTime;
 import org.daemawiki.domain.auth.type.GetDocumentType;
-import org.daemawiki.domain.document.DefaultProfile;
+import org.daemawiki.domain.common.DefaultProfile;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.editor.model.DocumentEditor;

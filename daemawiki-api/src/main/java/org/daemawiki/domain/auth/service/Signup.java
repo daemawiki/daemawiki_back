@@ -2,7 +2,7 @@ package org.daemawiki.domain.auth.service;
 
 import org.daemawiki.domain.auth.dto.request.SignupRequest;
 import org.daemawiki.domain.document.component.CreateDocumentByUser;
-import org.daemawiki.domain.document.DefaultProfile;
+import org.daemawiki.domain.common.DefaultProfile;
 import org.daemawiki.domain.mail.repository.AuthMailRepository;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.UserDetail;
