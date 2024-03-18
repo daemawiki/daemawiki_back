@@ -13,6 +13,18 @@
 ## Product Spec
 <img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/bdfb06d5-2953-40e5-bd65-9efab7a77713">
 
+---
+
+### Module level
+- api 
+  <p></p>
+- auth 
+  <p></p>
+- common
+  <p></p>
+- domain 
+  <p></p>
+
 </div>
 
 대마위키 백엔드 성능 개선 블로그
