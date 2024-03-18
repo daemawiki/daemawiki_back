@@ -23,7 +23,6 @@ public class SecurityConfig {
     }
 
     private static final String[] WHITE_LIST = {
-            "/test/**",
             "/api/mail/**",
             "/api/auth/**",
             "/api/revisions/**"
