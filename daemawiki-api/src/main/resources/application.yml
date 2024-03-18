@@ -1,0 +1,44 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      database: ${MONGO_DB}
+
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PW}
+
+  mail:
+    smtp:
+      auth: true
+      starttls:
+        required: true
+        enable: true
+      socketFactory:
+        class: javax.net.ssl.SSLSocketFactory
+        fallback: false
+      port: 465
+
+admin:
+  mail: ${ADMIN_MAIL}
+  password: ${ADMIN_PW}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS}
+      secret-key: ${AWS_SECRET}
+    s3:
+      bucket: ${BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+profile:
+  image:
+    url: ${DEFAULT_PROFILE_IMAGE}
+    id: ${DEFAULT_PROFILE_ID}
+    name: ${DEFAULT_PROFILE_NAME}
+    type: ${DEFAULT_PROFILE_TYPE}

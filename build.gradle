@@ -1,57 +1,43 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.2'
+    id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-java {
-    sourceCompatibility = "21"
-}
+    group = 'org.daemawiki'
+    version = '0.0.1-SNAPSHOT'
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+    java {
+        sourceCompatibility = '21'
     }
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.projectreactor:reactor-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
 }
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
-
-    implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
-    implementation 'org.eclipse.collections:eclipse-collections:11.1.0'
-
-    implementation 'org.apache.commons:commons-collections4:4.4'
-
-    implementation 'software.amazon.awssdk:s3:2.17.43'
-    implementation 'software.amazon.awssdk:netty-nio-client:2.17.43'
-
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-targetCompatibility = JavaVersion.VERSION_21

@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':daemawiki-common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+
+    implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
+    implementation 'org.eclipse.collections:eclipse-collections:11.1.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
