@@ -1,4 +1,5 @@
 jar.enabled = false
+bootJar.enabled = false
 
 dependencies {
     implementation project(':daemawiki-common')

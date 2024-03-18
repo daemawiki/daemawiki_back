@@ -41,5 +41,3 @@ allprojects {
     }
 
 }
-
-bootJar.enabled = false

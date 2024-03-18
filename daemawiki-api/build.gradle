@@ -1,4 +1,6 @@
 jar.enabled = false
+bootJar.enabled = true
+
 
 dependencies {
     implementation project(':daemawiki-auth')
