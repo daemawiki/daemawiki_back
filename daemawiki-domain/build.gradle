@@ -1,3 +1,5 @@
+jar.enabled = false
+
 dependencies {
     implementation project(':daemawiki-common')
 
