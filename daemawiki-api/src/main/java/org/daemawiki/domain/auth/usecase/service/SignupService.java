@@ -3,6 +3,7 @@ package org.daemawiki.domain.auth.usecase.service;
 import org.daemawiki.domain.auth.dto.request.SignupRequest;
 import org.daemawiki.domain.auth.usecase.SignupUsecase;
 import org.daemawiki.domain.common.DefaultProfile;
+import org.daemawiki.domain.common.DefaultProfileImpl;
 import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
 import org.daemawiki.domain.mail.application.mail.DeleteAuthMailPort;
 import org.daemawiki.domain.mail.application.mail.GetAuthMailPort;
