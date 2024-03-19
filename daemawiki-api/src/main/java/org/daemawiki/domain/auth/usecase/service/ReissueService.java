@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public class Reissue implements ReissueUsecase {
+public class ReissueService implements ReissueUsecase {
     private final Tokenizer tokenizer;
 
-    public Reissue(Tokenizer tokenizer) {
+    public ReissueService(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }
 

@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 @Service
-public class Signup implements SignupUsecase {
+public class SignupService implements SignupUsecase {
     private final GetUserPort getUserPort;
     private final SaveUserPort saveUserPort;
     private final GetAuthMailPort getAuthMailPort;
@@ -31,7 +31,7 @@ public class Signup implements SignupUsecase {
     private final CreateDocumentUsecase createDocumentUsecase;
     private final DefaultProfile defaultProfile;
 
-    public Signup(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfile defaultProfile) {
+    public SignupService(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfile defaultProfile) {
         this.getUserPort = getUserPort;
         this.saveUserPort = saveUserPort;
         this.getAuthMailPort = getAuthMailPort;
