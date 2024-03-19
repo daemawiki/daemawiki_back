@@ -1,8 +1,9 @@
-package org.daemawiki.infra.s3.service;
+package org.daemawiki.infra.s3.service.impl;
 
 import org.daemawiki.domain.file.component.DeleteFile;
 import org.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.daemawiki.exception.h500.ExecuteFailedException;
+import org.daemawiki.infra.s3.service.S3DeleteObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

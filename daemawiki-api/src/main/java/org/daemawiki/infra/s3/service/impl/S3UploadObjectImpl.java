@@ -1,4 +1,4 @@
-package org.daemawiki.infra.s3.service;
+package org.daemawiki.infra.s3.service.impl;
 
 import org.daemawiki.domain.file.model.File;
 import org.daemawiki.domain.file.model.FileDetail;
@@ -6,6 +6,7 @@ import org.daemawiki.domain.file.model.type.FileType;
 import org.daemawiki.domain.file.repository.FileRepository;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.FileUploadFailedException;
+import org.daemawiki.infra.s3.service.S3UploadObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;

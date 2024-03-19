@@ -7,7 +7,7 @@ import org.daemawiki.domain.user.usecase.UploadUserProfileImageUsecase;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.FileUploadFailedException;
 import org.daemawiki.infra.s3.service.S3UploadObject;
-import org.daemawiki.infra.s3.service.S3UploadObjectImpl;
+import org.daemawiki.infra.s3.service.impl.S3UploadObjectImpl;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
