@@ -11,7 +11,7 @@
 |                                   <a href="https://github.com/ori0o0p">@김승원</a>                                   |
 
 ## Product Spec
-<img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/bdfb06d5-2953-40e5-bd65-9efab7a77713">
+<img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/35325c41-8459-4a3b-8ee1-8eb4abce94ed">
 
 ---
 
