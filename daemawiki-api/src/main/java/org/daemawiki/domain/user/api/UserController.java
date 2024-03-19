@@ -1,16 +1,13 @@
 package org.daemawiki.domain.user.api;
 
-import org.daemawiki.domain.user.dto.request.ChangePasswordRequest;
-import org.daemawiki.domain.user.dto.request.UpdateClubRequest;
-import org.daemawiki.domain.user.dto.response.GetUserResponse;
-import org.daemawiki.domain.user.service.ChangePassword;
-import org.daemawiki.domain.user.service.GetUser;
-import org.daemawiki.domain.user.service.ProfileImageUpload;
-import org.daemawiki.domain.user.service.UpdateClub;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.daemawiki.domain.user.dto.request.ChangePasswordRequest;
+import org.daemawiki.domain.user.dto.request.UpdateClubRequest;
+import org.daemawiki.domain.user.dto.response.GetUserResponse;
+import org.daemawiki.domain.user.usecase.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -21,65 +18,72 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final ProfileImageUpload profileImageUpload;
-    private final ChangePassword changePasswordService;
-    private final GetUser getUser;
-    private final UpdateClub updateClub;
+    private final ChangeUserPasswordUsecase changeUserPasswordUsecase;
+    private final DeleteUserUsecase deleteUserUsecase;
+    private final GetUserUsecase getUserUsecase;
+    private final UpdateUserUsecase updateUserUsecase;
+    private final UploadUserProfileImageUsecase uploadUserProfileImageUsecase;
 
-    public UserController(ProfileImageUpload profileImageUpload, ChangePassword changePasswordService, GetUser getUser, UpdateClub updateClub) {
-        this.profileImageUpload = profileImageUpload;
-        this.changePasswordService = changePasswordService;
-        this.getUser = getUser;
-        this.updateClub = updateClub;
+    public UserController(ChangeUserPasswordUsecase changeUserPasswordUsecase, DeleteUserUsecase deleteUserUsecase, GetUserUsecase getUserUsecase, UpdateUserUsecase updateUserUsecase, UploadUserProfileImageUsecase uploadUserProfileImageUsecase) {
+        this.changeUserPasswordUsecase = changeUserPasswordUsecase;
+        this.deleteUserUsecase = deleteUserUsecase;
+        this.getUserUsecase = getUserUsecase;
+        this.updateUserUsecase = updateUserUsecase;
+        this.uploadUserProfileImageUsecase = uploadUserProfileImageUsecase;
     }
 
     @PatchMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> profileUpload(@RequestPart(value = "file", required = true) FilePart filePart) {
-        return profileImageUpload.execute(filePart);
+        return uploadUserProfileImageUsecase.upload(filePart);
     }
 
     @PatchMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> changePasswordCurrentUser(@Valid @RequestBody ChangePasswordRequest request) {
-        return changePasswordService.currentUser(request);
+        return changeUserPasswordUsecase.currentUser(request);
     }
     
     @PatchMapping("/non-login/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> changePasswordNonLoggedInUser (@Valid @RequestBody ChangePasswordRequest request) {
-        return changePasswordService.nonLoggedInUser(request);
+        return changeUserPasswordUsecase.nonLoggedInUser(request);
     }
 
     @GetMapping("/generation/{generation}")
     public Flux<GetUserResponse> getUserByGen(@NotNull @PathVariable Integer generation) {
-        return getUser.getUserByGen(generation);
+        return getUserUsecase.getUserByGen(generation);
     }
 
     @GetMapping("/major/{major}")
     public Flux<GetUserResponse> getUserByMajor(@NotBlank @PathVariable String major) {
-        return getUser.getUserByMajor(major);
+        return getUserUsecase.getUserByMajor(major);
     }
 
     @GetMapping("/club/{club}")
     public Flux<GetUserResponse> getUserByClub(@NotNull @PathVariable String club) {
-        return getUser.getUserByClub(club);
+        return getUserUsecase.getUserByClub(club);
     }
 
     @GetMapping("/find")
     public Flux<GetUserResponse> getUser(@Nullable @RequestParam Integer gen, @Nullable @RequestParam String major, @Nullable @RequestParam String club, @RequestParam String orderBy, @Nullable @RequestParam String sort) {
-        return getUser.getUserByGenAndMajorAndClub(gen, major, club, orderBy, sort);
+        return getUserUsecase.getUserByGenAndMajorAndClub(gen, major, club, orderBy, sort);
     }
 
     @GetMapping
     public Mono<GetUserResponse> getCurrentUser() {
-        return getUser.getCurrentUser();
+        return getUserUsecase.getCurrentUser();
     }
 
     @PatchMapping("/my/club")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateClub(@Valid @RequestBody UpdateClubRequest request) {
-        return updateClub.execute(request);
+        return updateUserUsecase.updateUserClub(request);
+    }
+
+    @DeleteMapping
+    public Mono<Void> deleteUser() {
+        return deleteUserUsecase.deleteCurrentUser();
     }
 
 }

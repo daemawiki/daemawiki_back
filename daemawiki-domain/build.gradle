@@ -10,5 +10,6 @@ dependencies {
     implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
     implementation 'org.eclipse.collections:eclipse-collections:11.1.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }

@@ -1,18 +1,18 @@
 package org.daemawiki.domain.document.api;
 
-import org.daemawiki.domain.document.component.service.CreateDocument;
-import org.daemawiki.domain.document.component.service.DeleteDocument;
-import org.daemawiki.domain.document.component.service.GetDocument;
-import org.daemawiki.domain.document.component.service.UpdateDocument;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
+import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
+import org.daemawiki.domain.document.usecase.DeleteDocumentUsecase;
+import org.daemawiki.domain.document.usecase.GetDocumentUsecase;
+import org.daemawiki.domain.document.usecase.UpdateDocumentUsecase;
 import org.daemawiki.domain.info.dto.UpdateInfoRequest;
-import org.daemawiki.domain.info.service.DocumentImageUpload;
-import org.daemawiki.domain.info.service.UpdateInfo;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import org.daemawiki.domain.info.usecase.UpdateDocumentInfoUsecase;
+import org.daemawiki.domain.info.usecase.UploadDocumentImageUsecase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -23,75 +23,75 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/documents")
 public class DocumentController {
-    private final CreateDocument createDocumentService;
-    private final GetDocument getDocumentService;
-    private final DeleteDocument deleteDocumentService;
-    private final UpdateDocument updateDocumentService;
-    private final UpdateInfo updateInfoService;
-    private final DocumentImageUpload documentImageUpload;
+    private final CreateDocumentUsecase createDocumentUsecase;
+    private final DeleteDocumentUsecase deleteDocumentUsecase;
+    private final GetDocumentUsecase getDocumentUsecase;
+    private final UpdateDocumentUsecase updateDocumentUsecase;
+    private final UpdateDocumentInfoUsecase updateDocumentInfoUsecase;
+    private final UploadDocumentImageUsecase uploadDocumentImageUsecase;
 
-    public DocumentController(CreateDocument createDocument, GetDocument getDocument, DeleteDocument deleteDocument, UpdateDocument updateDocument, UpdateInfo updateInfoService, DocumentImageUpload documentImageUpload) {
-        this.createDocumentService = createDocument;
-        this.getDocumentService = getDocument;
-        this.deleteDocumentService = deleteDocument;
-        this.updateDocumentService = updateDocument;
-        this.updateInfoService = updateInfoService;
-        this.documentImageUpload = documentImageUpload;
+    public DocumentController(CreateDocumentUsecase createDocumentUsecase, DeleteDocumentUsecase deleteDocumentUsecase, GetDocumentUsecase getDocumentUsecase, UpdateDocumentUsecase updateDocumentUsecase, UpdateDocumentInfoUsecase updateDocumentInfoUsecase, UploadDocumentImageUsecase uploadDocumentImageUsecase) {
+        this.createDocumentUsecase = createDocumentUsecase;
+        this.deleteDocumentUsecase = deleteDocumentUsecase;
+        this.getDocumentUsecase = getDocumentUsecase;
+        this.updateDocumentUsecase = updateDocumentUsecase;
+        this.updateDocumentInfoUsecase = updateDocumentInfoUsecase;
+        this.uploadDocumentImageUsecase = uploadDocumentImageUsecase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Void> createDocument(@Valid @RequestBody SaveDocumentRequest request) {
-        return createDocumentService.execute(request);
+        return createDocumentUsecase.create(request);
     }
 
     @GetMapping("/{documentId}")
     public Mono<GetDocumentResponse> getDocument(@NotBlank @PathVariable String documentId) {
-        return getDocumentService.getDocumentById(documentId);
+        return getDocumentUsecase.getDocumentById(documentId);
     }
 
     @GetMapping("/random")
     public Mono<GetDocumentResponse> getDocumentByRandom() {
-        return getDocumentService.getDocumentByRandom();
+        return getDocumentUsecase.getDocumentByRandom();
     }
 
     @GetMapping("/search")
     public Flux<DocumentSearchResult> searchDocument(@NotBlank @RequestParam("text") String text) {
-        return getDocumentService.searchDocument(text);
+        return getDocumentUsecase.searchDocument(text);
     }
 
     @GetMapping("/most-revision/top-10")
     public Flux<SimpleDocumentResponse> getDocumentOrderByVersion() {
-        return getDocumentService.getDocumentTop10();
+        return getDocumentUsecase.getDocumentTop10();
     }
 
     @GetMapping("/most-view")
     public Flux<SimpleDocumentResponse> getDocumentOrderByView() {
-        return getDocumentService.getDocumentOrderByView();
+        return getDocumentUsecase.getDocumentOrderByView();
     }
 
     @DeleteMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deleteDocument(@NotBlank @PathVariable String documentId) {
-        return deleteDocumentService.execute(documentId);
+        return deleteDocumentUsecase.delete(documentId);
     }
 
     @PatchMapping("/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateDocument(@NotBlank @PathVariable String documentId, @Valid @RequestBody SaveDocumentRequest request) {
-        return updateDocumentService.execute(request, documentId);
+        return updateDocumentUsecase.update(request, documentId);
     }
 
     @PatchMapping("/info")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateInfo(@Valid @RequestBody UpdateInfoRequest request) {
-        return updateInfoService.execute(request);
+        return updateDocumentInfoUsecase.update(request);
     }
 
     @PatchMapping(value = "/{documentId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> updateImage(@PathVariable String documentId, @RequestPart(value = "file", required = true) FilePart filePart) {
-        return documentImageUpload.execute(filePart, documentId);
+        return uploadDocumentImageUsecase.upload(filePart, documentId);
     }
 
 }

@@ -10,15 +10,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.daemawiki.security.JwtWebFilter;
-import org.daemawiki.security.Tokenizer;
+import org.daemawiki.security.TokenizerImpl;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    private final Tokenizer tokenizer;
+    private final TokenizerImpl tokenizer;
 
-    public SecurityConfig(Tokenizer tokenizer) {
+    public SecurityConfig(TokenizerImpl tokenizer) {
         this.tokenizer = tokenizer;
     }
 

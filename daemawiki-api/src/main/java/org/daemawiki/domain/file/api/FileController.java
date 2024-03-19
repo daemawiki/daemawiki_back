@@ -2,9 +2,9 @@ package org.daemawiki.domain.file.api;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import org.daemawiki.domain.file.component.service.GetFile;
 import org.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.daemawiki.domain.file.model.File;
+import org.daemawiki.domain.file.usecase.GetFileUsecase;
 import org.daemawiki.infra.s3.service.S3DeleteObject;
 import org.daemawiki.infra.s3.service.S3UploadObject;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,12 @@ import reactor.core.publisher.Mono;
 public class FileController {
     private final S3UploadObject s3UploadObject;
     private final S3DeleteObject s3DeleteObject;
-    private final GetFile getFile;
+    private final GetFileUsecase getFileUsecase;
 
-    public FileController(S3UploadObject s3UploadObject, S3DeleteObject s3DeleteObject, GetFile getFile) {
+    public FileController(S3UploadObject s3UploadObject, S3DeleteObject s3DeleteObject, GetFileUsecase getFileUsecase) {
         this.s3UploadObject = s3UploadObject;
         this.s3DeleteObject = s3DeleteObject;
-        this.getFile = getFile;
+        this.getFileUsecase = getFileUsecase;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -40,17 +40,17 @@ public class FileController {
 
     @GetMapping("/{fileId}")
     public Mono<File> getFileById(@NotBlank @PathVariable String fileId) {
-        return getFile.getFileById(fileId);
+        return getFileUsecase.getFileById(fileId);
     }
 
     @GetMapping
     public Flux<File> getFileByName(@NotBlank @RequestParam String name) {
-        return getFile.getFileByName(name);
+        return getFileUsecase.getFileByName(name);
     }
 
     @GetMapping("/list")
     public Flux<File> getAll() {
-        return getFile.getAll();
+        return getFileUsecase.getAll();
     }
 
 }
