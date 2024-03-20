@@ -78,10 +78,8 @@ public class SignupService implements SignupUsecase {
     private Mono<User> saveUserAndCreateDocument(User user) {
         return saveUserPort.save(user)
                 .flatMap(savedUser -> createDocumentUsecase.createByUser(savedUser)
-                        .flatMap(document -> {
-                            savedUser.setDocumentId(document.getId());
-                            return saveUserPort.save(savedUser);
-                        }));
+                        .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                        .flatMap(document -> saveUserPort.save(savedUser)));
     }
 
     /**
