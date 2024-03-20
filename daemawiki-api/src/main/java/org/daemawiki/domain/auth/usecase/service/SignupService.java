@@ -51,6 +51,12 @@ public class SignupService implements SignupUsecase {
                 .then();
     }
 
+    /**
+     * 이메일로 회원가입 가능 여부를 확인하고 생성하는 메서드.
+     *
+     * @param request 사용자가 요청한 정보
+     * @return Mono<Void> 사용자 생성 작업의 결과
+     */
     private Mono<Void> checkAndCreateUser(SignupRequest request) {
         return getAuthMailPort.findByMail(request.email())
                 .filter(verified -> verified)
@@ -63,6 +69,12 @@ public class SignupService implements SignupUsecase {
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
+    /**
+     * 유저를 저장하고 문서를 생성하는 메서드.
+     *
+     * @param user 저장할 유저
+     * @return 저장된 유저
+     */
     private Mono<User> saveUserAndCreateDocument(User user) {
         return saveUserPort.save(user)
                 .flatMap(savedUser -> createDocumentUsecase.createByUser(savedUser)
@@ -72,6 +84,13 @@ public class SignupService implements SignupUsecase {
                         }));
     }
 
+    /**
+     * 사용자 객체를 생성하는 메서드.
+     *
+     * @param request 회원 가입 요청 정보
+     * @param password 비밀번호
+     * @return 생성된 사용자 Mono 객체
+     */
     private Mono<User> createUser(SignupRequest request, String password) {
         return Mono.fromSupplier(() -> User.builder()
                 .name(request.name())
