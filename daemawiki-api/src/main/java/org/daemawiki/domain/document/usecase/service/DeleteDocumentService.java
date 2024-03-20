@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-import java.util.Objects;
-
 @Service
 public class DeleteDocumentService implements DeleteDocumentUsecase {
     private final GetDocumentPort getDocumentPort;
@@ -47,7 +45,7 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
         if (tuple.getT2().getType() == DocumentType.STUDENT) {
             return Mono.error(StudentDocumentDeleteFailedException.EXCEPTION);
         }
-        if (!Objects.equals(tuple.getT2().getEditor().getCreatedUser().id(), tuple.getT1().getId())) {
+        if (!tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId())) {
             return Mono.error(NoPermissionUserException.EXCEPTION);
         }
 
