@@ -20,9 +20,9 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserMailSendService implements UserMailSendUsecase {
@@ -41,23 +41,21 @@ public class UserMailSendService implements UserMailSendUsecase {
     @Value("${admin.mail}")
     private String admin;
 
-    private static final Random rand = new Random();
-
     @Override
     public Mono<Void> send(AuthCodeRequest request) {
         String mail = request.mail();
 
         return getUserPort.findByEmail(mail)
                 .flatMap(user -> {
-                    if (Objects.equals(request.type(), MailType.CHANGE_PW.getType())) {
-                        return Mono.empty();
-                    } else {
+                    if (Objects.equals(request.type(), MailType.SIGNUP.getType())) {
                         return Mono.error(EmailAlreadyExistsException.EXCEPTION);
+                    } else {
+                        return Mono.empty();
                     }
                 })
                 .then(Mono.defer(() -> {
                     String authCode = getRandomCode();
-                    
+
                     sendMail(mail, authCode)
                             .subscribeOn(scheduler)
                             .subscribe();
@@ -67,7 +65,7 @@ public class UserMailSendService implements UserMailSendUsecase {
     }
 
     private Mono<Void> sendMail(String to, String authCode) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        return Mono.fromRunnable(() -> {
             try {
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -84,11 +82,7 @@ public class UserMailSendService implements UserMailSendUsecase {
             } catch (MessagingException | UnsupportedEncodingException e) {
                 throw MailSendFailedException.EXCEPTION;
             }
-        });
-
-        return Mono.fromFuture(future)
-                .onErrorMap(e -> MailSendFailedException.EXCEPTION)
-                .then();
+        }).onErrorMap(e -> MailSendFailedException.EXCEPTION).then();
     }
 
     private Mono<Void> saveAuthCode(String to, String authCode) {
@@ -108,8 +102,10 @@ public class UserMailSendService implements UserMailSendUsecase {
     }
 
     private String getRandomCode() {
-        int num = rand.nextInt(900000) + 100000;
-        return String.valueOf(num);
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] randomBytes = new byte[6];
+        secureRandom.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
 
 }
