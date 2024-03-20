@@ -19,7 +19,9 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.function.Tuple2;
 
-import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class UpdateContentTableTitleService implements UpdateContentTableTitleUsecase {
@@ -57,13 +59,14 @@ public class UpdateContentTableTitleService implements UpdateContentTableTitleUs
 
         userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
 
-        List<Content> contents = document.getContents()
+        Map<String, Content> contentMap = document.getContents()
                 .stream()
-                .filter(c -> c.getIndex().equals(request.index()))
-                .toList();
+                .collect(Collectors.toMap(Content::getIndex, Function.identity()));
 
-        if (contents.getFirst() != null){
-            contents.getFirst().setTitle(request.newTitle());
+        Content content = contentMap.get(request.index());
+
+        if (content != null){
+            content.setTitle(request.newTitle());
         } else {
             return Mono.error(ContentNotFoundException.EXCEPTION);
         }
