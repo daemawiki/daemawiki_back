@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,7 +47,7 @@ public class S3UploadObjectImpl implements S3UploadObject {
         UUID key = UUID.randomUUID();
         String keyString = key.toString();
         Map<String, String> metadata = Map.of("filename", filename);
-        MediaType type = filePart.headers().getContentType();
+        Optional<MediaType> type = Optional.ofNullable(filePart.headers().getContentType());
 
         CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
                 .bucket(bucket)
@@ -89,19 +90,17 @@ public class S3UploadObjectImpl implements S3UploadObject {
                                         .onErrorMap(e -> FileUploadFailedException.EXCEPTION);
                             });
                 })
-                .flatMap(response -> createFile(key, URLDecoder.decode(filename), type, fileType.toLowerCase()))
+                .flatMap(response -> createFile(key, URLDecoder.decode(filename), type.orElse(null), fileType.toLowerCase()))
                 .onErrorMap(e -> e instanceof FileUploadFailedException ? e : ExecuteFailedException.EXCEPTION);
     }
 
     private Mono<File> createFile(UUID key, String fileName, MediaType mediaType, String filetype) {
         return Mono.just(File.create(key,
                         fileName,
-                        mediaType.toString(),
-                        FileDetail.create(switch (filetype) {
-                            case "content" -> FileType.CONTENT;
-                            case "profile" -> FileType.PROFILE;
-                            case null, default -> FileType.OTHER;
-                        }, String.format("https://%s.s3.amazonaws.com/%s", bucket, key))))
+                        mediaType != null ? mediaType.toString() : "null",
+                        FileDetail.create(
+                                FileType.valueOf(filetype.toUpperCase()),
+                                String.format("https://%s.s3.amazonaws.com/%s", bucket, key))))
                 .flatMap(fileRepository::save);
     }
 
