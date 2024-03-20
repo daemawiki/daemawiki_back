@@ -65,17 +65,12 @@ public class UpdateUserService implements UpdateUserUsecase {
     @Override
     public Mono<Void> updateUser(EditUserRequest request) {
         return getUserPort.currentUser()
-                .flatMap(user -> {
-                    user.update(request.name(), request.detail());
-                    return saveUserPort.save(user);
-                })
+                .doOnNext(user -> user.update(request.name(), request.detail()))
+                .flatMap(saveUserPort::save)
                 .flatMap(user -> getDocumentPort.getDocumentById(user.getDocumentId())
-                        .flatMap(document -> {
-                            setDocumentForUpdateUser(document, user);
-
-                            return saveDocumentPort.save(document)
-                                    .then(createRevision(document));
-                        }));
+                        .doOnNext(document -> setDocumentForUpdateUser(document, user))
+                        .flatMap(document -> saveDocumentPort.save(document)
+                                    .then(createRevision(document))));
     }
 
     private void setDocumentForUpdateUser(DefaultDocument document, User user) {
@@ -87,11 +82,11 @@ public class UpdateUserService implements UpdateUserUsecase {
 
     private List<List<String>> createNewGroups(User user) {
         List<List<String>> newGroups = new ArrayList<>();
-        newGroups.add(Arrays.asList("학생", user.getDetail().getGen() + "기", user.getName()));
-        newGroups.add(Arrays.asList("전공", user.getDetail().getMajor().getMajor()));
+        newGroups.add(List.of("학생", user.getDetail().getGen() + "기", user.getName()));
+        newGroups.add(List.of("전공", user.getDetail().getMajor().getMajor()));
 
         if (!user.getDetail().getClub().isBlank()) {
-            newGroups.add(Arrays.asList("동아리", user.getDetail().getClub()));
+            newGroups.add(List.of("동아리", user.getDetail().getClub()));
         }
 
         return newGroups;
