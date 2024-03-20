@@ -17,7 +17,6 @@ import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 @Service
 public class SignupService implements SignupUsecase {
@@ -26,17 +25,15 @@ public class SignupService implements SignupUsecase {
     private final GetAuthMailPort getAuthMailPort;
     private final DeleteAuthMailPort deleteAuthMailPort;
     private final PasswordEncoder passwordEncoder;
-    private final Scheduler scheduler;
     private final GetMajorType getMajorType;
     private final CreateDocumentUsecase createDocumentUsecase;
     private final DefaultProfile defaultProfile;
 
-    public SignupService(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, Scheduler scheduler, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfile defaultProfile) {
+    public SignupService(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfile defaultProfile) {
         this.getUserPort = getUserPort;
         this.saveUserPort = saveUserPort;
         this.getAuthMailPort = getAuthMailPort;
         this.passwordEncoder = passwordEncoder;
-        this.scheduler = scheduler;
         this.getMajorType = getMajorType;
         this.deleteAuthMailPort = deleteAuthMailPort;
         this.createDocumentUsecase = createDocumentUsecase;
@@ -62,7 +59,6 @@ public class SignupService implements SignupUsecase {
                 .filter(verified -> verified)
                 .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
                 .map(verified -> passwordEncoder.encode(request.password()))
-                .subscribeOn(scheduler)
                 .flatMap(password -> createUser(request, password))
                 .flatMap(this::saveUserAndCreateDocument)
                 .then(deleteAuthMailPort.delete(request.email()))
