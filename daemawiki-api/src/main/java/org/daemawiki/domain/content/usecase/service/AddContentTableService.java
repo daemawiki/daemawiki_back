@@ -32,7 +32,6 @@ public class AddContentTableService implements AddContentTableUsecase {
     private final UserFilter userFilter;
     private final UpdateDocumentComponent updateDocumentComponent;
 
-
     public AddContentTableService(SaveDocumentPort saveDocumentPort, GetDocumentPort getDocumentPort, CreateRevisionUsecase createRevisionUsecase, GetUserPort getUserPort, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
         this.saveDocumentPort = saveDocumentPort;
         this.getDocumentPort = getDocumentPort;
