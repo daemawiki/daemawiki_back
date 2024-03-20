@@ -29,8 +29,12 @@ public class SigninService implements SigninUsecase {
         return getUserPort.findByEmail(request.email())
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                 .flatMap(user -> validateUserAndPassword(user, request.password()))
-                .flatMap(user -> tokenizer.createToken(user.getEmail())
-                        .map(TokenResponse::create));
+                .flatMap(this::generateTokenResponse);
+    }
+
+    private Mono<TokenResponse> generateTokenResponse(User user) {
+        return tokenizer.createToken(user.getEmail())
+                .map(TokenResponse::create);
     }
 
     private Mono<User> validateUserAndPassword(User user, String inputPassword) {
