@@ -3,7 +3,6 @@ package org.daemawiki.domain.auth.usecase.service;
 import org.daemawiki.domain.auth.dto.request.SignupRequest;
 import org.daemawiki.domain.auth.usecase.SignupUsecase;
 import org.daemawiki.domain.common.DefaultProfile;
-import org.daemawiki.domain.common.DefaultProfileImpl;
 import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
 import org.daemawiki.domain.mail.application.mail.DeleteAuthMailPort;
 import org.daemawiki.domain.mail.application.mail.GetAuthMailPort;
@@ -56,23 +55,25 @@ public class SignupService implements SignupUsecase {
         return getAuthMailPort.findByMail(request.email())
                 .filter(verified -> verified)
                 .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
-                .flatMap(verified -> Mono.fromSupplier(() -> passwordEncoder.encode(request.password()))
-                        .subscribeOn(scheduler)
-                        .flatMap(password -> createUser(request, password))
-                        .flatMap(this::saveUserAndCreateDocument)
-                        .then(deleteAuthMailPort.delete(request.email()))
-                        .onErrorMap(e -> ExecuteFailedException.EXCEPTION));
+                .map(verified -> passwordEncoder.encode(request.password()))
+                .subscribeOn(scheduler)
+                .flatMap(password -> createUser(request, password))
+                .flatMap(this::saveUserAndCreateDocument)
+                .then(deleteAuthMailPort.delete(request.email()))
+                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
     private Mono<User> saveUserAndCreateDocument(User user) {
         return saveUserPort.save(user)
                 .flatMap(savedUser -> createDocumentUsecase.createByUser(savedUser)
-                        .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                        .flatMap(document -> saveUserPort.save(savedUser)));
+                        .flatMap(document -> {
+                            savedUser.setDocumentId(document.getId());
+                            return saveUserPort.save(savedUser);
+                        }));
     }
 
     private Mono<User> createUser(SignupRequest request, String password) {
-        return Mono.just(User.builder()
+        return Mono.fromSupplier(() -> User.builder()
                 .name(request.name())
                 .email(request.email())
                 .password(password)
