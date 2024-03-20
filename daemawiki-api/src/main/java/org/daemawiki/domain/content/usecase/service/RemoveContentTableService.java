@@ -62,7 +62,7 @@ public class RemoveContentTableService implements RemoveContentTableUsecase {
     }
 
     private void removeContent(DefaultDocument document, String index) {
-        document.getContents().removeIf(c -> c.getIndex().equals(index));
+        document.getContents().removeIf(content -> content.getIndex().equals(index));
         document.increaseVersion();
     }
 
