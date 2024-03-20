@@ -86,4 +86,5 @@ public class WriteContentService implements WriteContentUsecase {
     private Throwable mapException(Throwable e) {
         return (e instanceof ContentNotFoundException || e instanceof VersionMismatchException || e instanceof NoEditPermissionUserException) ? e : ExecuteFailedException.EXCEPTION;
     }
+
 }
