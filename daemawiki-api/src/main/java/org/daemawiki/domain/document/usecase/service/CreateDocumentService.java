@@ -14,7 +14,6 @@ import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -50,9 +49,9 @@ public class CreateDocumentService implements CreateDocumentUsecase {
     }
 
     private Mono<DefaultDocument> createDocument(User user) {
-        List<List<String>> groups = Arrays.asList(
-                Arrays.asList("학생", user.getDetail().getGen() + "기", user.getName()),
-                Arrays.asList("전공", user.getDetail().getMajor().getMajor())
+        List<List<String>> groups = List.of(
+                List.of("학생", user.getDetail().getGen() + "기", user.getName()),
+                List.of("전공", user.getDetail().getMajor().getMajor())
         );
 
         return createDocumentFacade.create(SaveDocumentRequest
