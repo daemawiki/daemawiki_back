@@ -39,9 +39,9 @@ public class UpdateDocumentInfoService implements UpdateDocumentInfoUsecase {
     }
 
     @Override
-    public Mono<Void> update(UpdateInfoRequest request) {
+    public Mono<Void> update(String documentId, UpdateInfoRequest request) {
         return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(request.documentId()))
+                .zipWith(getDocumentPort.getDocumentById(documentId))
                 .flatMap(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .onErrorMap(this::mapException);
     }

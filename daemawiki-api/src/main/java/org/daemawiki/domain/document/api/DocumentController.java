@@ -82,10 +82,10 @@ public class DocumentController {
         return updateDocumentUsecase.update(request, documentId);
     }
 
-    @PatchMapping("/info")
+    @PatchMapping("/{documentId}/info")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateInfo(@Valid @RequestBody UpdateInfoRequest request) {
-        return updateDocumentInfoUsecase.update(request);
+    public Mono<Void> updateInfo(@Valid @RequestBody UpdateInfoRequest request, @NotBlank @PathVariable String documentId) {
+        return updateDocumentInfoUsecase.update(documentId, request);
     }
 
     @PatchMapping(value = "/{documentId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

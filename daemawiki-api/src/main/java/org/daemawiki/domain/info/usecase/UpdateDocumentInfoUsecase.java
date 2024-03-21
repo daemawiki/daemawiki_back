@@ -4,6 +4,6 @@ import org.daemawiki.domain.info.dto.UpdateInfoRequest;
 import reactor.core.publisher.Mono;
 
 public interface UpdateDocumentInfoUsecase {
-    Mono<Void> update(UpdateInfoRequest request);
+    Mono<Void> update(String documentId, UpdateInfoRequest request);
 
 }
