@@ -22,11 +22,10 @@ public record SaveDocumentRequest(
         Integer version
 ) {
 
-        public static SaveDocumentRequest create(String title, String type, Content content, List<List<String>> groups) {
+        public static SaveDocumentRequest create(String title, String type, List<List<String>> groups) {
                 return SaveDocumentRequest.builder()
                         .title(title)
                         .type(type)
-                        .content(content)
                         .groups(groups)
                         .build();
         }
