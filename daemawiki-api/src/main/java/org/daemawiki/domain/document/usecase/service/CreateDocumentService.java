@@ -1,6 +1,5 @@
 package org.daemawiki.domain.document.usecase.service;
 
-import org.daemawiki.domain.content.model.Content;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.component.facade.CreateDocumentFacade;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
@@ -59,7 +58,6 @@ public class CreateDocumentService implements CreateDocumentUsecase {
         return createDocumentFacade.create(SaveDocumentRequest
                 .create(user.getName(),
                         "student",
-                        Content.create("1", "개요", "회원가입을 통해 자동 생성된 문서입니다."),
                         groups), user);
     }
 
