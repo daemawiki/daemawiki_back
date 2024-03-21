@@ -3,6 +3,7 @@ package org.daemawiki.domain.document.component.facade;
 import org.daemawiki.datetime.model.EditDateTime;
 import org.daemawiki.domain.auth.type.GetDocumentType;
 import org.daemawiki.domain.common.DefaultProfile;
+import org.daemawiki.domain.content.model.Content;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.editor.model.DocumentEditor;
@@ -48,7 +49,7 @@ public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
                         .updatedUser(userDetail)
                         .canEdit(Collections.singletonList(Editor.create(user.getEmail(), user.getId())))
                         .build())
-                .content(Lists.mutable.of())
+                .content(Lists.mutable.of(Content.create("1", "개요", user.getName())))
                 .groups(request.groups())
                 .build());
     }
