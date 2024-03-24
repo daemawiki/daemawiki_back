@@ -1,11 +1,11 @@
 package org.daemawiki.domain.document.component.facade;
 
 import org.daemawiki.datetime.model.EditDateTime;
-import org.daemawiki.domain.auth.type.GetDocumentType;
 import org.daemawiki.domain.common.DefaultProfile;
 import org.daemawiki.domain.content.model.Content;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
+import org.daemawiki.domain.document.model.type.DocumentType;
 import org.daemawiki.domain.editor.model.DocumentEditor;
 import org.daemawiki.domain.editor.model.Editor;
 import org.daemawiki.domain.info.model.Info;
@@ -20,11 +20,9 @@ import java.util.Collections;
 
 @Component
 public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
-    private final GetDocumentType getDocumentType;
     private final DefaultProfile defaultProfile;
 
-    public CreateDocumentFacadeImpl(GetDocumentType getDocumentType, DefaultProfile defaultProfile) {
-        this.getDocumentType = getDocumentType;
+    public CreateDocumentFacadeImpl(DefaultProfile defaultProfile) {
         this.defaultProfile = defaultProfile;
     }
 
@@ -34,7 +32,7 @@ public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
 
         return Mono.just(DefaultDocument.builder()
                 .title(request.title())
-                .type(getDocumentType.execute(request.type().toLowerCase()))
+                .type(DocumentType.valueOf(request.type().toUpperCase()))
                 .dateTime(EditDateTime.builder()
                         .created(LocalDateTime.now())
                         .updated(LocalDateTime.now())
