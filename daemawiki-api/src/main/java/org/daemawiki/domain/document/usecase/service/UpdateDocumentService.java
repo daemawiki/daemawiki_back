@@ -1,9 +1,9 @@
 package org.daemawiki.domain.document.usecase.service;
 
-import org.daemawiki.domain.auth.type.GetDocumentType;
 import org.daemawiki.domain.common.UserFilter;
 import org.daemawiki.domain.document.application.GetDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
+import org.daemawiki.domain.document.model.type.DocumentType;
 import org.daemawiki.domain.document.usecase.UpdateDocumentComponent;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
@@ -28,16 +28,14 @@ public class UpdateDocumentService implements UpdateDocumentUsecase {
     private final CreateRevisionUsecase createRevisionUsecase;
     private final UpdateDocumentComponent updateDocumentComponent;
     private final UserFilter userFilter;
-    private final GetDocumentType getDocumentType;
 
-    public UpdateDocumentService(SaveDocumentPort saveDocumentPort, GetDocumentPort getDocumentPort, GetUserPort getUserPort, CreateRevisionUsecase createRevisionUsecase, UpdateDocumentComponent updateDocumentComponent, UserFilter userFilter, GetDocumentType getDocumentType) {
+    public UpdateDocumentService(SaveDocumentPort saveDocumentPort, GetDocumentPort getDocumentPort, GetUserPort getUserPort, CreateRevisionUsecase createRevisionUsecase, UpdateDocumentComponent updateDocumentComponent, UserFilter userFilter) {
         this.saveDocumentPort = saveDocumentPort;
         this.getDocumentPort = getDocumentPort;
         this.getUserPort = getUserPort;
         this.createRevisionUsecase = createRevisionUsecase;
         this.updateDocumentComponent = updateDocumentComponent;
         this.userFilter = userFilter;
-        this.getDocumentType = getDocumentType;
     }
 
     @Override
@@ -57,7 +55,7 @@ public class UpdateDocumentService implements UpdateDocumentUsecase {
         userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
 
         document.update(request.title(),
-                getDocumentType.execute(request.type().toLowerCase()),
+                DocumentType.valueOf(request.type().toUpperCase()),
                 request.groups());
 
         document.getContents().add(request.content());
