@@ -1,10 +1,10 @@
 package org.daemawiki.domain.document.usecase.service;
 
-import org.daemawiki.domain.document.mapper.DocumentMapperImpl;
 import org.daemawiki.domain.document.application.GetDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import org.daemawiki.domain.document.mapper.DocumentMapper;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.daemawiki.domain.document.usecase.GetDocumentUsecase;
@@ -16,9 +16,9 @@ import reactor.core.publisher.Mono;
 public class GetDocumentService implements GetDocumentUsecase {
     private final GetDocumentPort getDocumentPort;
     private final SaveDocumentPort saveDocumentPort;
-    private final DocumentMapperImpl documentMapper;
+    private final DocumentMapper documentMapper;
 
-    public GetDocumentService(GetDocumentPort getDocumentPort, SaveDocumentPort saveDocumentPort, DocumentMapperImpl documentMapper) {
+    public GetDocumentService(GetDocumentPort getDocumentPort, SaveDocumentPort saveDocumentPort, DocumentMapper documentMapper) {
         this.getDocumentPort = getDocumentPort;
         this.saveDocumentPort = saveDocumentPort;
         this.documentMapper = documentMapper;
