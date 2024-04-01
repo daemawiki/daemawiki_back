@@ -1,3 +1,2 @@
 rootProject.name = 'daemawiki'
-include 'daemawiki-api', 'daemawiki-domain', 'daemawiki-auth', 'daemawiki-common'
-
+include 'daemawiki-api', 'daemawiki-domain', 'daemawiki-auth', 'daemawiki-common', 'daemawiki-service'
