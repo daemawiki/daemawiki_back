@@ -65,7 +65,7 @@ public class DocumentController {
         return getDocumentUsecase.getDocumentTop10();
     }
 
-    @GetMapping("/most-view")
+    @GetMapping
     public Flux<SimpleDocumentResponse> getDocumentOrderByView() {
         return getDocumentUsecase.getDocumentOrderByView();
     }
