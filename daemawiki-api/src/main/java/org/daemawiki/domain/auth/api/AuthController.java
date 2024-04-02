@@ -30,7 +30,7 @@ public class AuthController {
         return signinUsecase.signin(request);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Void> signup(@Valid @RequestBody SignupRequest request) {
         return signupUsecase.signup(request);
