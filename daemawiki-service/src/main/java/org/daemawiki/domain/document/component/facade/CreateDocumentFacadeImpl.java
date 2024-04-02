@@ -1,7 +1,7 @@
 package org.daemawiki.domain.document.component.facade;
 
+import org.daemawiki.config.DefaultProfileConfig;
 import org.daemawiki.datetime.model.EditDateTime;
-import org.daemawiki.domain.common.DefaultProfile;
 import org.daemawiki.domain.content.model.Content;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
@@ -20,9 +20,9 @@ import java.util.Collections;
 
 @Component
 public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
-    private final DefaultProfile defaultProfile;
+    private final DefaultProfileConfig defaultProfile;
 
-    public CreateDocumentFacadeImpl(DefaultProfile defaultProfile) {
+    public CreateDocumentFacadeImpl(DefaultProfileConfig defaultProfile) {
         this.defaultProfile = defaultProfile;
     }
 

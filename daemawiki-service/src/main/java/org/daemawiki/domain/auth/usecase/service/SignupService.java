@@ -1,8 +1,8 @@
 package org.daemawiki.domain.auth.usecase.service;
 
+import org.daemawiki.config.DefaultProfileConfig;
 import org.daemawiki.domain.auth.dto.request.SignupRequest;
 import org.daemawiki.domain.auth.usecase.SignupUsecase;
-import org.daemawiki.domain.common.DefaultProfile;
 import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
 import org.daemawiki.domain.mail.application.mail.DeleteAuthMailPort;
 import org.daemawiki.domain.mail.application.mail.GetAuthMailPort;
@@ -27,9 +27,9 @@ public class SignupService implements SignupUsecase {
     private final PasswordEncoder passwordEncoder;
     private final GetMajorType getMajorType;
     private final CreateDocumentUsecase createDocumentUsecase;
-    private final DefaultProfile defaultProfile;
+    private final DefaultProfileConfig defaultProfile;
 
-    public SignupService(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfile defaultProfile) {
+    public SignupService(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile) {
         this.getUserPort = getUserPort;
         this.saveUserPort = saveUserPort;
         this.getAuthMailPort = getAuthMailPort;
@@ -90,7 +90,7 @@ public class SignupService implements SignupUsecase {
                 .name(request.name())
                 .email(request.email())
                 .password(password)
-                .profile(defaultProfile.defaultProfile())
+                .profile(defaultProfile.defaultUserProfile())
                 .detail(UserDetail.builder()
                         .gen(request.gen())
                         .major(getMajorType.execute(request.major().toLowerCase()))
