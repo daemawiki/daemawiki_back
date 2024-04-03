@@ -103,9 +103,15 @@ public class UserMailSendService implements UserMailSendUsecase {
 
     private String getRandomCode() {
         SecureRandom secureRandom = new SecureRandom();
+        byte[] seed = new byte[32];
+        secureRandom.nextBytes(seed);
+        secureRandom.setSeed(seed);
         byte[] randomBytes = new byte[4];
         secureRandom.nextBytes(randomBytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(randomBytes);
     }
 
 }
