@@ -6,8 +6,8 @@ import org.daemawiki.domain.file.model.type.FileType;
 import org.daemawiki.domain.file.repository.FileRepository;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.FileUploadFailedException;
+import org.daemawiki.infra.s3.config.AwsS3Properties;
 import org.daemawiki.infra.s3.service.S3UploadObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -32,22 +32,22 @@ import java.util.UUID;
 public class S3UploadObjectImpl implements S3UploadObject {
     private final S3AsyncClient s3AsyncClient;
     private final FileRepository fileRepository;
+    private final AwsS3Properties awsS3Properties;
 
-    public S3UploadObjectImpl(S3AsyncClient s3AsyncClient, FileRepository fileRepository) {
+    public S3UploadObjectImpl(S3AsyncClient s3AsyncClient, FileRepository fileRepository, AwsS3Properties awsS3Properties) {
         this.s3AsyncClient = s3AsyncClient;
         this.fileRepository = fileRepository;
+        this.awsS3Properties = awsS3Properties;
     }
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     @Override
     public Mono<File> uploadObject(FilePart filePart, String fileType) {
         String filename = URLEncoder.encode(filePart.filename(), StandardCharsets.UTF_8);
-        UUID key = UUID.randomUUID();
-        String keyString = key.toString();
+        final UUID key = UUID.randomUUID();
+        final String keyString = key.toString();
         Map<String, String> metadata = Map.of("filename", filename);
         Optional<MediaType> type = Optional.ofNullable(filePart.headers().getContentType());
+        final String bucket = awsS3Properties.getBucket();
 
         CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
                 .bucket(bucket)
@@ -66,7 +66,7 @@ public class S3UploadObjectImpl implements S3UploadObject {
                                 dataBuffer.read(fileContent);
                                 DataBufferUtils.release(dataBuffer);
 
-                                return Mono.fromCompletionStage(s3AsyncClient.uploadPart(UploadPartRequest.builder()
+                                    return Mono.fromCompletionStage(s3AsyncClient.uploadPart(UploadPartRequest.builder()
                                                 .bucket(bucket)
                                                 .key(keyString)
                                                 .partNumber(partNumber)
@@ -100,7 +100,7 @@ public class S3UploadObjectImpl implements S3UploadObject {
                         mediaType != null ? mediaType.toString() : "null",
                         FileDetail.create(
                                 FileType.valueOf(filetype.toUpperCase()),
-                                String.format("https://%s.s3.amazonaws.com/%s", bucket, key))))
+                                String.format("https://%s.s3.amazonaws.com/%s", awsS3Properties.getBucket(), key))))
                 .flatMap(fileRepository::save);
     }
 
