@@ -3,8 +3,8 @@ package org.daemawiki.infra.s3.service.impl;
 import org.daemawiki.domain.file.component.DeleteFile;
 import org.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.daemawiki.exception.h500.ExecuteFailedException;
+import org.daemawiki.infra.s3.config.AwsS3Properties;
 import org.daemawiki.infra.s3.service.S3DeleteObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -14,19 +14,18 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 public class S3DeleteObjectImpl implements S3DeleteObject {
     private final S3AsyncClient s3AsyncClient;
     private final DeleteFile deleteFile;
+    private final AwsS3Properties awsS3Properties;
 
-    public S3DeleteObjectImpl(S3AsyncClient s3AsyncClient, DeleteFile deleteFile) {
+    public S3DeleteObjectImpl(S3AsyncClient s3AsyncClient, DeleteFile deleteFile, AwsS3Properties awsS3Properties) {
         this.s3AsyncClient = s3AsyncClient;
         this.deleteFile = deleteFile;
+        this.awsS3Properties = awsS3Properties;
     }
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     @Override
     public Mono<Void> deleteObject(DeleteFileRequest request) {
         return Mono.just(DeleteObjectRequest.builder()
-                        .bucket(bucket)
+                        .bucket(awsS3Properties.getBucket())
                         .key(request.key())
                         .build())
                 .map(s3AsyncClient::deleteObject)
