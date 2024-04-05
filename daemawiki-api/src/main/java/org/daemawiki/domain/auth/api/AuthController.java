@@ -36,7 +36,7 @@ public class AuthController {
         return signupUsecase.signup(request);
     }
 
-    @PostMapping("/reissue")
+    @PutMapping("/reissue")
     public Mono<TokenResponse> reissue(@Valid @RequestBody ReissueRequest request) {
         return reissueUsecase.reissue(request);
     }
