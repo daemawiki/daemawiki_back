@@ -1,6 +1,5 @@
 package org.daemawiki.infra.s3.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -15,15 +14,17 @@ import java.time.Duration;
 
 @Configuration
 public class AwsS3Config {
+    private final AwsS3Properties awsS3Properties;
 
-    @Value("${cloud.aws.region.static}")
-    private String region;
+    public AwsS3Config(AwsS3Properties awsS3Properties) {
+        this.awsS3Properties = awsS3Properties;
+    }
 
     @Bean
     public S3AsyncClient s3AsyncClient(AwsCredentialsProvider awsCredentialsProvider) {
         return S3AsyncClient.builder()
                 .httpClient(sdkAsyncHttpClient())
-                .region(Region.of(region))
+                .region(Region.AP_NORTHEAST_2)
                 .credentialsProvider(awsCredentialsProvider)
                 .serviceConfiguration(s3Configuration()).build();
     }
@@ -42,15 +43,9 @@ public class AwsS3Config {
                 .build();
     }
 
-    @Value("${cloud.aws.credentials.access-key}")
-    private String accessKey;
-
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String secretKey;
-
     @Bean
     AwsCredentialsProvider awsCredentialsProvider() {
-        return () -> AwsBasicCredentials.create(accessKey, secretKey);
+        return () -> AwsBasicCredentials.create(awsS3Properties.getAccess(), awsS3Properties.getSecret());
     }
 
 }
