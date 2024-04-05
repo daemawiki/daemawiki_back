@@ -23,15 +23,3 @@ spring:
 admin:
   mail: ${ADMIN_MAIL}
   password: ${ADMIN_PW}
-
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_ACCESS}
-      secret-key: ${AWS_SECRET}
-    s3:
-      bucket: ${BUCKET}
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
