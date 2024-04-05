@@ -1,6 +1,6 @@
 package org.daemawiki.config;
 
-import lombok.Getter;
+import lombok.Data;
 import org.daemawiki.domain.file.model.File;
 import org.daemawiki.domain.file.model.FileDetail;
 import org.daemawiki.domain.file.model.type.FileType;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Getter
+@Data
 @Component
 @ConfigurationProperties(prefix = "profile.image")
 public class DefaultProfileConfig {
