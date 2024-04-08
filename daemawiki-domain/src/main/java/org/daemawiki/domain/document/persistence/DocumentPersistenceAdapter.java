@@ -61,6 +61,11 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, GetDocument
     }
 
     @Override
+    public Mono<DefaultDocument> increaseView(DefaultDocument document) {
+        return documentRepository.increaseView(document);
+    }
+
+    @Override
     public Mono<Void> deleteById(String id) {
         return documentRepository.deleteById(id);
     }
