@@ -18,7 +18,7 @@ public class GetMajorType {
             case "gitops" -> MajorType.GITOPS;
             case "ai" -> MajorType.AI;
             case "design" -> MajorType.DESIGN;
-            case "org/daemawiki/security" -> MajorType.SECURITY;
+            case "security" -> MajorType.SECURITY;
             case "game" -> MajorType.GAME;
             case "embedded" -> MajorType.EMBEDDED;
             case "dba" -> MajorType.DBA;
