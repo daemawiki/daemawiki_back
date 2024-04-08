@@ -3,6 +3,7 @@ package org.daemawiki.domain.document.mapper;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import org.daemawiki.domain.document.model.DefaultDocument;
+import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -32,6 +33,17 @@ public class DocumentMapperImpl implements DocumentMapper {
                 .title(document.getTitle())
                 .numberOfUpdate(document.getVersion())
                 .updatedDate(document.getDateTime().getUpdated())
+                .view(document.getView())
+                .build());
+    }
+
+    @Override
+    public Mono<DocumentSearchResult> defaultDocumentToDocumentSearchResult(DefaultDocument document) {
+        return Mono.justOrEmpty(DocumentSearchResult.builder()
+                .id(document.getId())
+                .title(document.getTitle())
+                .type(document.getType())
+                .dateTime(document.getDateTime())
                 .view(document.getView())
                 .build());
     }
