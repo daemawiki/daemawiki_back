@@ -33,7 +33,7 @@ public class UserMailVerifyService implements UserMailVerifyUsecase {
                         .then(deleteAuthCodePort.delete(authCode))
                         .thenReturn(ResponseEntity.status(200)
                                 .body(getResponse(true))))
-                .switchIfEmpty(Mono.justOrEmpty(ResponseEntity.status(400)
+                .switchIfEmpty(Mono.justOrEmpty(ResponseEntity.status(401)
                                 .body(getResponse(false))));
     }
 
