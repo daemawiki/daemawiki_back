@@ -44,6 +44,17 @@ public class GetDocumentService implements GetDocumentUsecase {
     }
 
     @Override
+    public Flux<DocumentSearchResult> searchDocumentTitle(String text) {
+        return getDocumentPort.searchDocumentTitle(text)
+                .flatMap(documentMapper::defaultDocumentToDocumentSearchResult);
+    }
+
+    @Override
+    public Flux<DocumentSearchResult> searchDocumentContent(String text) {
+        return getDocumentPort.searchDocumentContent(text);
+    }
+
+    @Override
     public Flux<SimpleDocumentResponse> getDocumentTop10() {
         return getDocumentPort.getDocumentTop10()
                 .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
