@@ -11,7 +11,7 @@ public record SignupRequest(
         String name,
         @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(dsm\\.hs\\.kr)$",
                 message = "메일 형식이 올바르지 않습니다.")
-        @NotBlank(message = "이메일을 입력해주세요.")
+        @NotBlank(message = "메일을 입력해주세요.")
         String email,
         @NotNull(message = "기수를 입력해주세요.")
         Integer gen,
