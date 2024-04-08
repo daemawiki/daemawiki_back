@@ -17,6 +17,16 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     })
     Flux<DocumentSearchResult> findByTextContaining(String text);
 
+    Flux<DefaultDocument> findByTitleContaining(String text);
+    
+    @Aggregation(pipeline = {
+            "{ $unwind: '$contents' }",
+            "{ $match: { $or: [ " +
+                    "{ 'contents.detail': { $regex: '?0', $options: 'i' } }" +
+                    "] } }"
+    })
+    Flux<DocumentSearchResult> findByContentTextContaining(String text);
+
     @Aggregation("{ $sample: {'size':  1} }")
     Mono<DefaultDocument> findRandomDocument();
 
