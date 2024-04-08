@@ -1,6 +1,5 @@
 package org.daemawiki.domain.auth.usecase.service;
 
-import org.daemawiki.domain.auth.dto.request.ReissueRequest;
 import org.daemawiki.domain.auth.dto.response.TokenResponse;
 import org.daemawiki.domain.auth.usecase.ReissueUsecase;
 import org.daemawiki.exception.h500.TokenReissueFailedException;
@@ -19,15 +18,23 @@ public class ReissueService implements ReissueUsecase {
     /**
      * 토큰을 재발급 메서드
      *
-     * @param request 재발급 요청 객체
+     * @param token 재발급 요청 객체
      * @return 토큰 응답 객체
      * @throws TokenReissueFailedException 토큰 재발급 실패 시 예외 발생
      */
     @Override
-    public Mono<TokenResponse> reissue(ReissueRequest request) {
-        return tokenizer.reissue(request.token())
+    public Mono<TokenResponse> reissue(String token ) {
+        return tokenizer.reissue(tokenParse(token))
                 .map(TokenResponse::create)
                 .switchIfEmpty(Mono.error(TokenReissueFailedException.EXCEPTION));
+    }
+
+    private String tokenParse(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7);
+        } else {
+            return null;
+        }
     }
 
 }
