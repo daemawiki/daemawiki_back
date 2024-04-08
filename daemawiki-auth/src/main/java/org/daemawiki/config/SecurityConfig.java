@@ -38,7 +38,7 @@ public class SecurityConfig {
         return http.authorizeExchange(a -> a
                         .pathMatchers(WHITE_LIST).permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/documents/{documentId}").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/documents/search").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/documents/search/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/documents/random").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/documents/most-revision/top-10").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/files").permitAll()
