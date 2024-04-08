@@ -47,7 +47,7 @@ public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
                         .updatedUser(userDetail)
                         .canEdit(Collections.singletonList(Editor.create(user.getEmail(), user.getId())))
                         .build())
-                .content(Lists.mutable.of(Content.create("1", "개요", user.getName())))
+                .content(Lists.mutable.of(Content.create("1", "개요", "")))
                 .groups(request.groups())
                 .build());
     }
