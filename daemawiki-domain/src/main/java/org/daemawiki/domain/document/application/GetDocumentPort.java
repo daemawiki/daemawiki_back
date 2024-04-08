@@ -9,6 +9,8 @@ public interface GetDocumentPort {
     Mono<DefaultDocument> getDocumentById(String id);
     Mono<DefaultDocument> getDocumentByRandom();
     Flux<DocumentSearchResult> searchDocument(String text);
+    Flux<DefaultDocument> searchDocumentTitle(String text);
+    Flux<DocumentSearchResult> searchDocumentContent(String text);
     Flux<DefaultDocument> getDocumentTop10();
     Flux<DefaultDocument> getDocumentOrderByView();
 
