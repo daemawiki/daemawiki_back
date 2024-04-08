@@ -18,7 +18,7 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     Flux<DocumentSearchResult> findByTextContaining(String text);
 
     Flux<DefaultDocument> findByTitleContaining(String text);
-    
+
     @Aggregation(pipeline = {
             "{ $unwind: '$contents' }",
             "{ $match: { $or: [ " +
@@ -33,4 +33,13 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     Flux<DefaultDocument> findTop10ByOrderByVersionDesc();
 
     Flux<DefaultDocument> findAllByOrderByViewDesc();
+
+    default Mono<DefaultDocument> increaseView(DefaultDocument document) {
+        return Mono.justOrEmpty(document)
+                .flatMap(doc -> {
+                    doc.setView(doc.getView() + 1);
+                    return save(doc);
+                });
+    }
+
 }
