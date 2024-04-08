@@ -36,6 +36,16 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, GetDocument
     }
 
     @Override
+    public Flux<DefaultDocument> searchDocumentTitle(String text) {
+        return documentRepository.findByTitleContaining(text);
+    }
+
+    @Override
+    public Flux<DocumentSearchResult> searchDocumentContent(String text) {
+        return documentRepository.findByContentTextContaining(text);
+    }
+
+    @Override
     public Flux<DefaultDocument> getDocumentTop10() {
         return documentRepository.findTop10ByOrderByVersionDesc();
     }
