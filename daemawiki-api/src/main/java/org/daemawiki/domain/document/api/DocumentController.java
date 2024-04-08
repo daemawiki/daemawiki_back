@@ -60,6 +60,16 @@ public class DocumentController {
         return getDocumentUsecase.searchDocument(text);
     }
 
+    @GetMapping("/search/title")
+    public Flux<DocumentSearchResult> searchDocumentTitle(@NotBlank @RequestParam("text") String text) {
+        return getDocumentUsecase.searchDocumentTitle(text);
+    }
+
+    @GetMapping("/search/content")
+    public Flux<DocumentSearchResult> searchDocumentContent(@NotBlank @RequestParam("text") String text) {
+        return getDocumentUsecase.searchDocumentContent(text);
+    }
+
     @GetMapping("/most-revision/top-10")
     public Flux<SimpleDocumentResponse> getDocumentOrderByVersion() {
         return getDocumentUsecase.getDocumentTop10();
