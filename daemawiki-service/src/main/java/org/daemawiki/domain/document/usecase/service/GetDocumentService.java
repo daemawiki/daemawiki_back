@@ -5,7 +5,6 @@ import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import org.daemawiki.domain.document.mapper.DocumentMapper;
-import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.daemawiki.domain.document.usecase.GetDocumentUsecase;
 import org.springframework.stereotype.Service;
@@ -27,14 +26,14 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Mono<GetDocumentResponse> getDocumentById(String id) {
         return getDocumentPort.getDocumentById(id)
-                .doOnSuccess(DefaultDocument::increaseView)
-                .flatMap(saveDocumentPort::save)
+                .flatMap(saveDocumentPort::increaseView)
                 .flatMap(documentMapper::defaultDocumentToGetResponse);
     }
 
     @Override
     public Mono<GetDocumentResponse> getDocumentByRandom() {
         return getDocumentPort.getDocumentByRandom()
+                .flatMap(saveDocumentPort::increaseView)
                 .flatMap(documentMapper::defaultDocumentToGetResponse);
     }
 
