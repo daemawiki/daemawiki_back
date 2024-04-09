@@ -9,6 +9,6 @@ public record AddContentRequest(
         @NotBlank(message = "추가할 목차의 제목을 입력해주세요.")
         String title,
         @NotNull(message = "문서의 버전을 입력해주세요.")
-        Integer version
+        Long version
 ) {
 }
