@@ -38,9 +38,9 @@ public class DefaultDocument {
 
     private List<Content> contents = Lists.mutable.of();
 
-    private Integer view = 0;
+    private Long view = 0L;
 
-    private Integer version = 0;
+    private Long version = 0L;
 
     @Builder
     public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, Info info, List<List<String>> groups, DocumentEditor documentEditor, List<Content> content) {
