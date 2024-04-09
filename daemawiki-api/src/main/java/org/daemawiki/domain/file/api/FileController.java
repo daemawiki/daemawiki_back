@@ -1,8 +1,6 @@
 package org.daemawiki.domain.file.api;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import org.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.daemawiki.domain.file.model.File;
 import org.daemawiki.domain.file.usecase.GetFileUsecase;
 import org.daemawiki.infra.s3.service.S3DeleteObject;
@@ -28,14 +26,15 @@ public class FileController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<File> uploadFile(@RequestPart(value = "file", required = true) FilePart filePart, @NotBlank @RequestParam("type") String fileType) {
         return s3UploadObject.uploadObject(filePart, fileType);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{fileId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteFile(@Valid @RequestBody DeleteFileRequest request) {
-        return s3DeleteObject.deleteObject(request);
+    public Mono<Void> deleteFile(@PathVariable String fileId) {
+        return s3DeleteObject.deleteObject(fileId);
     }
 
     @GetMapping("/{fileId}")
@@ -44,11 +43,11 @@ public class FileController {
     }
 
     @GetMapping
-    public Flux<File> getFileByName(@NotBlank @RequestParam String name) {
-        return getFileUsecase.getFileByName(name);
+    public Flux<File> getFileByName(@NotBlank @RequestParam String text) {
+        return getFileUsecase.getFileByName(text);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list") // test
     public Flux<File> getAll() {
         return getFileUsecase.getAll();
     }
