@@ -2,6 +2,7 @@ package org.daemawiki.domain.document.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
+import org.daemawiki.domain.document.model.DefaultDocument;
 
 import java.time.LocalDateTime;
 
@@ -14,4 +15,15 @@ public record SimpleDocumentResponse(
         LocalDateTime updatedDate,
         Integer view
 ) {
+
+        public static SimpleDocumentResponse of(DefaultDocument document) {
+                return SimpleDocumentResponse.builder()
+                        .id(document.getId())
+                        .title(document.getTitle())
+                        .numberOfUpdate(document.getVersion())
+                        .updatedDate(document.getDateTime().getUpdated())
+                        .view(document.getView())
+                        .build();
+        }
+
 }
