@@ -12,7 +12,7 @@ public record GetMostViewDocumentResponse(
         String title,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
         LocalDateTime updatedDate,
-        int view
+        Long view
 ) {
 
     public static GetMostViewDocumentResponse of(DefaultDocument document) {
