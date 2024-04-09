@@ -15,4 +15,17 @@ public class DocumentSearchResult {
     private EditDateTime dateTime;
     private Content contents;
     private Integer view;
+
+    public static DocumentSearchResult of(DefaultDocument document) {
+        return DocumentSearchResult.builder()
+                .id(document.getId())
+                .title(document.getTitle())
+                .type(document.getType())
+                .dateTime(document.getDateTime())
+                .contents(document.getContents().get(0))
+                .view(document.getView())
+                .build();
+
+    }
+
 }
