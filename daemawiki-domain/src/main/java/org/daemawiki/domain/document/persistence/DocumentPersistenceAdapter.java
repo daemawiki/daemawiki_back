@@ -50,6 +50,10 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, GetDocument
         return documentRepository.findTop10ByOrderByVersionDesc();
     }
 
+    public Flux<DefaultDocument> getDocumentMostRevision() {
+        return documentRepository.findAllByOrderByVersionDesc();
+    }
+
     @Override
     public Flux<DefaultDocument> getDocumentOrderByView() {
         return documentRepository.findAllByOrderByViewDesc();
