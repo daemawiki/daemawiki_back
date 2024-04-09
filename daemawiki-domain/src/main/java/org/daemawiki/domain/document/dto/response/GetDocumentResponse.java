@@ -20,8 +20,8 @@ public record GetDocumentResponse(
         List<List<String>> groups,
         DocumentEditor editor,
         List<Content> content,
-        Integer view,
-        Integer version
+        Long view,
+        Long version
 ) {
 
     public static GetDocumentResponse of(DefaultDocument document) {
