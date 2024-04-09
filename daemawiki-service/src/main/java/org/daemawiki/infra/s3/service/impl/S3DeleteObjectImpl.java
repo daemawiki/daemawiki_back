@@ -1,7 +1,6 @@
 package org.daemawiki.infra.s3.service.impl;
 
 import org.daemawiki.domain.file.component.DeleteFile;
-import org.daemawiki.domain.file.dto.DeleteFileRequest;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.infra.s3.config.AwsS3Properties;
 import org.daemawiki.infra.s3.service.S3DeleteObject;
@@ -23,14 +22,14 @@ public class S3DeleteObjectImpl implements S3DeleteObject {
     }
 
     @Override
-    public Mono<Void> deleteObject(DeleteFileRequest request) {
+    public Mono<Void> deleteObject(String fileId) {
         return Mono.just(DeleteObjectRequest.builder()
                         .bucket(awsS3Properties.getBucket())
-                        .key(request.key())
+                        .key(fileId)
                         .build())
                 .map(s3AsyncClient::deleteObject)
                 .flatMap(Mono::fromFuture)
-                .flatMap(deleteObjectResponse -> deleteFile.deleteById(request.key()))
+                .flatMap(deleteObjectResponse -> deleteFile.deleteById(fileId))
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
     }
 
