@@ -23,3 +23,9 @@ spring:
 admin:
   mail: ${ADMIN_MAIL}
   password: ${ADMIN_PW}
+
+aws:
+  access: ${AWS_ACCESS}
+  secret: ${AWS_SECRET}
+  bucket: ${BUCKET}
+  region: ${REGION}
