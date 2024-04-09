@@ -58,7 +58,7 @@ public class S3UploadObjectImpl implements S3UploadObject {
         return Mono.fromCompletionStage(s3AsyncClient.createMultipartUpload(createRequest))
                 .flatMap(uploadResponse -> {
                     String uploadId = uploadResponse.uploadId();
-                    int partNumber =  1;
+                    int partNumber = 1;
 
                     return DataBufferUtils.join(filePart.content())
                             .flatMap(dataBuffer -> {
