@@ -14,7 +14,7 @@ public class DocumentSearchResult {
     private DocumentType type;
     private EditDateTime dateTime;
     private Content contents;
-    private Integer view;
+    private Long view;
 
     public static DocumentSearchResult of(DefaultDocument document) {
         return DocumentSearchResult.builder()
