@@ -12,7 +12,7 @@ import java.util.Objects;
 public class UserFilterImpl implements UserFilter {
 
     @Override
-    public void userPermissionAndDocumentVersionCheck(DefaultDocument document, String userEmail, Integer requestVersion) {
+    public void userPermissionAndDocumentVersionCheck(DefaultDocument document, String userEmail, Long requestVersion) {
         userPermissionCheck(document, userEmail);
         if (!Objects.equals(document.getVersion(), requestVersion)) {
             throw VersionMismatchException.EXCEPTION;
@@ -27,7 +27,7 @@ public class UserFilterImpl implements UserFilter {
     }
 
     @Override
-    public void checkUserAndDocument(User user, DefaultDocument document, Integer version) {
+    public void checkUserAndDocument(User user, DefaultDocument document, Long version) {
         userPermissionAndDocumentVersionCheck(document, user.getEmail(), version);
     }
 
