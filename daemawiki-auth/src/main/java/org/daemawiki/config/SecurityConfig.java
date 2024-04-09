@@ -1,16 +1,15 @@
 package org.daemawiki.config;
 
+import org.daemawiki.security.JwtWebFilter;
+import org.daemawiki.security.TokenizerImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.daemawiki.security.JwtWebFilter;
-import org.daemawiki.security.TokenizerImpl;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -22,11 +21,6 @@ public class SecurityConfig {
         this.tokenizer = tokenizer;
     }
 
-    private static final String[] WHITE_LIST = {
-            "/api/mail/**",
-            "/api/auth/**",
-            "/api/revisions/**"
-    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -36,18 +30,9 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
         return http.authorizeExchange(a -> a
-                        .pathMatchers(WHITE_LIST).permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/documents/{documentId}").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/documents/search/**").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/documents/random").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/documents/most-revision/top-10").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/files").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/files/{fileId}").permitAll()
-                        .pathMatchers(HttpMethod.PATCH, "/api/users/non-login/password").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/users/generation/{generation}").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/users/major/{major}").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/users/club/{club}").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/api/users/find").permitAll()
+                        .pathMatchers(
+                                "/api/auth/**",
+                                "/api/mail/**").permitAll()
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
