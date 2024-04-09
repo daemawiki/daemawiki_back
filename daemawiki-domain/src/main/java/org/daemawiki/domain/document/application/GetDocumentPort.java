@@ -12,6 +12,7 @@ public interface GetDocumentPort {
     Flux<DefaultDocument> searchDocumentTitle(String text);
     Flux<DocumentSearchResult> searchDocumentContent(String text);
     Flux<DefaultDocument> getDocumentTop10();
+    Flux<DefaultDocument> getDocumentMostRevision();
     Flux<DefaultDocument> getDocumentOrderByView();
 
 }
