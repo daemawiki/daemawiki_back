@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api/revisions")
+@RequestMapping("/api")
 public class RevisionHistoryController {
     private final GetRevisionUsecase getRevisionUsecase;
 
@@ -16,22 +16,22 @@ public class RevisionHistoryController {
         this.getRevisionUsecase = getRevisionUsecase;
     }
 
-    @GetMapping("/top-10")
-    public Flux<SimpleDocumentResponse> getRevisionTop10ByUpdatedDate() {
-        return getRevisionUsecase.getUpdatedTop10Revision();
-    }
-
-    @GetMapping("/page")
+    @GetMapping("/revisions")
     public Flux<RevisionHistory> getRevisionToPage(@RequestParam("lastRevision") String lastRevision) {
         return getRevisionUsecase.getAllRevisionPaging(lastRevision);
     }
 
-    @GetMapping("/document/{documentId}")
+    @GetMapping("/documents/revisions/top-10")
+    public Flux<SimpleDocumentResponse> getRevisionTop10ByUpdatedDate() {
+        return getRevisionUsecase.getUpdatedTop10Revision();
+    }
+
+    @GetMapping("/documents/{documentId}/revisions")
     public Flux<RevisionHistory> getRevisionByDocument(@NotBlank @PathVariable String documentId, @RequestParam("lastRevision") String lastRevision) {
         return getRevisionUsecase.getAllRevisionByDocument(documentId, lastRevision);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}/revisions")
     public Flux<RevisionHistory> getRevisionByUser(@NotBlank @PathVariable String userId, @RequestParam("lastRevision") String lastRevision) {
         return getRevisionUsecase.getAllRevisionByUser(userId, lastRevision);
     }
