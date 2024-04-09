@@ -36,6 +36,8 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
 
     Flux<DefaultDocument> findAllByOrderByVersionDesc();
 
+    Flux<DefaultDocument> findTop10ByOrderByViewDesc();
+
     default Mono<DefaultDocument> increaseView(DefaultDocument document) {
         return Mono.justOrEmpty(document)
                 .flatMap(doc -> {
