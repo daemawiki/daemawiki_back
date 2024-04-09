@@ -57,18 +57,18 @@ public class DocumentController {
     }
 
     @GetMapping("/search")
-    public Flux<DocumentSearchResult> searchDocument(@NotBlank @RequestParam("text") String text) {
-        return getDocumentUsecase.searchDocument(text);
+    public Flux<DocumentSearchResult> searchDocument(@NotBlank @RequestParam("text") String text, @RequestParam("lastDocument") String lastDocument) {
+        return getDocumentUsecase.searchDocument(text, lastDocument);
     }
 
     @GetMapping("/search/title")
-    public Flux<DocumentSearchResult> searchDocumentTitle(@NotBlank @RequestParam("text") String text) {
-        return getDocumentUsecase.searchDocumentTitle(text);
+    public Flux<DocumentSearchResult> searchDocumentTitle(@NotBlank @RequestParam("text") String text, @RequestParam("lastDocument") String lastDocument) {
+        return getDocumentUsecase.searchDocumentTitle(text, lastDocument);
     }
 
     @GetMapping("/search/content")
-    public Flux<DocumentSearchResult> searchDocumentContent(@NotBlank @RequestParam("text") String text) {
-        return getDocumentUsecase.searchDocumentContent(text);
+    public Flux<DocumentSearchResult> searchDocumentContent(@NotBlank @RequestParam("text") String text, @RequestParam("lastDocument") String lastDocument) {
+        return getDocumentUsecase.searchDocumentContent(text, lastDocument);
     }
 
     @GetMapping("/most-revision/top-10")
@@ -77,13 +77,18 @@ public class DocumentController {
     }
 
     @GetMapping("/most-revision")
-    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersion() {
-        return getDocumentUsecase.getDocumentsMostRevision();
+    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersion(@RequestParam("lastDocument") String lastDocument) {
+        return getDocumentUsecase.getDocumentsMostRevision(lastDocument);
     }
 
     @GetMapping("/most-view")
-    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByView() {
-        return getDocumentUsecase.getDocumentOrderByView();
+    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByView(@RequestParam("lastDocument") String lastDocument) {
+        return getDocumentUsecase.getDocumentOrderByView(lastDocument);
+    }
+
+    @GetMapping("/most-view/top-10")
+    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByViewTop10() {
+        return getDocumentUsecase.getDocumentOrderByViewTop10();
     }
 
     @DeleteMapping("/{documentId}")
