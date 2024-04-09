@@ -71,12 +71,17 @@ public class DocumentController {
     }
 
     @GetMapping("/most-revision/top-10")
-    public Flux<SimpleDocumentResponse> getDocumentOrderByVersion() {
-        return getDocumentUsecase.getDocumentTop10();
+    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersionTop10() {
+        return getDocumentUsecase.getDocumentMostRevisionTop10();
+    }
+
+    @GetMapping("/most-revision")
+    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersion() {
+        return getDocumentUsecase.getDocumentsMostRevision();
     }
 
     @GetMapping
-    public Flux<SimpleDocumentResponse> getDocumentOrderByView() {
+    public Flux<SimpleDocumentResponse> getDocumentsOrderByView() {
         return getDocumentUsecase.getDocumentOrderByView();
     }
 
