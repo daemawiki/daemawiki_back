@@ -54,8 +54,14 @@ public class GetDocumentService implements GetDocumentUsecase {
     }
 
     @Override
-    public Flux<SimpleDocumentResponse> getDocumentTop10() {
+    public Flux<SimpleDocumentResponse> getDocumentMostRevisionTop10() {
         return getDocumentPort.getDocumentTop10()
+                .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
+    }
+
+    @Override
+    public Flux<SimpleDocumentResponse> getDocumentsMostRevision() {
+        return getDocumentPort.getDocumentMostRevision()
                 .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
     }
 
