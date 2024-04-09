@@ -12,7 +12,8 @@ public interface GetDocumentUsecase {
     Flux<DocumentSearchResult> searchDocument(String text);
     Flux<DocumentSearchResult> searchDocumentTitle(String text);
     Flux<DocumentSearchResult> searchDocumentContent(String text);
-    Flux<SimpleDocumentResponse> getDocumentTop10();
+    Flux<SimpleDocumentResponse> getDocumentMostRevisionTop10();
+    Flux<SimpleDocumentResponse> getDocumentsMostRevision();
     Flux<SimpleDocumentResponse> getDocumentOrderByView();
 
 }
