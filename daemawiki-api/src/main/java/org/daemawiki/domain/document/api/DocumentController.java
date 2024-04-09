@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
+import org.daemawiki.domain.document.dto.response.GetMostViewDocumentResponse;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
@@ -80,8 +81,8 @@ public class DocumentController {
         return getDocumentUsecase.getDocumentsMostRevision();
     }
 
-    @GetMapping
-    public Flux<SimpleDocumentResponse> getDocumentsOrderByView() {
+    @GetMapping("/most-view")
+    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByView() {
         return getDocumentUsecase.getDocumentOrderByView();
     }
 
