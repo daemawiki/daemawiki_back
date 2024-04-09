@@ -14,5 +14,6 @@ public interface GetDocumentPort {
     Flux<DefaultDocument> getDocumentTop10();
     Flux<DefaultDocument> getDocumentMostRevision();
     Flux<DefaultDocument> getDocumentOrderByView();
+    Flux<DefaultDocument> getDocumentOrderByViewTop10();
 
 }
