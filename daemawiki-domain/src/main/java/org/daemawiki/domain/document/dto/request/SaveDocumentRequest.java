@@ -19,7 +19,7 @@ public record SaveDocumentRequest(
         @NotNull(message = "문서의 분류가 비어있습니다.")
         List<List<String>> groups,
         @Nullable
-        Integer version
+        Long version
 ) {
 
         public static SaveDocumentRequest create(String title, String type, List<List<String>> groups) {
