@@ -4,9 +4,3 @@ profile:
     id: ${DEFAULT_PROFILE_ID}
     name: ${DEFAULT_PROFILE_NAME}
     type: ${DEFAULT_PROFILE_TYPE}
-
-aws:
-  access: ${AWS_ACCESS}
-  secret: ${AWS_SECRET}
-  bucket: ${BUCKET}
-  region: ${REGION}
