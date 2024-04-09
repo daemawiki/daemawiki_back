@@ -3,6 +3,7 @@ package org.daemawiki.domain.document.usecase.service;
 import org.daemawiki.domain.document.application.GetDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
+import org.daemawiki.domain.document.dto.response.GetMostViewDocumentResponse;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import org.daemawiki.domain.document.mapper.DocumentMapper;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
@@ -27,14 +28,14 @@ public class GetDocumentService implements GetDocumentUsecase {
     public Mono<GetDocumentResponse> getDocumentById(String id) {
         return getDocumentPort.getDocumentById(id)
                 .flatMap(saveDocumentPort::increaseView)
-                .flatMap(documentMapper::defaultDocumentToGetResponse);
+                .map(GetDocumentResponse::of);
     }
 
     @Override
     public Mono<GetDocumentResponse> getDocumentByRandom() {
         return getDocumentPort.getDocumentByRandom()
                 .flatMap(saveDocumentPort::increaseView)
-                .flatMap(documentMapper::defaultDocumentToGetResponse);
+                .map(GetDocumentResponse::of);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<DocumentSearchResult> searchDocumentTitle(String text) {
         return getDocumentPort.searchDocumentTitle(text)
-                .flatMap(documentMapper::defaultDocumentToDocumentSearchResult);
+                .map(DocumentSearchResult::of);
     }
 
     @Override
@@ -56,19 +57,19 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<SimpleDocumentResponse> getDocumentMostRevisionTop10() {
         return getDocumentPort.getDocumentTop10()
-                .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
+                .map(SimpleDocumentResponse::of);
     }
 
     @Override
     public Flux<SimpleDocumentResponse> getDocumentsMostRevision() {
         return getDocumentPort.getDocumentMostRevision()
-                .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
+                .map(SimpleDocumentResponse::of);
     }
 
     @Override
-    public Flux<SimpleDocumentResponse> getDocumentOrderByView() {
+    public Flux<GetMostViewDocumentResponse> getDocumentOrderByView() {
         return getDocumentPort.getDocumentOrderByView()
-                .flatMap(documentMapper::defaultDocumentToSimpleDocumentResponse);
+                .map(GetMostViewDocumentResponse::of);
     }
 
 }
