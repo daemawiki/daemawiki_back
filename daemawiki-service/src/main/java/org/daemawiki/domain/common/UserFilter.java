@@ -5,8 +5,8 @@ import org.daemawiki.domain.user.model.User;
 
 public interface UserFilter {
 
-    void userPermissionAndDocumentVersionCheck(DefaultDocument document, String userEmail, Integer requestVersion);
+    void userPermissionAndDocumentVersionCheck(DefaultDocument document, String userEmail, Long requestVersion);
     void userPermissionCheck(DefaultDocument document, String userEmail);
-    void checkUserAndDocument(User user, DefaultDocument document, Integer version);
+    void checkUserAndDocument(User user, DefaultDocument document, Long version);
 
 }
