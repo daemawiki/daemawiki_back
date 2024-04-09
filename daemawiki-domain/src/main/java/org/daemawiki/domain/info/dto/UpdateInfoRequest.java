@@ -10,6 +10,6 @@ public record UpdateInfoRequest(
         String subTitle,
         List<Detail> details,
         @NotNull(message = "문서의 버전을 입력해주세요.")
-        Integer version
+        Long version
 ) {
 }
