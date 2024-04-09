@@ -60,6 +60,11 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, GetDocument
     }
 
     @Override
+    public Flux<DefaultDocument> getDocumentOrderByViewTop10() {
+        return documentRepository.findTop10ByOrderByViewDesc();
+    }
+
+    @Override
     public Mono<DefaultDocument> save(DefaultDocument document) {
         return documentRepository.save(document);
     }
