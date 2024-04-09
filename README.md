@@ -16,19 +16,3 @@
 <img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/35325c41-8459-4a3b-8ee1-8eb4abce94ed">
 
 ---
-
-### Module level
-api 
-  <p></p>
-auth 
-  <p></p>
-common
-  <p></p>
-domain 
-  <p></p>
-
-</div>
-
-대마위키 백엔드 성능 개선 블로그
-
-<s>안 알랴줄 거임</s>
