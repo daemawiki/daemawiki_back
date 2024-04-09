@@ -9,6 +9,6 @@ public record WriteContentRequest(
         @NotNull(message = "null은 내용이 될 수 없습니다.")
         String content,
         @NotNull(message = "문서의 버전을 입력해주세요.")
-        Integer version
+        Long version
 ) {
 }
