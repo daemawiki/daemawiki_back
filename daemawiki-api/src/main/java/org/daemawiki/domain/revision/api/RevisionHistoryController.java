@@ -2,6 +2,7 @@ package org.daemawiki.domain.revision.api;
 
 import jakarta.validation.constraints.NotBlank;
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import org.daemawiki.domain.revision.dto.response.GetRevisionByUserResponse;
 import org.daemawiki.domain.revision.model.RevisionHistory;
 import org.daemawiki.domain.revision.usecase.GetRevisionUsecase;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class RevisionHistoryController {
     }
 
     @GetMapping("/users/{userId}/revisions")
-    public Flux<RevisionHistory> getRevisionByUser(@NotBlank @PathVariable String userId, @RequestParam("lastRevision") String lastRevision) {
+    public Flux<GetRevisionByUserResponse> getRevisionByUser(@NotBlank @PathVariable String userId, @RequestParam("lastRevision") String lastRevision) {
         return getRevisionUsecase.getAllRevisionByUser(userId, lastRevision);
     }
 
