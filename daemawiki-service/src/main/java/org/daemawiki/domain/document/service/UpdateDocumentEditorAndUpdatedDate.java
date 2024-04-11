@@ -1,4 +1,4 @@
-package org.daemawiki.domain.document.usecase.service;
+package org.daemawiki.domain.document.service;
 
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.usecase.UpdateDocumentComponent;
