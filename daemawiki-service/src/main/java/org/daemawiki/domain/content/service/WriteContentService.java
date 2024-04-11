@@ -1,17 +1,17 @@
-package org.daemawiki.domain.content.usecase.service;
+package org.daemawiki.domain.content.service;
 
 import org.daemawiki.domain.common.UserFilter;
 import org.daemawiki.domain.content.dto.WriteContentRequest;
 import org.daemawiki.domain.content.model.Content;
 import org.daemawiki.domain.content.usecase.WriteContentUsecase;
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.usecase.UpdateDocumentComponent;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h400.VersionMismatchException;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
@@ -28,25 +28,25 @@ import java.util.stream.Collectors;
 @Service
 public class WriteContentService implements WriteContentUsecase {
     private final SaveDocumentPort saveDocumentPort;
-    private final GetDocumentPort getDocumentPort;
+    private final FindDocumentPort findDocumentPort;
     private final CreateRevisionUsecase createRevisionUsecase;
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final UserFilter userFilter;
     private final UpdateDocumentComponent updateDocumentComponent;
 
-    public WriteContentService(SaveDocumentPort saveDocumentPort, GetDocumentPort getDocumentPort, CreateRevisionUsecase createRevisionUsecase, GetUserPort getUserPort, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
+    public WriteContentService(SaveDocumentPort saveDocumentPort, FindDocumentPort findDocumentPort, CreateRevisionUsecase createRevisionUsecase, FindUserPort findUserPort, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
         this.saveDocumentPort = saveDocumentPort;
-        this.getDocumentPort = getDocumentPort;
+        this.findDocumentPort = findDocumentPort;
         this.createRevisionUsecase = createRevisionUsecase;
-        this.getUserPort = getUserPort;
+        this.findUserPort = findUserPort;
         this.userFilter = userFilter;
         this.updateDocumentComponent = updateDocumentComponent;
     }
 
     @Override
     public Mono<Void> write(WriteContentRequest request, String documentId) {
-        return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(documentId))
+        return findUserPort.currentUser()
+                .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(tuple -> checkPermissionAndWriteContent(tuple, request))
                 .flatMap(document -> saveDocumentPort.save(document)
                         .then(createRevision(document)))
@@ -57,7 +57,7 @@ public class WriteContentService implements WriteContentUsecase {
         DefaultDocument document = tuple.getT2();
         User user = tuple.getT1();
 
-        userFilter.userPermissionAndDocumentVersionCheck(document, user.getEmail(), request.version());
+        userFilter.userPermissionAndDocumentVersionCheck(document, user, request.version());
 
         Map<String, Content> contentsMap = document.getContents().stream()
                 .collect(Collectors.toMap(Content::getIndex, Function.identity()));
