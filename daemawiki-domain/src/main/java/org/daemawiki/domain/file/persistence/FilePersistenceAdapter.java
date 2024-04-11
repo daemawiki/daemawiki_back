@@ -1,6 +1,6 @@
 package org.daemawiki.domain.file.persistence;
 
-import org.daemawiki.domain.file.application.GetFilePort;
+import org.daemawiki.domain.file.application.FindFilePort;
 import org.daemawiki.domain.file.model.File;
 import org.daemawiki.domain.file.repository.FileRepository;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @Component
-public class FilePersistenceAdapter implements GetFilePort {
+public class FilePersistenceAdapter implements FindFilePort {
     private final FileRepository fileRepository;
 
     public FilePersistenceAdapter(FileRepository fileRepository) {
