@@ -1,24 +1,24 @@
-package org.daemawiki.domain.user.usecase.service;
+package org.daemawiki.domain.user.service;
 
 import org.daemawiki.domain.document.application.DeleteDocumentPort;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
 import org.daemawiki.domain.user.application.DeleteUserPort;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.usecase.DeleteUserUsecase;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 public class DeleteUserService implements DeleteUserUsecase {
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final DeleteUserPort deleteUserPort;
     private final DeleteDocumentPort deleteDocumentPort;
     private final CreateRevisionUsecase createRevisionUsecase;
 
-    public DeleteUserService(GetUserPort getUserPort, DeleteUserPort deleteUserPort, DeleteDocumentPort deleteDocumentPort, CreateRevisionUsecase createRevisionUsecase) {
-        this.getUserPort = getUserPort;
+    public DeleteUserService(FindUserPort findUserPort, DeleteUserPort deleteUserPort, DeleteDocumentPort deleteDocumentPort, CreateRevisionUsecase createRevisionUsecase) {
+        this.findUserPort = findUserPort;
         this.deleteUserPort = deleteUserPort;
         this.deleteDocumentPort = deleteDocumentPort;
         this.createRevisionUsecase = createRevisionUsecase;
@@ -26,7 +26,7 @@ public class DeleteUserService implements DeleteUserUsecase {
 
     @Override
     public Mono<Void> deleteCurrentUser() {
-        return getUserPort.currentUser()
+        return findUserPort.currentUser()
                 .flatMap(user -> {
                     String documentId = user.getDocumentId();
 
