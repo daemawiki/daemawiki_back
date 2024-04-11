@@ -1,7 +1,7 @@
-package org.daemawiki.domain.info.usecase.service;
+package org.daemawiki.domain.info.service;
 
 import org.daemawiki.domain.common.UserFilter;
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.info.dto.UpdateInfoRequest;
@@ -10,7 +10,7 @@ import org.daemawiki.domain.info.usecase.UpdateDocumentInfoUsecase;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.dto.response.UserDetailResponse;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h400.VersionMismatchException;
@@ -25,29 +25,29 @@ import java.util.List;
 @Service
 public class UpdateDocumentInfoService implements UpdateDocumentInfoUsecase {
     private final SaveDocumentPort saveDocumentPort;
-    private final GetDocumentPort getDocumentPort;
+    private final FindDocumentPort findDocumentPort;
     private final CreateRevisionUsecase createRevisionUsecase;
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final UserFilter userFilter;
 
-    public UpdateDocumentInfoService(SaveDocumentPort saveDocumentPort, GetDocumentPort getDocumentPort, CreateRevisionUsecase createRevisionUsecase, GetUserPort getUserPort, UserFilter userFilter) {
+    public UpdateDocumentInfoService(SaveDocumentPort saveDocumentPort, FindDocumentPort findDocumentPort, CreateRevisionUsecase createRevisionUsecase, FindUserPort findUserPort, UserFilter userFilter) {
         this.saveDocumentPort = saveDocumentPort;
-        this.getDocumentPort = getDocumentPort;
+        this.findDocumentPort = findDocumentPort;
         this.createRevisionUsecase = createRevisionUsecase;
-        this.getUserPort = getUserPort;
+        this.findUserPort = findUserPort;
         this.userFilter = userFilter;
     }
 
     @Override
     public Mono<Void> update(String documentId, UpdateInfoRequest request) {
-        return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(documentId))
+        return findUserPort.currentUser()
+                .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .onErrorMap(this::mapException);
     }
 
     private Mono<Void> checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, UpdateInfoRequest request) {
-        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1(), request.version());
 
         DefaultDocument document = tuple.getT2();
         User user = tuple.getT1();
