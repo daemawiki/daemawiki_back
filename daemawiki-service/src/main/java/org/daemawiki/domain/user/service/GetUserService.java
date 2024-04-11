@@ -1,8 +1,7 @@
-package org.daemawiki.domain.user.usecase.service;
+package org.daemawiki.domain.user.service;
 
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.dto.response.GetUserResponse;
-import org.daemawiki.domain.user.mapper.UserMapper;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.type.major.component.GetMajorType;
 import org.daemawiki.domain.user.usecase.GetUserUsecase;
@@ -17,45 +16,43 @@ import reactor.core.scheduler.Scheduler;
 
 @Service
 public class GetUserService implements GetUserUsecase {
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final GetMajorType getMajorType;
     private final Scheduler scheduler;
-    private final UserMapper userMapper;
 
-    public GetUserService(GetUserPort getUserPort, GetMajorType getMajorType, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, UserMapper userMapper) {
-        this.getUserPort = getUserPort;
+    public GetUserService(FindUserPort findUserPort, GetMajorType getMajorType, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler) {
+        this.findUserPort = findUserPort;
         this.getMajorType = getMajorType;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
-        this.userMapper = userMapper;
     }
 
     @Override
     public Flux<GetUserResponse> getUserByGen(Integer gen) {
-        return getUserPort.findAllByDetail_GenOrderByNameAsc(gen)
+        return findUserPort.findAllByDetail_GenOrderByNameAsc(gen)
                 .subscribeOn(scheduler)
-                .flatMap(userMapper::userToGetUserResponse);
+                .map(GetUserResponse::of);
     }
 
     @Override
     public Flux<GetUserResponse> getUserByMajor(String major) {
-        return getUserPort.findAllByDetail_MajorOrderByNameAsc(getMajorType.execute(major))
+        return findUserPort.findAllByDetail_MajorOrderByNameAsc(getMajorType.execute(major))
                 .subscribeOn(scheduler)
-                .flatMap(userMapper::userToGetUserResponse);
+                .map(GetUserResponse::of);
     }
 
     @Override
     public Flux<GetUserResponse> getUserByClub(String club) {
-        return getUserPort.findAllByDetail_ClubOrderByNameAsc(club)
+        return findUserPort.findAllByDetail_ClubOrderByNameAsc(club)
                 .subscribeOn(scheduler)
-                .flatMap(userMapper::userToGetUserResponse);
+                .map(GetUserResponse::of);
     }
 
     @Override
     public Mono<GetUserResponse> getCurrentUser() {
-        return getUserPort.currentUser()
-                .flatMap(userMapper::userToGetUserResponse);
+        return findUserPort.currentUser()
+                .map(GetUserResponse::of);
     }
 
     @Override
@@ -81,7 +78,7 @@ public class GetUserService implements GetUserUsecase {
 
         return reactiveMongoTemplate.find(query, User.class)
                 .subscribeOn(scheduler)
-                .flatMap(userMapper::userToGetUserResponse);
+                .map(GetUserResponse::of);
     }
 
 }
