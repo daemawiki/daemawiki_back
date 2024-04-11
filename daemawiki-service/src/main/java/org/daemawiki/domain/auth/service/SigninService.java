@@ -1,9 +1,9 @@
-package org.daemawiki.domain.auth.usecase.service;
+package org.daemawiki.domain.auth.service;
 
 import org.daemawiki.domain.auth.dto.request.LoginRequest;
 import org.daemawiki.domain.auth.dto.response.TokenResponse;
 import org.daemawiki.domain.auth.usecase.SigninUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h401.PasswordMismatchException;
 import org.daemawiki.exception.h404.UserNotFoundException;
@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class SigninService implements SigninUsecase {
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final PasswordEncoder passwordEncoder;
     private final Tokenizer tokenizer;
 
-    public SigninService(GetUserPort getUserPort, PasswordEncoder passwordEncoder, Tokenizer tokenizer) {
-        this.getUserPort = getUserPort;
+    public SigninService(FindUserPort findUserPort, PasswordEncoder passwordEncoder, Tokenizer tokenizer) {
+        this.findUserPort = findUserPort;
         this.passwordEncoder = passwordEncoder;
         this.tokenizer = tokenizer;
     }
@@ -32,7 +32,7 @@ public class SigninService implements SigninUsecase {
      */
     @Override
     public Mono<TokenResponse> signin(LoginRequest request) {
-        return getUserPort.findByEmail(request.email())
+        return findUserPort.findByEmail(request.email())
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                 .flatMap(user -> validateUserWithPassword(user, request.password()))
                 .flatMap(this::generateTokenResponse);
