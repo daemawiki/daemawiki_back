@@ -1,48 +1,59 @@
 package org.daemawiki.security;
 
 import io.jsonwebtoken.*;
+import org.daemawiki.config.SecurityProperties;
 import org.daemawiki.exception.h400.InvalidTokenException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
 @Component
 public class TokenizerImpl implements Tokenizer {
+    private final SecurityProperties securityProperties;
 
-    @Value("${jwt.secret}")
-    private String secret;
+    public TokenizerImpl(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
+    }
 
     @Override
-    public Mono<String> createToken(String user) {
+    public Mono<Tuple2<String, LocalDateTime>> createToken(String user) {
         return Mono.fromCallable(() -> tokenize(user));
     }
 
-    private String tokenize(String user) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, 3);
-        Date expiresAt = calendar.getTime();
-
+    private Tuple2<String, LocalDateTime> tokenize(String user) {
         Claims claims = Jwts.claims()
                 .setSubject(user);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuer("url")
-                .setExpiration(expiresAt)
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
+        LocalDateTime now = LocalDateTime.now();
+        Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
 
+        return Tuples.of(Jwts.builder()
+                        .setClaims(claims)
+                        .setIssuer(securityProperties.getIssuer())
+                        .setIssuedAt(nowDate)
+                        .setNotBefore(nowDate)
+                        .setExpiration(Date.from(now.plusHours(securityProperties.getExpiration()).atZone(ZoneId.systemDefault()).toInstant()))
+                        .signWith(SignatureAlgorithm.HS256, securityProperties.getSecret())
+                        .setHeaderParam("typ", "JWT")
+                        .setHeaderParam("alg", "HS256")
+                        .setHeaderParam("kid", "daemawiki")
+                        .compact(),
+                now);
+    }
+    
     private Mono<Jws<Claims>> parse(String token) {
-        return Mono.fromCallable(() -> Jwts.parser().setSigningKey(secret)
+        return Mono.fromCallable(() -> Jwts.parser().setSigningKey(securityProperties.getSecret())
                         .parseClaimsJws(token));
     }
 
@@ -51,22 +62,28 @@ public class TokenizerImpl implements Tokenizer {
                 .map(Jwt::getBody);
     }
 
-    private UserDetails createAuthenticatedUserFromClaims(Claims claims) {
-        String subject = claims.getSubject();
+    private UserDetails createAuthenticatedUserBySubject(String subject) {
         return new User(subject, "", Collections.emptyList());
     }
 
     @Override
     public Mono<Authentication> getAuthentication(String token) {
         return parseClaims(token)
-                .map(this::createAuthenticatedUserFromClaims)
+                .map(claims -> createAuthenticatedUserBySubject(claims.getSubject()))
                 .map(details -> new UsernamePasswordAuthenticationToken(
                         details, null, details.getAuthorities()));
     }
+    
+    private boolean validateIssuer(Claims claims) {
+        return claims.getIssuer()
+                .equals(securityProperties.getIssuer());
+    }
 
     @Override
-    public Mono<String> reissue(String token) {
+    public Mono<Tuple2<String, LocalDateTime>> reissue(String token) {
         return parseClaims(token)
+                .filter(this::validateIssuer)
+                .switchIfEmpty(Mono.error(InvalidTokenException.EXCEPTION))
                 .map(claims -> {
                     String user = claims.getSubject();
                     return tokenize(user);
