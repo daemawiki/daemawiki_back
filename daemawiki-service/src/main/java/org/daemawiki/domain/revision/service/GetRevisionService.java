@@ -1,6 +1,7 @@
-package org.daemawiki.domain.revision.usecase.service;
+package org.daemawiki.domain.revision.service;
 
 import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
+import org.daemawiki.domain.revision.dto.response.GetRevisionByUserResponse;
 import org.daemawiki.domain.revision.mapper.RevisionMapper;
 import org.daemawiki.domain.revision.model.RevisionHistory;
 import org.daemawiki.domain.revision.persistence.RevisionPersistenceAdapter;
@@ -35,8 +36,9 @@ public class GetRevisionService implements GetRevisionUsecase {
     }
 
     @Override
-    public Flux<RevisionHistory> getAllRevisionByUser(String userId, String lastRevisionId) {
-        return revisionPersistenceAdapter.getAllRevisionByUser(userId, lastRevisionId);
+    public Flux<GetRevisionByUserResponse> getAllRevisionByUser(String userId, String lastRevisionId) {
+        return revisionPersistenceAdapter.getAllRevisionByUser(userId, lastRevisionId)
+                .map(GetRevisionByUserResponse::of);
     }
 
 }
