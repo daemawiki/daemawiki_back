@@ -1,12 +1,12 @@
-package org.daemawiki.domain.user.usecase.service;
+package org.daemawiki.domain.user.service;
 
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
 import org.daemawiki.domain.user.dto.request.EditUserRequest;
 import org.daemawiki.domain.user.dto.request.UpdateClubRequest;
@@ -23,15 +23,15 @@ import java.util.Objects;
 
 @Service
 public class UpdateUserService implements UpdateUserUsecase {
-    private final GetUserPort getUserPort;
-    private final GetDocumentPort getDocumentPort;
+    private final FindUserPort findUserPort;
+    private final FindDocumentPort findDocumentPort;
     private final SaveDocumentPort saveDocumentPort;
     private final SaveUserPort saveUserPort;
     private final CreateRevisionUsecase createRevisionUsecase;
 
-    public UpdateUserService(GetUserPort getUserPort, GetDocumentPort getDocumentPort, SaveDocumentPort saveDocumentPort, SaveUserPort saveUserPort, CreateRevisionUsecase createRevisionUsecase) {
-        this.getUserPort = getUserPort;
-        this.getDocumentPort = getDocumentPort;
+    public UpdateUserService(FindUserPort findUserPort, FindDocumentPort findDocumentPort, SaveDocumentPort saveDocumentPort, SaveUserPort saveUserPort, CreateRevisionUsecase createRevisionUsecase) {
+        this.findUserPort = findUserPort;
+        this.findDocumentPort = findDocumentPort;
         this.saveDocumentPort = saveDocumentPort;
         this.saveUserPort = saveUserPort;
         this.createRevisionUsecase = createRevisionUsecase;
@@ -39,10 +39,10 @@ public class UpdateUserService implements UpdateUserUsecase {
 
     @Override
     public Mono<Void> updateUserClub(UpdateClubRequest request) {
-        return getUserPort.currentUser()
+        return findUserPort.currentUser()
                 .doOnNext(user -> user.getDetail().setClub(request.club()))
                 .flatMap(saveUserPort::save)
-                .flatMap(user -> getDocumentPort.getDocumentById(user.getDocumentId())
+                .flatMap(user -> findDocumentPort.getDocumentById(user.getDocumentId())
                         .doOnNext(document -> setDocumentForUpdateUserClub(document, request.club()))
                         .flatMap(document -> saveDocumentPort.save(document)
                                 .then(createRevision(document))))
@@ -64,10 +64,10 @@ public class UpdateUserService implements UpdateUserUsecase {
 
     @Override
     public Mono<Void> updateUser(EditUserRequest request) {
-        return getUserPort.currentUser()
+        return findUserPort.currentUser()
                 .doOnNext(user -> user.update(request.name(), request.detail()))
                 .flatMap(saveUserPort::save)
-                .flatMap(user -> getDocumentPort.getDocumentById(user.getDocumentId())
+                .flatMap(user -> findDocumentPort.getDocumentById(user.getDocumentId())
                         .doOnNext(document -> setDocumentForUpdateUser(document, user))
                         .flatMap(document -> saveDocumentPort.save(document)
                                     .then(createRevision(document))));
