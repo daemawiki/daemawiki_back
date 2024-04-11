@@ -2,7 +2,7 @@ package org.daemawiki.domain.document.persistence;
 
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.application.DeleteDocumentPort;
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.daemawiki.domain.document.repository.DocumentRepository;
@@ -12,7 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-public class DocumentPersistenceAdapter implements SaveDocumentPort, GetDocumentPort, DeleteDocumentPort {
+public class DocumentPersistenceAdapter implements SaveDocumentPort, FindDocumentPort, DeleteDocumentPort {
     private final DocumentRepository documentRepository;
 
     public DocumentPersistenceAdapter(DocumentRepository documentRepository) {
