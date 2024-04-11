@@ -2,7 +2,7 @@ package org.daemawiki.domain.mail.repository;
 
 import org.daemawiki.config.RedisKey;
 import org.daemawiki.domain.mail.application.mail.DeleteAuthMailPort;
-import org.daemawiki.domain.mail.application.mail.GetAuthMailPort;
+import org.daemawiki.domain.mail.application.mail.FindAuthMailPort;
 import org.daemawiki.domain.mail.application.mail.SaveAuthMailPort;
 import org.daemawiki.domain.mail.model.AuthMail;
 import org.daemawiki.exception.h500.ExecuteFailedException;
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Repository
-public class AuthMailRepository implements GetAuthMailPort, SaveAuthMailPort, DeleteAuthMailPort {
+public class AuthMailRepository implements FindAuthMailPort, SaveAuthMailPort, DeleteAuthMailPort {
 
     private final ReactiveRedisOperations<String, String> redisOperations;
 
