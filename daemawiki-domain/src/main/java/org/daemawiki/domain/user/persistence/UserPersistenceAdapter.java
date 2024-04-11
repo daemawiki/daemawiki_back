@@ -1,7 +1,7 @@
 package org.daemawiki.domain.user.persistence;
 
 import org.daemawiki.domain.user.application.DeleteUserPort;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.type.major.MajorType;
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 import java.security.Principal;
 
 @Component
-public class UserPersistenceAdapter implements GetUserPort, SaveUserPort, DeleteUserPort {
+public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
     private final UserRepository userRepository;
 
     public UserPersistenceAdapter(UserRepository userRepository) {
