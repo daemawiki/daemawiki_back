@@ -1,11 +1,11 @@
-package org.daemawiki.domain.revision.usecase.service;
+package org.daemawiki.domain.revision.service;
 
 import org.daemawiki.domain.editor.model.Editor;
-import org.daemawiki.domain.revision.application.CreateRevisionPort;
+import org.daemawiki.domain.revision.application.SaveRevisionPort;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.RevisionHistory;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
@@ -15,19 +15,19 @@ import java.time.LocalDateTime;
 
 @Service
 public class CreateRevisionService implements CreateRevisionUsecase {
-    private final CreateRevisionPort createRevisionPort;
-    private final GetUserPort getUserPort;
+    private final SaveRevisionPort saveRevisionPort;
+    private final FindUserPort findUserPort;
 
-    public CreateRevisionService(CreateRevisionPort createRevisionPort, GetUserPort getUserPort) {
-        this.createRevisionPort = createRevisionPort;
-        this.getUserPort = getUserPort;
+    public CreateRevisionService(SaveRevisionPort saveRevisionPort, FindUserPort findUserPort) {
+        this.saveRevisionPort = saveRevisionPort;
+        this.findUserPort = findUserPort;
     }
 
     @Override
     public Mono<Void> saveHistory(SaveRevisionHistoryRequest request) {
-        return getUserPort.currentUser()
+        return findUserPort.currentUser()
                 .flatMap(user -> createRevision(request, user))
-                .flatMap(createRevisionPort::save)
+                .flatMap(saveRevisionPort::save)
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION)
                 .then();
     }
