@@ -8,11 +8,13 @@ import lombok.Data;
 public class ErrorResponse {
     private int status;
     private String message;
+    private String detail;
 
-    public static ErrorResponse of(int status, String message) {
+    public static ErrorResponse of(int status, String message, String detail) {
         return ErrorResponse.builder()
                 .status(status)
                 .message(message)
+                .detail(detail)
                 .build();
     }
 
