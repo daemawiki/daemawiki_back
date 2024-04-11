@@ -1,6 +1,7 @@
 package org.daemawiki.domain.user.dto.response;
 
 import org.daemawiki.domain.file.model.File;
+import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.UserDetail;
 import lombok.Builder;
 
@@ -10,6 +11,19 @@ public record GetUserResponse(
         String documentId,
         String name,
         UserDetail detail,
-        File profile
+        File profile,
+        Boolean isAdmin
 ) {
+
+    public static GetUserResponse of(User user) {
+        return GetUserResponse.builder()
+                .userId(user.getId())
+                .documentId(user.getDocumentId())
+                .name(user.getName())
+                .detail(user.getDetail())
+                .profile(user.getProfile())
+                .isAdmin(user.getIsAdmin())
+                .build();
+    }
+
 }
