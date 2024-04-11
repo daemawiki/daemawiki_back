@@ -5,7 +5,7 @@ import org.daemawiki.domain.user.model.type.major.MajorType;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface GetUserPort {
+public interface FindUserPort {
     Mono<User> currentUser();
     Mono<User> findById(String id);
     Mono<User> findByEmail(String email);
