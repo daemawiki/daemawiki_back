@@ -1,4 +1,4 @@
-package org.daemawiki.domain.auth.usecase.service;
+package org.daemawiki.domain.auth.service;
 
 import org.daemawiki.domain.auth.dto.response.TokenResponse;
 import org.daemawiki.domain.auth.usecase.ReissueUsecase;
