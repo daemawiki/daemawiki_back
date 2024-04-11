@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-public interface GetFilePort {
+public interface FindFilePort {
     Mono<File> findById(UUID id);
     Flux<File> findByName(String fileName);
     Flux<File> findAll();
