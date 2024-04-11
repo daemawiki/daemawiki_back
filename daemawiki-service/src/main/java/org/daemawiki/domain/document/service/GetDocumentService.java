@@ -1,7 +1,7 @@
-package org.daemawiki.domain.document.usecase.service;
+package org.daemawiki.domain.document.service;
 
 import org.bson.types.ObjectId;
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.dto.response.GetDocumentResponse;
 import org.daemawiki.domain.document.dto.response.GetMostViewDocumentResponse;
@@ -15,24 +15,24 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class GetDocumentService implements GetDocumentUsecase {
-    private final GetDocumentPort getDocumentPort;
+    private final FindDocumentPort findDocumentPort;
     private final SaveDocumentPort saveDocumentPort;
 
-    public GetDocumentService(GetDocumentPort getDocumentPort, SaveDocumentPort saveDocumentPort) {
-        this.getDocumentPort = getDocumentPort;
+    public GetDocumentService(FindDocumentPort findDocumentPort, SaveDocumentPort saveDocumentPort) {
+        this.findDocumentPort = findDocumentPort;
         this.saveDocumentPort = saveDocumentPort;
     }
 
     @Override
     public Mono<GetDocumentResponse> getDocumentById(String id) {
-        return getDocumentPort.getDocumentById(id)
+        return findDocumentPort.getDocumentById(id)
                 .flatMap(saveDocumentPort::increaseView)
                 .map(GetDocumentResponse::of);
     }
 
     @Override
     public Mono<GetDocumentResponse> getDocumentByRandom() {
-        return getDocumentPort.getDocumentByRandom()
+        return findDocumentPort.getDocumentByRandom()
                 .flatMap(saveDocumentPort::increaseView)
                 .map(GetDocumentResponse::of);
     }
@@ -40,7 +40,7 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<DocumentSearchResult> searchDocument(String text, String lastDocumentId) {
         return getFilteredSearchDocuments(
-                getDocumentPort.searchDocument(text),
+                findDocumentPort.searchDocument(text),
                 lastDocumentId
         );
     }
@@ -48,7 +48,7 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<DocumentSearchResult> searchDocumentTitle(String text, String lastDocumentId) {
         return getFilteredDocuments(
-                getDocumentPort.searchDocumentTitle(text),
+                findDocumentPort.searchDocumentTitle(text),
                 lastDocumentId
         ).map(DocumentSearchResult::of);
     }
@@ -56,21 +56,21 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<DocumentSearchResult> searchDocumentContent(String text, String lastDocumentId) {
         return getFilteredSearchDocuments(
-                getDocumentPort.searchDocumentContent(text),
+                findDocumentPort.searchDocumentContent(text),
                 lastDocumentId
         );
     }
 
     @Override
     public Flux<SimpleDocumentResponse> getDocumentMostRevisionTop10() {
-        return getDocumentPort.getDocumentTop10()
+        return findDocumentPort.getDocumentTop10()
                 .map(SimpleDocumentResponse::of);
     }
 
     @Override
     public Flux<SimpleDocumentResponse> getDocumentsMostRevision(String lastDocumentId) {
         return getFilteredDocuments(
-                getDocumentPort.getDocumentMostRevision(),
+                findDocumentPort.getDocumentMostRevision(),
                 lastDocumentId
         ).map(SimpleDocumentResponse::of);
     }
@@ -78,14 +78,14 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<GetMostViewDocumentResponse> getDocumentOrderByView(String lastDocumentId) {
         return getFilteredDocuments(
-                getDocumentPort.getDocumentOrderByView(),
+                findDocumentPort.getDocumentOrderByView(),
                 lastDocumentId
         ).map(GetMostViewDocumentResponse::of);
     }
 
     @Override
     public Flux<GetMostViewDocumentResponse> getDocumentOrderByViewTop10() {
-        return getDocumentPort.getDocumentOrderByViewTop10()
+        return findDocumentPort.getDocumentOrderByViewTop10()
                 .map(GetMostViewDocumentResponse::of);
     }
 
