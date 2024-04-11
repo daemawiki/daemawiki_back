@@ -4,3 +4,7 @@ profile:
     id: ${DEFAULT_PROFILE_ID}
     name: ${DEFAULT_PROFILE_NAME}
     type: ${DEFAULT_PROFILE_TYPE}
+
+daemawiki:
+  admin:
+    email: ${DAEMAWIKI_ADMIN_EMAIL}
