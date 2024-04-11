@@ -1,7 +1,7 @@
-package org.daemawiki.domain.user.usecase.service;
+package org.daemawiki.domain.user.service;
 
-import org.daemawiki.domain.mail.application.mail.GetAuthMailPort;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.mail.application.mail.FindAuthMailPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
 import org.daemawiki.domain.user.dto.request.ChangePasswordRequest;
 import org.daemawiki.domain.user.model.User;
@@ -15,29 +15,29 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class ChangeUserPasswordService implements ChangeUserPasswordUsecase {
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final SaveUserPort saveUserPort;
-    private final GetAuthMailPort getAuthMailPort;
+    private final FindAuthMailPort findAuthMailPort;
     private final PasswordEncoder passwordEncoder;
 
-    public ChangeUserPasswordService(GetUserPort getUserPort, SaveUserPort saveUserPort, GetAuthMailPort getAuthMailPort, PasswordEncoder passwordEncoder) {
-        this.getUserPort = getUserPort;
+    public ChangeUserPasswordService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, PasswordEncoder passwordEncoder) {
+        this.findUserPort = findUserPort;
         this.saveUserPort = saveUserPort;
-        this.getAuthMailPort = getAuthMailPort;
+        this.findAuthMailPort = findAuthMailPort;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Mono<Void> currentUser(ChangePasswordRequest request) {
-        return getUserPort.currentUser()
+        return findUserPort.currentUser()
                 .flatMap(user -> changePasswordAndSaveUser(request.newPassword(), user));
     }
 
     @Override
     public Mono<Void> nonLoggedInUser(ChangePasswordRequest request) {
-        return getUserPort.findByEmail(request.email())
+        return findUserPort.findByEmail(request.email())
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
-                .flatMap(user -> getAuthMailPort.findByMail(request.email())
+                .flatMap(user -> findAuthMailPort.findByMail(request.email())
                         .flatMap(verified -> {
                             if (!verified) {
                                 return Mono.error(UnVerifiedEmailException.EXCEPTION);
