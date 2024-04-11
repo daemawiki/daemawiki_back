@@ -1,7 +1,7 @@
-package org.daemawiki.domain.info.usecase.service;
+package org.daemawiki.domain.info.service;
 
 import org.daemawiki.domain.common.UserFilter;
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.file.model.File;
@@ -10,7 +10,7 @@ import org.daemawiki.domain.info.usecase.UploadDocumentImageUsecase;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.infra.s3.service.S3UploadObject;
 import org.springframework.http.codec.multipart.FilePart;
@@ -21,16 +21,16 @@ import reactor.util.function.Tuple2;
 @Service
 public class UploadDocumentImageService implements UploadDocumentImageUsecase {
     private final S3UploadObject s3UploadObject;
-    private final GetUserPort getUserPort;
-    private final GetDocumentPort getDocumentPort;
+    private final FindUserPort findUserPort;
+    private final FindDocumentPort findDocumentPort;
     private final SaveDocumentPort saveDocumentPort;
     private final UserFilter userFilter;
     private final CreateRevisionUsecase createRevisionUsecase;
 
-    public UploadDocumentImageService(S3UploadObject s3UploadObject, GetUserPort getUserPort, GetDocumentPort getDocumentPort, SaveDocumentPort saveDocumentPort, UserFilter userFilter, CreateRevisionUsecase createRevisionUsecase) {
+    public UploadDocumentImageService(S3UploadObject s3UploadObject, FindUserPort findUserPort, FindDocumentPort findDocumentPort, SaveDocumentPort saveDocumentPort, UserFilter userFilter, CreateRevisionUsecase createRevisionUsecase) {
         this.s3UploadObject = s3UploadObject;
-        this.getUserPort = getUserPort;
-        this.getDocumentPort = getDocumentPort;
+        this.findUserPort = findUserPort;
+        this.findDocumentPort = findDocumentPort;
         this.saveDocumentPort = saveDocumentPort;
         this.userFilter = userFilter;
         this.createRevisionUsecase = createRevisionUsecase;
@@ -38,8 +38,8 @@ public class UploadDocumentImageService implements UploadDocumentImageUsecase {
 
     @Override
     public Mono<Void> upload(FilePart filePart, String documentId) {
-        return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(documentId))
+        return findUserPort.currentUser()
+                .zipWith(findDocumentPort.getDocumentById(documentId))
                 .map(this::checkPermission)
                 .zipWith(s3UploadObject.uploadObject(filePart, FileType.DOCUMENT.toString()))
                 .flatMap(this::updateDocument);
@@ -56,7 +56,7 @@ public class UploadDocumentImageService implements UploadDocumentImageUsecase {
     }
 
     private DefaultDocument checkPermission(Tuple2<User, DefaultDocument> tuple) {
-        userFilter.userPermissionCheck(tuple.getT2(), tuple.getT1().getId());
+        userFilter.userPermissionCheck(tuple.getT2(), tuple.getT1());
         return tuple.getT2();
     }
 
