@@ -1,11 +1,11 @@
-package org.daemawiki.domain.editor.usecase.service;
+package org.daemawiki.domain.editor.service;
 
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.editor.dto.DeleteEditorRequest;
 import org.daemawiki.domain.editor.usecase.RemoveDocumentEditorUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h403.NoPermissionUserException;
 import org.springframework.stereotype.Service;
@@ -16,20 +16,20 @@ import java.util.Objects;
 
 @Service
 public class RemoveDocumentEditorService implements RemoveDocumentEditorUsecase {
-    private final GetUserPort getUserPort;
-    private final GetDocumentPort getDocumentPort;
+    private final FindUserPort findUserPort;
+    private final FindDocumentPort findDocumentPort;
     private final SaveDocumentPort saveDocumentPort;
 
-    public RemoveDocumentEditorService(GetUserPort getUserPort, GetDocumentPort getDocumentPort, SaveDocumentPort saveDocumentPort) {
-        this.getUserPort = getUserPort;
-        this.getDocumentPort = getDocumentPort;
+    public RemoveDocumentEditorService(FindUserPort findUserPort, FindDocumentPort findDocumentPort, SaveDocumentPort saveDocumentPort) {
+        this.findUserPort = findUserPort;
+        this.findDocumentPort = findDocumentPort;
         this.saveDocumentPort = saveDocumentPort;
     }
 
     @Override
     public Mono<Void> remove(DeleteEditorRequest request, String documentId) {
-        return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(documentId))
+        return findUserPort.currentUser()
+                .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(this::checkPermission)
                 .flatMap(document -> updateDocument(document, request.userId()));
     }
@@ -41,7 +41,7 @@ public class RemoveDocumentEditorService implements RemoveDocumentEditorUsecase 
     }
 
     private Mono<DefaultDocument> checkPermission(Tuple2<User, DefaultDocument> tuple) {
-        if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getEditor().getCreatedUser().id())) {
+        if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getEditor().getCreatedUser().id()) || tuple.getT1().getIsBlocked()) {
             return Mono.error(NoPermissionUserException.EXCEPTION);
         }
         return Mono.just(tuple.getT2());
