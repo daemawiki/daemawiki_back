@@ -1,16 +1,16 @@
-package org.daemawiki.domain.content.usecase.service;
+package org.daemawiki.domain.content.service;
 
 import org.daemawiki.domain.common.UserFilter;
 import org.daemawiki.domain.content.dto.DeleteContentRequest;
 import org.daemawiki.domain.content.usecase.RemoveContentTableUsecase;
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.usecase.UpdateDocumentComponent;
 import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h400.VersionMismatchException;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
@@ -21,16 +21,16 @@ import reactor.util.function.Tuple2;
 
 @Service
 public class RemoveContentTableService implements RemoveContentTableUsecase {
-    private final GetDocumentPort getDocumentPort;
-    private final GetUserPort getUserPort;
+    private final FindDocumentPort findDocumentPort;
+    private final FindUserPort findUserPort;
     private final SaveDocumentPort saveDocumentPort;
     private final CreateRevisionUsecase createRevisionUsecase;
     private final UserFilter userFilter;
     private final UpdateDocumentComponent updateDocumentComponent;
 
-    public RemoveContentTableService(GetDocumentPort getDocumentPort, GetUserPort getUserPort, SaveDocumentPort saveDocumentPort, CreateRevisionUsecase createRevisionUsecase, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
-        this.getDocumentPort = getDocumentPort;
-        this.getUserPort = getUserPort;
+    public RemoveContentTableService(FindDocumentPort findDocumentPort, FindUserPort findUserPort, SaveDocumentPort saveDocumentPort, CreateRevisionUsecase createRevisionUsecase, UserFilter userFilter, UpdateDocumentComponent updateDocumentComponent) {
+        this.findDocumentPort = findDocumentPort;
+        this.findUserPort = findUserPort;
         this.saveDocumentPort = saveDocumentPort;
         this.createRevisionUsecase = createRevisionUsecase;
         this.userFilter = userFilter;
@@ -39,8 +39,8 @@ public class RemoveContentTableService implements RemoveContentTableUsecase {
 
     @Override
     public Mono<Void> remove(DeleteContentRequest request, String documentId) {
-        return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(documentId))
+        return findUserPort.currentUser()
+                .zipWith(findDocumentPort.getDocumentById(documentId))
                 .map(tuple -> checkPermissionAndDeleteDocumentContentTable(tuple, request))
                 .flatMap(document -> saveDocumentPort.save(document)
                         .then(createRevision(document)))
@@ -48,7 +48,7 @@ public class RemoveContentTableService implements RemoveContentTableUsecase {
     }
 
     private DefaultDocument checkPermissionAndDeleteDocumentContentTable(Tuple2<User, DefaultDocument> tuple, DeleteContentRequest request) {
-        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1().getEmail(), request.version());
+        userFilter.userPermissionAndDocumentVersionCheck(tuple.getT2(), tuple.getT1(), request.version());
 
         removeContent(tuple.getT2(), request.index());
         updateDocumentComponent.updateEditorAndUpdatedDate(tuple.getT2(), tuple.getT1());
