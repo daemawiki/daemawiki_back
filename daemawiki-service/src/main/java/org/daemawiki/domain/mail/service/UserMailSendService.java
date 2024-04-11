@@ -1,4 +1,4 @@
-package org.daemawiki.domain.mail.usecase.service;
+package org.daemawiki.domain.mail.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -8,10 +8,11 @@ import org.daemawiki.domain.mail.dto.AuthCodeRequest;
 import org.daemawiki.domain.mail.model.AuthCode;
 import org.daemawiki.domain.mail.model.type.MailType;
 import org.daemawiki.domain.mail.usecase.UserMailSendUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.exception.h409.EmailAlreadyExistsException;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.MailSendFailedException;
+import org.daemawiki.exception.h500.RedisConnectFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -29,13 +30,13 @@ public class UserMailSendService implements UserMailSendUsecase {
     private final SaveAuthCodePort saveAuthCodePort;
     private final JavaMailSender mailSender;
     private final Scheduler scheduler;
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
 
-    public UserMailSendService(SaveAuthCodePort saveAuthCodePort, JavaMailSender javaMailSender, Scheduler scheduler, GetUserPort getUserPort) {
+    public UserMailSendService(SaveAuthCodePort saveAuthCodePort, JavaMailSender javaMailSender, Scheduler scheduler, FindUserPort findUserPort) {
         this.saveAuthCodePort = saveAuthCodePort;
         this.mailSender = javaMailSender;
         this.scheduler = scheduler;
-        this.getUserPort = getUserPort;
+        this.findUserPort = findUserPort;
     }
 
     @Value("${admin.mail}")
@@ -45,7 +46,7 @@ public class UserMailSendService implements UserMailSendUsecase {
     public Mono<Void> send(AuthCodeRequest request) {
         String mail = request.mail();
 
-        return getUserPort.findByEmail(mail)
+        return findUserPort.findByEmail(mail)
                 .flatMap(user -> {
                     if (Objects.equals(request.type(), MailType.SIGNUP.getType())) {
                         return Mono.error(EmailAlreadyExistsException.EXCEPTION);
@@ -90,7 +91,7 @@ public class UserMailSendService implements UserMailSendUsecase {
                 .mail(to)
                 .code(authCode)
                 .build())
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> e instanceof RedisConnectFailedException ? e : ExecuteFailedException.EXCEPTION);
     }
 
     private String getMailTemplate(String key) {
