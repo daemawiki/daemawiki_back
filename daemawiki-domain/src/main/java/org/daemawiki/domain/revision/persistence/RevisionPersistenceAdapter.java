@@ -1,8 +1,8 @@
 package org.daemawiki.domain.revision.persistence;
 
 import org.bson.types.ObjectId;
-import org.daemawiki.domain.revision.application.CreateRevisionPort;
-import org.daemawiki.domain.revision.application.GetRevisionPort;
+import org.daemawiki.domain.revision.application.SaveRevisionPort;
+import org.daemawiki.domain.revision.application.FindRevisionPort;
 import org.daemawiki.domain.revision.model.RevisionHistory;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.repository.RevisionHistoryRepository;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Component
-public class RevisionPersistenceAdapter implements CreateRevisionPort, GetRevisionPort {
+public class RevisionPersistenceAdapter implements SaveRevisionPort, FindRevisionPort {
     private final RevisionHistoryRepository revisionHistoryRepository;
 
     public RevisionPersistenceAdapter(RevisionHistoryRepository revisionHistoryRepository) {
