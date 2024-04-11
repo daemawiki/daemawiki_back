@@ -5,7 +5,7 @@ import org.daemawiki.domain.document.model.DocumentSearchResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface GetDocumentPort {
+public interface FindDocumentPort {
     Mono<DefaultDocument> getDocumentById(String id);
     Mono<DefaultDocument> getDocumentByRandom();
     Flux<DocumentSearchResult> searchDocument(String text);
