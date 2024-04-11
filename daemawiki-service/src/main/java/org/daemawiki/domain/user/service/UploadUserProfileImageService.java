@@ -1,7 +1,7 @@
-package org.daemawiki.domain.user.usecase.service;
+package org.daemawiki.domain.user.service;
 
 import org.daemawiki.domain.file.model.type.FileType;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
 import org.daemawiki.domain.user.usecase.UploadUserProfileImageUsecase;
 import org.daemawiki.exception.h500.ExecuteFailedException;
@@ -14,19 +14,19 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class UploadUserProfileImageService implements UploadUserProfileImageUsecase {
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final S3UploadObject s3UploadObject;
     private final SaveUserPort saveUserPort;
 
-    public UploadUserProfileImageService(GetUserPort getUserPort, S3UploadObjectImpl s3UploadObject, SaveUserPort saveUserPort) {
-        this.getUserPort = getUserPort;
+    public UploadUserProfileImageService(FindUserPort findUserPort, S3UploadObjectImpl s3UploadObject, SaveUserPort saveUserPort) {
+        this.findUserPort = findUserPort;
         this.s3UploadObject = s3UploadObject;
         this.saveUserPort = saveUserPort;
     }
 
     @Override
     public Mono<Void> upload(FilePart filePart) {
-        return getUserPort.currentUser()
+        return findUserPort.currentUser()
                 .zipWith(s3UploadObject.uploadObject(filePart, FileType.PROFILE.toString()), (user, file) -> {
                     user.setProfile(file);
                     return user;
