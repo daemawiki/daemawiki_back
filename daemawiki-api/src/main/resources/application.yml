@@ -29,3 +29,9 @@ aws:
   secret: ${AWS_SECRET}
   bucket: ${BUCKET}
   region: ${REGION}
+
+daemawiki:
+  security:
+    secret: ${SEC_SECRET}
+    issuer: ${SEC_ISSUER}
+    expiration: ${SEC_EXPIRATION}
