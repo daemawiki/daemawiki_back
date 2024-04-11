@@ -1,7 +1,7 @@
-package org.daemawiki.domain.mail.usecase.service;
+package org.daemawiki.domain.mail.service;
 
 import org.daemawiki.domain.mail.application.code.DeleteAuthCodePort;
-import org.daemawiki.domain.mail.application.code.GetAuthCodePort;
+import org.daemawiki.domain.mail.application.code.FindAuthCodePort;
 import org.daemawiki.domain.mail.application.mail.SaveAuthMailPort;
 import org.daemawiki.domain.mail.dto.AuthCodeVerifyRequest;
 import org.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
@@ -15,12 +15,12 @@ import reactor.core.publisher.Mono;
 @Service
 public class UserMailVerifyService implements UserMailVerifyUsecase {
     private final SaveAuthMailPort saveAuthMailPort;
-    private final GetAuthCodePort getAuthCodePort;
+    private final FindAuthCodePort findAuthCodePort;
     private final DeleteAuthCodePort deleteAuthCodePort;
 
-    public UserMailVerifyService(SaveAuthMailPort saveAuthMailPort, GetAuthCodePort getAuthCodePort, DeleteAuthCodePort deleteAuthCodePort) {
+    public UserMailVerifyService(SaveAuthMailPort saveAuthMailPort, FindAuthCodePort findAuthCodePort, DeleteAuthCodePort deleteAuthCodePort) {
         this.saveAuthMailPort = saveAuthMailPort;
-        this.getAuthCodePort = getAuthCodePort;
+        this.findAuthCodePort = findAuthCodePort;
         this.deleteAuthCodePort = deleteAuthCodePort;
     }
 
@@ -56,7 +56,7 @@ public class UserMailVerifyService implements UserMailVerifyUsecase {
     }
 
     private Mono<AuthCode> getAuthCode(String mail, String authCode) {
-        return getAuthCodePort.findByMail(mail)
+        return findAuthCodePort.findByMail(mail)
                 .filter(a -> a.getCode().equals(authCode));
     }
 
