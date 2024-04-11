@@ -1,12 +1,12 @@
-package org.daemawiki.domain.editor.usecase.service;
+package org.daemawiki.domain.editor.service;
 
-import org.daemawiki.domain.document.application.GetDocumentPort;
+import org.daemawiki.domain.document.application.FindDocumentPort;
 import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.editor.dto.AddEditorRequest;
 import org.daemawiki.domain.editor.model.Editor;
 import org.daemawiki.domain.editor.usecase.AddDocumentEditorUsecase;
-import org.daemawiki.domain.user.application.GetUserPort;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h403.NoPermissionUserException;
 import org.daemawiki.exception.h404.UserNotFoundException;
@@ -16,22 +16,22 @@ import reactor.util.function.Tuple2;
 
 @Service
 public class AddDocumentEditorService implements AddDocumentEditorUsecase {
-    private final GetUserPort getUserPort;
+    private final FindUserPort findUserPort;
     private final SaveDocumentPort saveDocumentPort;
-    private final GetDocumentPort getDocumentPort;
+    private final FindDocumentPort findDocumentPort;
 
-    public AddDocumentEditorService(GetUserPort getUserPort, SaveDocumentPort saveDocumentPort, GetDocumentPort getDocumentPort) {
-        this.getUserPort = getUserPort;
+    public AddDocumentEditorService(FindUserPort findUserPort, SaveDocumentPort saveDocumentPort, FindDocumentPort findDocumentPort) {
+        this.findUserPort = findUserPort;
         this.saveDocumentPort = saveDocumentPort;
-        this.getDocumentPort = getDocumentPort;
+        this.findDocumentPort = findDocumentPort;
     }
 
     @Override
     public Mono<Void> add(AddEditorRequest request, String documentId) {
-        return getUserPort.currentUser()
-                .zipWith(getDocumentPort.getDocumentById(documentId))
+        return findUserPort.currentUser()
+                .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(this::checkPermission)
-                .zipWith(getUserPort.findByEmail(request.email())
+                .zipWith(findUserPort.findByEmail(request.email())
                         .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION)))
                 .map(this::updateDocument)
                 .flatMap(saveDocumentPort::save)
@@ -48,7 +48,7 @@ public class AddDocumentEditorService implements AddDocumentEditorUsecase {
     }
 
     private Mono<DefaultDocument> checkPermission(Tuple2<User, DefaultDocument> tuple) {
-        if (!tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId())) {
+        if (!tuple.getT2().getEditor().getCreatedUser().id().equals(tuple.getT1().getId()) || tuple.getT1().getIsBlocked()) {
             return Mono.error(NoPermissionUserException.EXCEPTION);
         }
 
