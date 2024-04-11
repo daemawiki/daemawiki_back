@@ -44,7 +44,7 @@ public class UserController {
         return changeUserPasswordUsecase.currentUser(request);
     }
     
-    @PatchMapping("/non-login/password")
+    @PatchMapping("/password/non-login")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> changePasswordNonLoggedInUser (@Valid @RequestBody ChangePasswordRequest request) {
         return changeUserPasswordUsecase.nonLoggedInUser(request);
