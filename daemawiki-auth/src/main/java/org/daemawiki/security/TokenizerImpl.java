@@ -2,9 +2,12 @@ package org.daemawiki.security;
 
 import io.jsonwebtoken.*;
 import org.daemawiki.config.SecurityProperties;
+import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.exception.h400.InvalidTokenException;
+import org.daemawiki.exception.h404.UserNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,15 +18,17 @@ import reactor.util.function.Tuples;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class TokenizerImpl implements Tokenizer {
     private final SecurityProperties securityProperties;
+    private final FindUserPort findUserPort;
 
-    public TokenizerImpl(SecurityProperties securityProperties) {
+    public TokenizerImpl(SecurityProperties securityProperties, FindUserPort findUserPort) {
         this.securityProperties = securityProperties;
+        this.findUserPort = findUserPort;
     }
 
     @Override
@@ -51,10 +56,10 @@ public class TokenizerImpl implements Tokenizer {
                         .compact(),
                 now);
     }
-    
+
     private Mono<Jws<Claims>> parse(String token) {
         return Mono.fromCallable(() -> Jwts.parser().setSigningKey(securityProperties.getSecret())
-                        .parseClaimsJws(token));
+                .parseClaimsJws(token));
     }
 
     private Mono<Claims> parseClaims(String token) {
@@ -62,18 +67,22 @@ public class TokenizerImpl implements Tokenizer {
                 .map(Jwt::getBody);
     }
 
-    private UserDetails createAuthenticatedUserBySubject(String subject) {
-        return new User(subject, "", Collections.emptyList());
-    }
-
     @Override
     public Mono<Authentication> getAuthentication(String token) {
         return parseClaims(token)
-                .map(claims -> createAuthenticatedUserBySubject(claims.getSubject()))
+                .flatMap(claims -> createAuthenticatedUserBySubject(claims.getSubject()))
                 .map(details -> new UsernamePasswordAuthenticationToken(
                         details, null, details.getAuthorities()));
     }
-    
+
+    private Mono<UserDetails> createAuthenticatedUserBySubject(String subject) {
+        return findUserPort.findByEmail(subject)
+                .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
+                .flatMap(user -> Mono.justOrEmpty(new User(subject, "", List.of(
+                        new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                ))));
+    }
+
     private boolean validateIssuer(Claims claims) {
         return claims.getIssuer()
                 .equals(securityProperties.getIssuer());
