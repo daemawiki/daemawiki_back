@@ -1,7 +1,4 @@
 <html>
-  <head>
-    <link href="./style.css" rel="stylesheet">
-  </head>
 <body>
   <h1><s>대마</s>를 어서 나에게</h1>
   
@@ -35,11 +32,12 @@
     
   </div>
   
-</body>
 
-## Product Spec
+<h2>Product Spec</h2>
 <img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/35325c41-8459-4a3b-8ee1-8eb4abce94ed">
 
 ---
+  
+</body>
 
 </html>
