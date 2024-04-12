@@ -3,6 +3,7 @@ bootJar.enabled = false
 
 dependencies {
     implementation project(':daemawiki-common')
+    implementation project(':daemawiki-domain')
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
