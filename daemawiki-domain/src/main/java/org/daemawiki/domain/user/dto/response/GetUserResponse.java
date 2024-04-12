@@ -12,7 +12,7 @@ public record GetUserResponse(
         String name,
         UserDetail detail,
         File profile,
-        Boolean isAdmin
+        String role
 ) {
 
     public static GetUserResponse of(User user) {
@@ -22,7 +22,7 @@ public record GetUserResponse(
                 .name(user.getName())
                 .detail(user.getDetail())
                 .profile(user.getProfile())
-                .isAdmin(user.getIsAdmin())
+                .role(user.getRole().name())
                 .build();
     }
 
