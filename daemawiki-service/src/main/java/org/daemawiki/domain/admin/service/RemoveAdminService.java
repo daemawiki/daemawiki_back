@@ -37,7 +37,7 @@ public class RemoveAdminService implements RemoveAdminUsecase {
                         .flatMap(delAdmin -> {
                             if (!delAdmin.getUserId().equals("not yet")) {
                                 return findUserPort.findById(delAdmin.getUserId())
-                                        .doOnNext(user -> user.setIsAdmin(false))
+                                        .doOnNext(user -> user.setRole(User.Role.USER))
                                         .flatMap(saveUserPort::save)
                                         .then(deleteAdmin(email));
                             }
