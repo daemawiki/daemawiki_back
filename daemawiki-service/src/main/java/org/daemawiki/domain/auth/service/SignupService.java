@@ -100,7 +100,7 @@ public class SignupService implements SignupUsecase {
                                     .major(getMajorType.execute(request.major().toLowerCase()))
                                     .club("*")
                                     .build())
-                            .isAdmin(exists)
+                            .role(exists ? User.Role.MANAGER : User.Role.USER)
                             .build());
     }
 
