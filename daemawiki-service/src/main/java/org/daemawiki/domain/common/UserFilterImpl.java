@@ -13,7 +13,7 @@ public class UserFilterImpl implements UserFilter {
 
     @Override
     public void userPermissionAndDocumentVersionCheck(DefaultDocument document, User user, Long requestVersion) {
-        if (!user.getIsAdmin()) {
+        if (user.getRole() == User.Role.USER) {
             userPermissionCheck(document, user);
             if (!Objects.equals(document.getVersion(), requestVersion)) {
                 throw VersionMismatchException.EXCEPTION;
@@ -23,7 +23,7 @@ public class UserFilterImpl implements UserFilter {
 
     @Override
     public void userPermissionCheck(DefaultDocument document, User user) {
-        if (!user.getIsAdmin()) {
+        if (user.getRole() == User.Role.USER) {
             if (document.getEditor().hasEditPermission(user.getEmail()) || user.getIsBlocked()) {
                 throw NoEditPermissionUserException.EXCEPTION;
             }
