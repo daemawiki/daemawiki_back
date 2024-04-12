@@ -1,5 +1,6 @@
 package org.daemawiki.config;
 
+import org.daemawiki.domain.user.model.User;
 import org.daemawiki.security.JwtWebFilter;
 import org.daemawiki.security.TokenizerImpl;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-
     private final TokenizerImpl tokenizer;
 
     public SecurityConfig(TokenizerImpl tokenizer) {
@@ -33,6 +33,10 @@ public class SecurityConfig {
                         .pathMatchers(
                                 "/api/auth/**",
                                 "/api/mail/**").permitAll()
+                        .pathMatchers("/api/admin/**").hasAnyRole(
+                                User.Role.ADMIN.name(),
+                                User.Role.MANAGER.name(),
+                                User.Role.OPERATOR.name())
                         .anyExchange().authenticated())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
