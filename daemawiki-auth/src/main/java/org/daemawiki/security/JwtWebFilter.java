@@ -12,9 +12,9 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 public class JwtWebFilter implements WebFilter {
-    private final TokenizerImpl tokenizer;
+    private final Tokenizer tokenizer;
 
-    public JwtWebFilter(TokenizerImpl tokenizer) {
+    public JwtWebFilter(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }
 
