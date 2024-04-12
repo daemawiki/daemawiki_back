@@ -9,6 +9,8 @@
     
   <div class="peoples">
     
+  ## People and Roles
+    
   <div>
     
 |                                                     Developer                                                     |                                                     Developer                                                     |
@@ -23,14 +25,12 @@
   </div>
   
   </div>
-
-    
-  </div>
   
 
 <h2>Product Spec</h2>
 <img src="https://github.com/daemawiki/daemawiki_back/assets/107746917/35325c41-8459-4a3b-8ee1-8eb4abce94ed">
 
+</div>
 ---
   
 </body>
