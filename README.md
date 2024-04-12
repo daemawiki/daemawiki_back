@@ -11,19 +11,14 @@
     
   <div>
     
-  |                                                     Developer                                                     |
-  |:-----------------------------------------------------------------------------------------------------------------:|
-  | [<img src="https://avatars.githubusercontent.com/u/107746917?s=460&v=4" width="100">](https://github.com/ori0o0p) |
-  |                                   <a href="https://github.com/ori0o0p">@김승원</a>                                |
-
+|                                                     Developer                                                     |                                                     Developer                                                     |
+|:-----------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|
+| [<img src="https://avatars.githubusercontent.com/u/107746917?s=460&v=4" width="100">](https://github.com/ori0o0p) | [<img src="https://avatars.githubusercontent.com/u/66201947?v=4" width="100">](https://github.com/daybreak312)    |
+|                                   <a href="https://github.com/ori0o0p">@김승원</a>                                |                                   <a href="https://github.com/daybreak312">@이태영</a>                            |
   </div>
 
   <div>
 
-  |                                                     Developer                                                     |
-  |:-----------------------------------------------------------------------------------------------------------------:|
-  | [<img src="https://avatars.githubusercontent.com/u/66201947?v=4" width="100">](https://github.com/daybreak312)    |
-  |                                   <a href="https://github.com/daybreak312">@이태영</a>                            |
 
   </div>
   
