@@ -2,7 +2,7 @@ package org.daemawiki.config;
 
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.security.JwtWebFilter;
-import org.daemawiki.security.TokenizerImpl;
+import org.daemawiki.security.Tokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -15,9 +15,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-    private final TokenizerImpl tokenizer;
+    private final Tokenizer tokenizer;
 
-    public SecurityConfig(TokenizerImpl tokenizer) {
+    public SecurityConfig(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }
 
