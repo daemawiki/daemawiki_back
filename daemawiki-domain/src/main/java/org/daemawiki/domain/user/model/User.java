@@ -29,21 +29,21 @@ public class User {
 
     private String documentId;
 
-    private Boolean isAdmin;
+    private Role role;
 
     private Boolean isBlocked = false;
 
     protected User() {}
 
     @Builder
-    public User(String name, String email, String password, File profile, UserDetail detail, String documentId, Boolean isAdmin) {
+    public User(String name, String email, String password, File profile, UserDetail detail, String documentId, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.profile = profile;
         this.detail = detail;
         this.documentId = documentId;
-        this.isAdmin = isAdmin;
+        this.role = role;
     }
 
     public void update(String name, UserDetail detail) {
@@ -51,4 +51,10 @@ public class User {
         this.detail = detail;
     }
 
+    public enum Role {
+        USER,
+        ADMIN,
+        OPERATOR,
+        MANAGER
+    }
 }
