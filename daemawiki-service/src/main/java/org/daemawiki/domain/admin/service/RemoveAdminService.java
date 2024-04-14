@@ -2,6 +2,7 @@ package org.daemawiki.domain.admin.service;
 
 import org.daemawiki.domain.admin.application.DeleteAdminAccountPort;
 import org.daemawiki.domain.admin.application.FindAdminAccountPort;
+import org.daemawiki.domain.admin.model.Admin;
 import org.daemawiki.domain.admin.usecase.RemoveAdminUsecase;
 import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
@@ -36,13 +37,17 @@ public class RemoveAdminService implements RemoveAdminUsecase {
                         .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                         .flatMap(delAdmin -> {
                             if (!delAdmin.getUserId().equals("not yet")) {
-                                return findUserPort.findById(delAdmin.getUserId())
-                                        .doOnNext(user -> user.setRole(User.Role.USER))
-                                        .flatMap(saveUserPort::save)
-                                        .then(deleteAdmin(email));
+                                return setRole(delAdmin);
                             }
                             return deleteAdmin(email);
                         });
+    }
+
+    private Mono<Void> setRole(Admin user) {
+        return findUserPort.findById(user.getUserId())
+                .doOnNext(u -> u.setRole(User.Role.USER))
+                .flatMap(saveUserPort::save)
+                .then(deleteAdmin(user.getEmail()));
     }
 
     private Mono<Void> deleteAdmin(String email) {
