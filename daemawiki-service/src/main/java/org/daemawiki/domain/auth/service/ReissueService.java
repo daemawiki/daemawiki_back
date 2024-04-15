@@ -33,7 +33,7 @@ public class ReissueService implements ReissueUsecase {
         if (token != null && token.startsWith("Bearer ")) {
             return token.substring(7);
         } else {
-            return null;
+            throw TokenReissueFailedException.EXCEPTION;
         }
     }
 
