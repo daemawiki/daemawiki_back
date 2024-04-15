@@ -43,4 +43,4 @@ allprojects {
 }
 
 jar.enabled = true
-bootJar.enabled = false
+bootJar.enabled = true
