@@ -40,7 +40,7 @@ allprojects {
         useJUnitPlatform()
     }
 
+    jar.enabled = true
+    bootJar.enabled = true
 }
 
-// jar.enabled = true
-// bootJar.enabled = false
