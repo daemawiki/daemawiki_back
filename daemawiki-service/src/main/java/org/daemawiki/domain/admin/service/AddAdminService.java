@@ -31,9 +31,7 @@ public class AddAdminService implements AddAdminUsecase {
 
     private Mono<Void> createAdminAccount(String email) {
         return createAdminAccountPort.create(
-                Admin.builder()
-                        .email(email)
-                        .build()
+                Admin.create(email)
         ).then();
     }
 

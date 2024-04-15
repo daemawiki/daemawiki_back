@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.daemawiki.domain.user.dto.request.ChangePasswordRequest;
-import org.daemawiki.domain.user.dto.request.UpdateClubRequest;
+import org.daemawiki.domain.user.dto.request.UpdateUserRequest;
 import org.daemawiki.domain.user.dto.response.GetUserResponse;
 import org.daemawiki.domain.user.usecase.*;
 import org.springframework.http.HttpStatus;
@@ -75,10 +75,10 @@ public class UserController {
         return getUserUsecase.getCurrentUser();
     }
 
-    @PatchMapping("/my/club")
+    @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateClub(@Valid @RequestBody UpdateClubRequest request) {
-        return updateUserUsecase.updateUserClub(request);
+    public Mono<Void> updateUser(@Valid @RequestBody UpdateUserRequest request) {
+        return updateUserUsecase.updateUser(request);
     }
 
     @DeleteMapping

@@ -8,18 +8,14 @@ import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
 import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
-import org.daemawiki.domain.user.dto.request.EditUserRequest;
-import org.daemawiki.domain.user.dto.request.UpdateClubRequest;
+import org.daemawiki.domain.user.dto.request.UpdateUserRequest;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.usecase.UpdateUserUsecase;
-import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UpdateUserService implements UpdateUserUsecase {
@@ -38,32 +34,7 @@ public class UpdateUserService implements UpdateUserUsecase {
     }
 
     @Override
-    public Mono<Void> updateUserClub(UpdateClubRequest request) {
-        return findUserPort.currentUser()
-                .doOnNext(user -> user.getDetail().setClub(request.club()))
-                .flatMap(saveUserPort::save)
-                .flatMap(user -> findDocumentPort.getDocumentById(user.getDocumentId())
-                        .doOnNext(document -> setDocumentForUpdateUserClub(document, request.club()))
-                        .flatMap(document -> saveDocumentPort.save(document)
-                                .then(createRevision(document))))
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
-    }
-
-    private void setDocumentForUpdateUserClub(DefaultDocument document, String requestClub) {
-        if (!Objects.equals(requestClub, "*")) {
-            document.getGroups().add(Arrays.asList("동아리", requestClub));
-        } else {
-            List<List<String>> newGroups = document.getGroups().stream()
-                    .filter(g -> !g.contains("동아리"))
-                    .toList();
-
-            document.setGroups(newGroups);
-        }
-        document.increaseVersion();
-    }
-
-    @Override
-    public Mono<Void> updateUser(EditUserRequest request) {
+    public Mono<Void> updateUser(UpdateUserRequest request) {
         return findUserPort.currentUser()
                 .doOnNext(user -> user.update(request.name(), request.detail()))
                 .flatMap(saveUserPort::save)

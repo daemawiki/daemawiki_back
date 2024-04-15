@@ -30,26 +30,26 @@ public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
     public Mono<DefaultDocument> create(SaveDocumentRequest request, User user) {
         UserDetailResponse userDetail = UserDetailResponse.create(user);
 
-        return Mono.just(DefaultDocument.builder()
-                .title(request.title())
-                .type(DocumentType.valueOf(request.type().toUpperCase()))
-                .dateTime(EditDateTime.builder()
-                        .created(LocalDateTime.now())
-                        .updated(LocalDateTime.now())
-                        .build())
-                .info(Info.builder()
-                        .documentImage(defaultProfile.defaultDocumentImage())
-                        .subTitle("")
-                        .details(Lists.mutable.of())
-                        .build())
-                .documentEditor(DocumentEditor.builder()
-                        .createdUser(userDetail)
-                        .updatedUser(userDetail)
-                        .canEdit(Collections.singletonList(Editor.create(user.getEmail(), user.getId())))
-                        .build())
-                .content(Lists.mutable.of(Content.create("1", "개요", "")))
-                .groups(request.groups())
-                .build());
+        return Mono.just(DefaultDocument.create(
+                        request.title(),
+                        DocumentType.valueOf(request.type().toUpperCase()),
+                        EditDateTime.builder()
+                                .created(LocalDateTime.now())
+                                .updated(LocalDateTime.now())
+                                .build(),
+                        Info.builder()
+                                .documentImage(defaultProfile.defaultDocumentImage())
+                                .subTitle("")
+                                .details(Lists.mutable.of())
+                                .build(),
+                        request.groups(),
+                        DocumentEditor.builder()
+                            .createdUser(userDetail)
+                            .updatedUser(userDetail)
+                            .canEdit(Collections.singletonList(Editor.create(user.getEmail(), user.getId())))
+                            .build(),
+                        Lists.mutable.of(Content.create("1", "개요", ""))
+                ));
     }
 
 }

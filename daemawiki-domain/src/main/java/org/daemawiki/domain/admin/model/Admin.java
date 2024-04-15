@@ -1,6 +1,5 @@
 package org.daemawiki.domain.admin.model;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -16,9 +15,12 @@ public class Admin {
 
     protected Admin() {}
 
-    @Builder
     public Admin(String email) {
         this.email = email;
+    }
+
+    public static Admin create(String email) {
+        return new Admin(email);
     }
 
     public void setUserId(String userId) {

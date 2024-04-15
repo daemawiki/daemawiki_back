@@ -2,7 +2,7 @@ package org.daemawiki.domain.user.dto.request;
 
 import org.daemawiki.domain.user.model.UserDetail;
 
-public record EditUserRequest(
+public record UpdateUserRequest(
         String name,
         UserDetail detail
 ) {
