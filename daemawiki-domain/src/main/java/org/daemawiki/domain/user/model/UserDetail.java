@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class UserDetail{
+public class UserDetail {
 
     private Integer gen;
 
