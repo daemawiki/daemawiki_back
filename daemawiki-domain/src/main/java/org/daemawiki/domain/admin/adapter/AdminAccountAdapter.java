@@ -1,6 +1,6 @@
 package org.daemawiki.domain.admin.adapter;
 
-import org.daemawiki.domain.admin.application.CreateAdminAccountPort;
+import org.daemawiki.domain.admin.application.SaveAdminAccountPort;
 import org.daemawiki.domain.admin.application.DeleteAdminAccountPort;
 import org.daemawiki.domain.admin.application.FindAdminAccountPort;
 import org.daemawiki.domain.admin.model.Admin;
@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-public class AdminAccountAdapter implements FindAdminAccountPort, CreateAdminAccountPort, DeleteAdminAccountPort {
+public class AdminAccountAdapter implements FindAdminAccountPort, SaveAdminAccountPort, DeleteAdminAccountPort {
     private final AdminAccountRepository adminAccountRepository;
 
     public AdminAccountAdapter(AdminAccountRepository adminAccountRepository) {
@@ -18,7 +18,7 @@ public class AdminAccountAdapter implements FindAdminAccountPort, CreateAdminAcc
     }
 
     @Override
-    public Mono<Admin> create(Admin admin) {
+    public Mono<Admin> save(Admin admin) {
         return adminAccountRepository.save(admin);
     }
 

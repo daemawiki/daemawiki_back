@@ -2,6 +2,7 @@ package org.daemawiki.domain.auth.service;
 
 import org.daemawiki.config.DefaultProfileConfig;
 import org.daemawiki.domain.admin.application.FindAdminAccountPort;
+import org.daemawiki.domain.admin.application.SaveAdminAccountPort;
 import org.daemawiki.domain.auth.dto.request.SignupRequest;
 import org.daemawiki.domain.auth.usecase.SignupUsecase;
 import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
@@ -30,8 +31,9 @@ public class SignupService implements SignupUsecase {
     private final CreateDocumentUsecase createDocumentUsecase;
     private final DefaultProfileConfig defaultProfile;
     private final FindAdminAccountPort findAdminAccountPort;
+    private final SaveAdminAccountPort saveAdminAccountPort;
 
-    public SignupService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile, FindAdminAccountPort findAdminAccountPort) {
+    public SignupService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile, FindAdminAccountPort findAdminAccountPort, SaveAdminAccountPort saveAdminAccountPort) {
         this.findUserPort = findUserPort;
         this.saveUserPort = saveUserPort;
         this.findAuthMailPort = findAuthMailPort;
@@ -41,6 +43,7 @@ public class SignupService implements SignupUsecase {
         this.createDocumentUsecase = createDocumentUsecase;
         this.defaultProfile = defaultProfile;
         this.findAdminAccountPort = findAdminAccountPort;
+        this.saveAdminAccountPort = saveAdminAccountPort;
     }
 
     @Override
@@ -78,7 +81,14 @@ public class SignupService implements SignupUsecase {
         return saveUserPort.save(user)
                 .flatMap(savedUser -> createDocumentUsecase.createByUser(savedUser)
                         .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                        .flatMap(document -> saveUserPort.save(savedUser)));
+                        .flatMap(document -> saveUserPort.save(savedUser)
+                                .flatMap(u -> findAdminAccountPort.findByEmail(u.getEmail())
+                                        .doOnNext(admin -> admin.setUserId(u.getId()))
+                                        .flatMap(saveAdminAccountPort::save)
+                                        .thenReturn(u)
+                                )
+                        )
+                );
     }
 
     /**

@@ -1,6 +1,6 @@
 package org.daemawiki.domain.admin.service;
 
-import org.daemawiki.domain.admin.application.CreateAdminAccountPort;
+import org.daemawiki.domain.admin.application.SaveAdminAccountPort;
 import org.daemawiki.domain.admin.model.Admin;
 import org.daemawiki.domain.admin.usecase.AddAdminUsecase;
 import org.daemawiki.domain.user.application.FindUserPort;
@@ -12,11 +12,11 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class AddAdminService implements AddAdminUsecase {
-    private final CreateAdminAccountPort createAdminAccountPort;
+    private final SaveAdminAccountPort saveAdminAccountPort;
     private final FindUserPort findUserPort;
 
-    public AddAdminService(CreateAdminAccountPort createAdminAccountPort, FindUserPort findUserPort) {
-        this.createAdminAccountPort = createAdminAccountPort;
+    public AddAdminService(SaveAdminAccountPort saveAdminAccountPort, FindUserPort findUserPort) {
+        this.saveAdminAccountPort = saveAdminAccountPort;
         this.findUserPort = findUserPort;
     }
 
@@ -30,7 +30,7 @@ public class AddAdminService implements AddAdminUsecase {
     }
 
     private Mono<Void> createAdminAccount(String email) {
-        return createAdminAccountPort.create(
+        return saveAdminAccountPort.save(
                 Admin.create(email)
         ).then();
     }
