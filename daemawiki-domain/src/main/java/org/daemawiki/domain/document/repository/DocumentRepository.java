@@ -40,10 +40,8 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
 
     default Mono<DefaultDocument> increaseView(DefaultDocument document) {
         return Mono.justOrEmpty(document)
-                .flatMap(doc -> {
-                    doc.setView(doc.getView() + 1);
-                    return save(doc);
-                });
+                .doOnNext(DefaultDocument::increaseView)
+                .flatMap(this::save);
     }
 
 }
