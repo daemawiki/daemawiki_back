@@ -21,9 +21,7 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
 
     @Aggregation(pipeline = {
             "{ $unwind: '$contents' }",
-            "{ $match: { $or: [ " +
-                    "{ 'contents.detail': { $regex: '?0', $options: 'i' } }" +
-                    "] } }"
+            "{ $match: { 'contents.detail': { $regex: '?0', $options: 'i' } } }"
     })
     Flux<DocumentSearchResult> findByContentTextContaining(String text);
 
