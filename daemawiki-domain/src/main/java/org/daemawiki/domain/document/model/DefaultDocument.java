@@ -42,15 +42,27 @@ public class DefaultDocument {
 
     private Long version = 0L;
 
+    public static DefaultDocument create(String title, DocumentType type, EditDateTime dateTime, Info info, List<List<String>> groups, DocumentEditor editor, List<Content> content) {
+        return DefaultDocument.builder()
+                .title(title)
+                .type(type)
+                .dateTime(dateTime)
+                .info(info)
+                .groups(groups)
+                .editor(editor)
+                .contents(content)
+                .build();
+    }
+
     @Builder
-    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, Info info, List<List<String>> groups, DocumentEditor documentEditor, List<Content> content) {
+    public DefaultDocument(String title, DocumentType type, EditDateTime dateTime, Info info, List<List<String>> groups, DocumentEditor editor, List<Content> contents) {
         this.title = title;
         this.type = type;
         this.dateTime = dateTime;
         this.info = info;
         this.groups = groups;
-        this.editor = documentEditor;
-        this.contents = content;
+        this.editor = editor;
+        this.contents = contents;
     }
 
     public void increaseView() {
