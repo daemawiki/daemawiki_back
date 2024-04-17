@@ -77,10 +77,10 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
             query.addCriteria(Criteria.where("detail.club").is(club));
         }
         if ((orderBy != null && !orderBy.isBlank())) {
-            if (sort != null &&  sort.equalsIgnoreCase("desc")) {
-                query.with(Sort.by(Sort.Direction.DESC, orderBy));
-            } else {
+            if (sort != null && sort.equalsIgnoreCase("ASC")) {
                 query.with(Sort.by(Sort.Direction.ASC, orderBy));
+            } else {
+                query.with(Sort.by(Sort.Direction.DESC, orderBy));
             }
         }
 
