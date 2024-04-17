@@ -107,18 +107,22 @@ public class SignupService implements SignupUsecase {
      */
     private Mono<User> createUser(SignupRequest request, String password) {
         return findAdminAccountPort.existsByEmail(request.email())
-                .map(exists -> User.builder()
-                            .name(request.name())
-                            .email(request.email())
-                            .password(password)
-                            .profile(defaultProfile.defaultUserProfile())
-                            .detail(UserDetail.builder()
-                                    .gen(request.gen())
-                                    .major(MajorType.valueOf(request.major()))
-                                    .club("*")
-                                    .build())
-                            .role(exists ? User.Role.MANAGER : User.Role.USER)
-                            .build());
+                .map(exists -> createUser(request, password, exists));
+    }
+
+    private User createUser(SignupRequest request, String password, Boolean exists) {
+        return User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(password)
+                .profile(defaultProfile.defaultUserProfile())
+                .detail(UserDetail.builder()
+                        .gen(request.gen())
+                        .major(MajorType.valueOf(request.major()))
+                        .club("")
+                        .build())
+                .role(exists ? User.Role.MANAGER : User.Role.USER)
+                .build();
     }
 
 }
