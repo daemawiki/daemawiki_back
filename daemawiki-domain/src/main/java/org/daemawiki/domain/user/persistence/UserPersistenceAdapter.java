@@ -3,12 +3,12 @@ package org.daemawiki.domain.user.persistence;
 import org.daemawiki.domain.user.application.DeleteUserPort;
 import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
+import org.daemawiki.domain.user.dto.FindUserDto;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.type.major.MajorType;
 import org.daemawiki.domain.user.repository.UserRepository;
 import org.daemawiki.exception.h404.UserNotFoundException;
 import org.daemawiki.utils.MongoQueryUtils;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -51,27 +51,27 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
     }
 
     @Override
-    public Flux<User> findAllByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort, Pageable pageable) { // TODO: 4/17/24 record로 합치기
+    public Flux<User> findAllByGenAndMajorAndClub(FindUserDto request) {
         Query query = new Query();
 
-        if(gen != null) {
-            query.addCriteria(Criteria.where("detail.gen").is(gen));
+        if(request.gen() != null) {
+            query.addCriteria(Criteria.where("detail.gen").is(request.gen()));
         }
-        if(major != null && !major.isBlank()) {
-            query.addCriteria(Criteria.where("detail.major").is(MajorType.valueOf(major).getMajor()));
+        if(request.major() != null && !request.major().isBlank()) {
+            query.addCriteria(Criteria.where("detail.major").is(MajorType.valueOf(request.major()).getMajor()));
         }
-        if(club != null && !club.isBlank()) {
-            query.addCriteria(Criteria.where("detail.club").is(club));
+        if(request.club() != null && !request.club().isBlank()) {
+            query.addCriteria(Criteria.where("detail.club").is(request.club()));
         }
-        if ((orderBy != null && !orderBy.isBlank())) {
-            if (sort != null && sort.equalsIgnoreCase("ASC")) {
-                query.with(Sort.by(Sort.Direction.ASC, orderBy));
+        if ((request.orderBy() != null && !request.orderBy().isBlank())) {
+            if (request.sort() != null && request.sort().equalsIgnoreCase("ASC")) {
+                query.with(Sort.by(Sort.Direction.ASC, request.orderBy()));
             } else {
-                query.with(Sort.by(Sort.Direction.DESC, orderBy));
+                query.with(Sort.by(Sort.Direction.DESC, request.orderBy()));
             }
         }
-        
-        query.with(pageable);
+
+        query.with(request.pageable());
 
         return mongoQueryUtils.find(query, User.class)
                 .subscribeOn(Schedulers.boundedElastic());
