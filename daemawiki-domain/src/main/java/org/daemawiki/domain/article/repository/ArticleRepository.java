@@ -10,8 +10,9 @@ public interface ArticleRepository extends ReactiveMongoRepository<Article, Stri
             "{ $match: { $or: [ " +
                     "{ 'title': { $regex: '?0', $options: 'i' } }, " +
                     "{ 'content': { $regex: '?0', $options: 'i' } }" +
-                    "] } }"
+                    "] } }",
+            "{ $sort: { ?1: 1 } }"
     })
-    Flux<Article> search(String keyword);
+    Flux<Article> search(String keyword, String sortBy);
 
 }
