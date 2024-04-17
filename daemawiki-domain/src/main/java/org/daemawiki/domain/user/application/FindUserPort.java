@@ -12,5 +12,6 @@ public interface FindUserPort {
     Flux<User> findAllByDetail_GenOrderByNameAsc(Integer gen);
     Flux<User> findAllByDetail_MajorOrderByNameAsc(MajorType major);
     Flux<User> findAllByDetail_ClubOrderByNameAsc(String club);
+    Flux<User> findAllByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort);
 
 }

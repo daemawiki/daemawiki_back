@@ -12,7 +12,7 @@ import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.UserDetail;
-import org.daemawiki.domain.user.type.major.component.GetMajorType;
+import org.daemawiki.domain.user.model.type.major.MajorType;
 import org.daemawiki.exception.h403.UnVerifiedEmailException;
 import org.daemawiki.exception.h409.EmailAlreadyExistsException;
 import org.daemawiki.exception.h500.ExecuteFailedException;
@@ -27,18 +27,16 @@ public class SignupService implements SignupUsecase {
     private final FindAuthMailPort findAuthMailPort;
     private final DeleteAuthMailPort deleteAuthMailPort;
     private final PasswordEncoder passwordEncoder;
-    private final GetMajorType getMajorType;
     private final CreateDocumentUsecase createDocumentUsecase;
     private final DefaultProfileConfig defaultProfile;
     private final FindAdminAccountPort findAdminAccountPort;
     private final SaveAdminAccountPort saveAdminAccountPort;
 
-    public SignupService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile, FindAdminAccountPort findAdminAccountPort, SaveAdminAccountPort saveAdminAccountPort) {
+    public SignupService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile, FindAdminAccountPort findAdminAccountPort, SaveAdminAccountPort saveAdminAccountPort) {
         this.findUserPort = findUserPort;
         this.saveUserPort = saveUserPort;
         this.findAuthMailPort = findAuthMailPort;
         this.passwordEncoder = passwordEncoder;
-        this.getMajorType = getMajorType;
         this.deleteAuthMailPort = deleteAuthMailPort;
         this.createDocumentUsecase = createDocumentUsecase;
         this.defaultProfile = defaultProfile;
@@ -107,7 +105,7 @@ public class SignupService implements SignupUsecase {
                             .profile(defaultProfile.defaultUserProfile())
                             .detail(UserDetail.builder()
                                     .gen(request.gen())
-                                    .major(getMajorType.execute(request.major().toLowerCase()))
+                                    .major(MajorType.valueOf(request.major()))
                                     .club("*")
                                     .build())
                             .role(exists ? User.Role.MANAGER : User.Role.USER)
