@@ -9,7 +9,7 @@ public interface ArticleRepository extends ReactiveMongoRepository<Article, Stri
     @Aggregation(pipeline = {
             "{ $match: { $or: [ " +
                     "{ 'title': { $regex: '?0', $options: 'i' } }, " +
-                    "{ 'contents': { $regex: '?0', $options: 'i' } }" +
+                    "{ 'content': { $regex: '?0', $options: 'i' } }" +
                     "] } }"
     })
     Flux<Article> search(String keyword);
