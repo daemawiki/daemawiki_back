@@ -76,17 +76,26 @@ public class SignupService implements SignupUsecase {
      * @return 저장된 유저
      */
     private Mono<User> saveUserAndCreateDocument(User user) {
-        return saveUserPort.save(user)
-                .flatMap(savedUser -> createDocumentUsecase.createByUser(savedUser)
-                        .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                        .flatMap(document -> saveUserPort.save(savedUser)
-                                .flatMap(u -> findAdminAccountPort.findByEmail(u.getEmail())
-                                        .doOnNext(admin -> admin.setUserId(u.getId()))
-                                        .flatMap(saveAdminAccountPort::save)
-                                        .thenReturn(u)
-                                )
-                        )
-                );
+        return saveUser(user)
+                .flatMap(this::createDocumentAndUpdateUser);
+    }
+
+    private Mono<User> createDocumentAndUpdateUser(User savedUser) {
+        return createDocumentUsecase.createByUser(savedUser)
+                .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                .flatMap(document -> saveUser(savedUser))
+                .flatMap(this::updateAdminAccount);
+    }
+
+    private Mono<User> updateAdminAccount(User user) {
+        return findAdminAccountPort.findByEmail(user.getEmail())
+                .doOnNext(admin -> admin.setUserId(user.getId()))
+                .flatMap(saveAdminAccountPort::save)
+                .thenReturn(user);
+    }
+
+    private Mono<User> saveUser(User user) {
+        return saveUserPort.save(user);
     }
 
     /**
