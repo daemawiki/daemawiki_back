@@ -7,8 +7,9 @@ import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.type.major.MajorType;
 import org.daemawiki.domain.user.repository.UserRepository;
 import org.daemawiki.exception.h404.UserNotFoundException;
+import org.daemawiki.utils.MongoQueryUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -16,17 +17,18 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.security.Principal;
 
 @Component
 public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
     private final UserRepository userRepository;
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
+    private final MongoQueryUtils mongoQueryUtils;
 
-    public UserPersistenceAdapter(UserRepository userRepository, ReactiveMongoTemplate reactiveMongoTemplate) {
+    public UserPersistenceAdapter(UserRepository userRepository, MongoQueryUtils mongoQueryUtils) {
         this.userRepository = userRepository;
-        this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.mongoQueryUtils = mongoQueryUtils;
     }
 
     @Override
@@ -49,22 +51,7 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
     }
 
     @Override
-    public Flux<User> findAllByDetail_GenOrderByNameAsc(Integer gen) {
-        return userRepository.findAllByDetail_GenOrderByNameAsc(gen);
-    }
-
-    @Override
-    public Flux<User> findAllByDetail_MajorOrderByNameAsc(MajorType major) {
-        return userRepository.findAllByDetail_MajorOrderByNameAsc(major);
-    }
-
-    @Override
-    public Flux<User> findAllByDetail_ClubOrderByNameAsc(String club) {
-        return userRepository.findAllByDetail_ClubOrderByNameAsc(club);
-    }
-
-    @Override
-    public Flux<User> findAllByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort) {
+    public Flux<User> findAllByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort, Pageable pageable) { // TODO: 4/17/24 record로 합치기
         Query query = new Query();
 
         if(gen != null) {
@@ -83,8 +70,11 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
                 query.with(Sort.by(Sort.Direction.DESC, orderBy));
             }
         }
+        
+        query.with(pageable);
 
-        return reactiveMongoTemplate.find(query, User.class);
+        return mongoQueryUtils.find(query, User.class)
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
