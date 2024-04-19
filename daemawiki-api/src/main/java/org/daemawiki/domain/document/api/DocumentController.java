@@ -14,6 +14,7 @@ import org.daemawiki.domain.document.usecase.UpdateDocumentUsecase;
 import org.daemawiki.domain.info.dto.UpdateInfoRequest;
 import org.daemawiki.domain.info.usecase.UpdateDocumentInfoUsecase;
 import org.daemawiki.domain.info.usecase.UploadDocumentImageUsecase;
+import org.daemawiki.utils.PagingInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -57,18 +58,36 @@ public class DocumentController {
     }
 
     @GetMapping("/search")
-    public Flux<DocumentSearchResult> searchDocument(@NotBlank @RequestParam("text") String text, @RequestParam("lastDocument") String lastDocument) {
-        return getDocumentUsecase.searchDocument(text, lastDocument);
+    public Flux<DocumentSearchResult> searchDocument(
+            @RequestParam("text") String text,
+            @RequestParam(defaultValue = "dateTime.created") String sortBy,
+            @RequestParam(defaultValue = "1") Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return getDocumentUsecase.searchDocument(text, PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/search/title")
-    public Flux<DocumentSearchResult> searchDocumentTitle(@NotBlank @RequestParam("text") String text, @RequestParam("lastDocument") String lastDocument) {
-        return getDocumentUsecase.searchDocumentTitle(text, lastDocument);
+    public Flux<DocumentSearchResult> searchDocumentTitle(
+            @RequestParam("text") String text,
+            @RequestParam(defaultValue = "dateTime.created") String sortBy,
+            @RequestParam(defaultValue = "1") Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return getDocumentUsecase.searchDocumentTitle(text, PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/search/content")
-    public Flux<DocumentSearchResult> searchDocumentContent(@NotBlank @RequestParam("text") String text, @RequestParam("lastDocument") String lastDocument) {
-        return getDocumentUsecase.searchDocumentContent(text, lastDocument);
+    public Flux<DocumentSearchResult> searchDocumentContent(
+            @RequestParam("text") String text,
+            @RequestParam(defaultValue = "dateTime.created") String sortBy,
+            @RequestParam(defaultValue = "1") Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return getDocumentUsecase.searchDocumentContent(text, PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/most-revision/top-10")
@@ -77,13 +96,17 @@ public class DocumentController {
     }
 
     @GetMapping("/most-revision")
-    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersion(@RequestParam("lastDocument") String lastDocument) {
-        return getDocumentUsecase.getDocumentsMostRevision(lastDocument);
+    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersion(
+            @RequestBody PagingInfo pagingInfo
+    ) {
+        return getDocumentUsecase.getDocumentsMostRevision(pagingInfo);
     }
 
     @GetMapping("/most-view")
-    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByView(@RequestParam("lastDocument") String lastDocument) {
-        return getDocumentUsecase.getDocumentOrderByView(lastDocument);
+    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByView(
+            @RequestBody PagingInfo pagingInfo
+    ) {
+        return getDocumentUsecase.getDocumentOrderByView(pagingInfo);
     }
 
     @GetMapping("/most-view/top-10")
