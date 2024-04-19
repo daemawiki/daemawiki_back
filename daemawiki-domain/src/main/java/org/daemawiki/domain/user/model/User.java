@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.daemawiki.domain.file.model.File;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -32,6 +35,9 @@ public class User {
     private Role role;
 
     private Boolean isBlocked = false;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     protected User() {}
 
