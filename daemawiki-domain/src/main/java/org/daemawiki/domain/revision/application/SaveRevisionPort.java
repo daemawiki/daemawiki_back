@@ -4,6 +4,6 @@ import org.daemawiki.domain.revision.model.RevisionHistory;
 import reactor.core.publisher.Mono;
 
 public interface SaveRevisionPort {
-    Mono<Void> save(RevisionHistory revisionHistory);
+    Mono<RevisionHistory> save(RevisionHistory revisionHistory);
 
 }
