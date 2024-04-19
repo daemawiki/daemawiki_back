@@ -39,9 +39,13 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
                 .switchIfEmpty(Mono.error(NoEditPermissionUserException.EXCEPTION))
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(this::getDefaultDocumentMono)
-                .flatMap(document -> deleteDocumentPort.delete(document)
-                        .then(createRevision(document)))
+                .flatMap(this::deleteDocument)
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> deleteDocument(DefaultDocument document) {
+        return deleteDocumentPort.delete(document)
+                .then(createRevision(document));
     }
 
     private Mono<DefaultDocument> getDefaultDocumentMono(Tuple2<User, DefaultDocument> tuple) {
