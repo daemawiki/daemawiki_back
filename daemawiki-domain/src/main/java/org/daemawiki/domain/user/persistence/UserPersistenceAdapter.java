@@ -9,6 +9,7 @@ import org.daemawiki.domain.user.model.type.major.MajorType;
 import org.daemawiki.domain.user.repository.UserRepository;
 import org.daemawiki.exception.h404.UserNotFoundException;
 import org.daemawiki.utils.MongoQueryUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -63,15 +64,17 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
         if(request.club() != null && !request.club().isBlank()) {
             query.addCriteria(Criteria.where("detail.club").is(request.club()));
         }
-        if ((request.orderBy() != null && !request.orderBy().isBlank())) {
-            if (request.sort() != null && request.sort().equalsIgnoreCase("ASC")) {
-                query.with(Sort.by(Sort.Direction.ASC, request.orderBy()));
+        var sortBy = request.pagingInfo().sortBy();
+        if ((sortBy != null && !sortBy.isBlank())) {
+            var sortDirection = request.pagingInfo().sortDirection();
+            if (sortDirection != null && sortDirection.equals(1)) {
+                query.with(Sort.by(Sort.Direction.ASC, sortBy));
             } else {
-                query.with(Sort.by(Sort.Direction.DESC, request.orderBy()));
+                query.with(Sort.by(Sort.Direction.DESC, sortBy));
             }
         }
 
-        query.with(request.pageable());
+        query.with(PageRequest.of(request.pagingInfo().page(), request.pagingInfo().size()));
 
         return mongoQueryUtils.find(query, User.class)
                 .subscribeOn(Schedulers.boundedElastic());
@@ -86,4 +89,5 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
     public Mono<Void> delete(User user) {
         return userRepository.delete(user);
     }
+
 }

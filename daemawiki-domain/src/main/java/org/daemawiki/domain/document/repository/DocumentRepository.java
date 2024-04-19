@@ -13,26 +13,48 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
             "{ $match: { $or: [ " +
                     "{ 'title': { $regex: '?0', $options: 'i' } }, " +
                     "{ 'contents.detail': { $regex: '?0', $options: 'i' } }" +
-                    "] } }"
+                    "] } }",
+            "{ $sort: { ?1: ?2 } }",
+            "{ $skip: ?3 }",
+            "{ $limit: ?4 }"
     })
-    Flux<DocumentSearchResult> findByTextContaining(String text);
+    Flux<DocumentSearchResult> findByTextContaining(String text, String sortBy, Integer sortDirection, Integer skip, Integer limit);
 
-    Flux<DefaultDocument> findByTitleContaining(String text);
+    @Aggregation(pipeline = {
+            "{ $match: { 'title': '?0' } }",
+            "{ $sort: { ?1: ?2 } }",
+            "{ $skip: ?3 }",
+            "{ $limit: ?4 }"
+    })
+    Flux<DefaultDocument> findByTitleContaining(String text, String sortBy, Integer sortDirection, Integer skip, Integer limit);
 
     @Aggregation(pipeline = {
             "{ $unwind: '$contents' }",
-            "{ $match: { 'contents.detail': { $regex: '?0', $options: 'i' } } }"
+            "{ $match: { 'contents.detail': { $regex: '?0', $options: 'i' } } }",
+            "{ $sort: { ?1: ?2 } }",
+            "{ $skip: ?3 }",
+            "{ $limit: ?4 }"
     })
-    Flux<DocumentSearchResult> findByContentTextContaining(String text);
+    Flux<DocumentSearchResult> findByContentTextContaining(String text, String sortBy, Integer sortDirection, Integer skip, Integer limit);
 
     @Aggregation("{ $sample: {'size':  1} }")
     Mono<DefaultDocument> findRandomDocument();
 
     Flux<DefaultDocument> findTop10ByOrderByVersionDesc();
 
-    Flux<DefaultDocument> findAllByOrderByViewDesc();
+    @Aggregation(pipeline = {
+            "{ $sort: { 'view': ?0 } }",
+            "{ $skip: ?1 }",
+            "{ $limit: ?2 }"
+    })
+    Flux<DefaultDocument> findAllByOrderByView(Integer sortDirection, Integer skip, Integer limit);
 
-    Flux<DefaultDocument> findAllByOrderByVersionDesc();
+    @Aggregation(pipeline = {
+            "{ $sort: { 'version': ?0 } }",
+            "{ $skip: ?1 }",
+            "{ $limit: ?2 }"
+    })
+    Flux<DefaultDocument> findAllByOrderByVersion(Integer sortDirection, Integer skip, Integer limit);
 
     Flux<DefaultDocument> findTop10ByOrderByViewDesc();
 

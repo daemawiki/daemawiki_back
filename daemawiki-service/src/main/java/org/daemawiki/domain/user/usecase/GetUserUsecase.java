@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface GetUserUsecase {
     Mono<GetUserResponse> getCurrentUser();
-    Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sortDirection, Integer page, Integer size);
+    Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String sortBy, Integer sortDirection, Integer page, Integer size);
 
 }

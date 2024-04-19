@@ -12,7 +12,7 @@ public class MongoQueryUtils {
     public MongoQueryUtils(ReactiveMongoTemplate reactiveMongoTemplate) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
     }
-    // Mono<Page<T>> ? Flux<T> ?
+
     public <T> Flux<T> find(Query query, Class<T> targetClass) {
         return reactiveMongoTemplate.find(query, targetClass);
     }

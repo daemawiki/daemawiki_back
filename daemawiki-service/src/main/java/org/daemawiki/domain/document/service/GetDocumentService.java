@@ -9,6 +9,7 @@ import org.daemawiki.domain.document.dto.response.SimpleDocumentResponse;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.daemawiki.domain.document.usecase.GetDocumentUsecase;
+import org.daemawiki.utils.PagingInfo;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,27 +39,19 @@ public class GetDocumentService implements GetDocumentUsecase {
     }
 
     @Override
-    public Flux<DocumentSearchResult> searchDocument(String text, String lastDocumentId) {
-        return getFilteredSearchDocuments(
-                findDocumentPort.searchDocument(text),
-                lastDocumentId
-        );
+    public Flux<DocumentSearchResult> searchDocument(String text, PagingInfo pagingInfo) {
+        return findDocumentPort.searchDocument(text, pagingInfo);
     }
 
     @Override
-    public Flux<DocumentSearchResult> searchDocumentTitle(String text, String lastDocumentId) {
-        return getFilteredDocuments(
-                findDocumentPort.searchDocumentTitle(text),
-                lastDocumentId
-        ).map(DocumentSearchResult::of);
+    public Flux<DocumentSearchResult> searchDocumentTitle(String text, PagingInfo pagingInfo) {
+        return findDocumentPort.searchDocumentTitle(text, pagingInfo)
+                .map(DocumentSearchResult::of);
     }
 
     @Override
-    public Flux<DocumentSearchResult> searchDocumentContent(String text, String lastDocumentId) {
-        return getFilteredSearchDocuments(
-                findDocumentPort.searchDocumentContent(text),
-                lastDocumentId
-        );
+    public Flux<DocumentSearchResult> searchDocumentContent(String text, PagingInfo pagingInfo) {
+        return findDocumentPort.searchDocumentContent(text, pagingInfo);
     }
 
     @Override
@@ -68,37 +61,19 @@ public class GetDocumentService implements GetDocumentUsecase {
     }
 
     @Override
-    public Flux<SimpleDocumentResponse> getDocumentsMostRevision(String lastDocumentId) {
-        return getFilteredDocuments(
-                findDocumentPort.getDocumentMostRevision(),
-                lastDocumentId
-        ).map(SimpleDocumentResponse::of);
+    public Flux<SimpleDocumentResponse> getDocumentsMostRevision(PagingInfo pagingInfo) {
+        return findDocumentPort.getDocumentMostRevision(pagingInfo).map(SimpleDocumentResponse::of);
     }
 
     @Override
-    public Flux<GetMostViewDocumentResponse> getDocumentOrderByView(String lastDocumentId) {
-        return getFilteredDocuments(
-                findDocumentPort.getDocumentOrderByView(),
-                lastDocumentId
-        ).map(GetMostViewDocumentResponse::of);
+    public Flux<GetMostViewDocumentResponse> getDocumentOrderByView(PagingInfo pagingInfo) {
+        return findDocumentPort.getDocumentOrderByView(pagingInfo).map(GetMostViewDocumentResponse::of);
     }
 
     @Override
     public Flux<GetMostViewDocumentResponse> getDocumentOrderByViewTop10() {
         return findDocumentPort.getDocumentOrderByViewTop10()
                 .map(GetMostViewDocumentResponse::of);
-    }
-
-    private Flux<DefaultDocument> getFilteredDocuments(Flux<DefaultDocument> documents, String lastDocumentId) {
-        return documents.filter(doc -> lastDocumentId.isBlank() ||
-                        new ObjectId(doc.getId()).getTimestamp() > new ObjectId(lastDocumentId).getTimestamp())
-                .take(20);
-    }
-
-    private Flux<DocumentSearchResult> getFilteredSearchDocuments(Flux<DocumentSearchResult> documents, String lastDocumentId) {
-        return documents.filter(doc -> lastDocumentId.isBlank() ||
-                        new ObjectId(doc.getId()).getTimestamp() > new ObjectId(lastDocumentId).getTimestamp())
-                .take(20);
     }
 
 }

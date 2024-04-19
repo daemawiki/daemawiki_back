@@ -1,11 +1,11 @@
 package org.daemawiki.domain.revision.persistence;
 
-import org.bson.types.ObjectId;
 import org.daemawiki.domain.revision.application.SaveRevisionPort;
 import org.daemawiki.domain.revision.application.FindRevisionPort;
 import org.daemawiki.domain.revision.model.RevisionHistory;
 import org.daemawiki.domain.revision.model.type.RevisionType;
 import org.daemawiki.domain.revision.repository.RevisionHistoryRepository;
+import org.daemawiki.utils.PagingInfo;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,48 +21,32 @@ public class RevisionPersistenceAdapter implements SaveRevisionPort, FindRevisio
     }
 
     @Override
-    public Mono<Void> save(RevisionHistory revisionHistory) {
-        return revisionHistoryRepository.save(revisionHistory)
-                .then();
+    public Mono<RevisionHistory> save(RevisionHistory revisionHistory) {
+        return revisionHistoryRepository.save(revisionHistory);
     }
 
     @Override
-    public Flux<RevisionHistory> getUpdatedTop10Revision() {
-        List<RevisionType> types = List.of(RevisionType.UPDATE, RevisionType.CREATE);
+    public Flux<RevisionHistory> getRevisionOrderByUpdated(PagingInfo pagingInfo, List<String> types) {
+        List<RevisionType> typeValues = types.stream()
+                        .map(type -> RevisionType.valueOf(type.toUpperCase()))
+                        .toList();
 
-        return revisionHistoryRepository.findAllByTypeInOrderByCreatedDateTimeDesc(types)
-                .distinct(RevisionHistory::getDocumentId)
-                .take(10);
+        return revisionHistoryRepository.findAllByTypeIn(typeValues, pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
-    public Flux<RevisionHistory> getAllRevisionPaging(String lastRevisionId) {
-        return getFilteredRevisions(
-                revisionHistoryRepository.findAllByOrderByCreatedDateTimeDesc(),
-                lastRevisionId
-        );
+    public Flux<RevisionHistory> getAllRevisionPaging(PagingInfo pagingInfo) {
+        return revisionHistoryRepository.findAllOrderByCustom(pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
-    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, String lastRevisionId) {
-        return getFilteredRevisions(
-                revisionHistoryRepository.findAllByDocumentId(documentId),
-                lastRevisionId
-        );
+    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, PagingInfo pagingInfo) {
+        return revisionHistoryRepository.findAllByDocumentId(documentId, pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
-    public Flux<RevisionHistory> getAllRevisionByUser(String userId, String lastRevisionId) {
-        return getFilteredRevisions(
-                revisionHistoryRepository.findAllByEditor_IdOrderByCreatedDateTimeDesc(userId),
-                lastRevisionId
-        );
-    }
-
-    private Flux<RevisionHistory> getFilteredRevisions(Flux<RevisionHistory> revisions, String lastRevisionId) {
-        return revisions.filter(revisionHistory -> lastRevisionId.isBlank() ||
-                        new ObjectId(revisionHistory.getId()).getTimestamp() > new ObjectId(lastRevisionId).getTimestamp())
-                .take(20);
+    public Flux<RevisionHistory> getAllRevisionByUser(String userId, PagingInfo pagingInfo) {
+        return revisionHistoryRepository.findAllByEditor_Id(userId, pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
 }

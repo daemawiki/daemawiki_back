@@ -4,7 +4,7 @@ import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.dto.FindUserDto;
 import org.daemawiki.domain.user.dto.response.GetUserResponse;
 import org.daemawiki.domain.user.usecase.GetUserUsecase;
-import org.springframework.data.domain.PageRequest;
+import org.daemawiki.utils.PagingInfo;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,11 +24,9 @@ public class GetUserService implements GetUserUsecase {
     }
 
     @Override
-    public Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String orderBy, String sort, Integer page, Integer size) {
+    public Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String sortBy, Integer sortDirection, Integer page, Integer size) {
         return findUserPort.findAllByGenAndMajorAndClub(
-                FindUserDto.of(
-                gen, major, club, orderBy, sort,
-                PageRequest.of(page, size))
+                FindUserDto.of(gen, major, club, PagingInfo.of(sortBy, sortDirection, page, size))
         ).map(GetUserResponse::of);
     }
 

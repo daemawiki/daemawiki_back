@@ -1,12 +1,13 @@
 package org.daemawiki.domain.document.persistence;
 
-import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.application.DeleteDocumentPort;
 import org.daemawiki.domain.document.application.FindDocumentPort;
+import org.daemawiki.domain.document.application.SaveDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.DocumentSearchResult;
 import org.daemawiki.domain.document.repository.DocumentRepository;
 import org.daemawiki.exception.h404.DocumentNotFoundException;
+import org.daemawiki.utils.PagingInfo;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,18 +32,18 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, FindDocumen
     }
 
     @Override
-    public Flux<DocumentSearchResult> searchDocument(String text) {
-        return documentRepository.findByTextContaining(text);
+    public Flux<DocumentSearchResult> searchDocument(String text, PagingInfo pagingInfo) {
+        return documentRepository.findByTextContaining(text, pagingInfo.sortBy().isBlank() ? "dateTime.created" : pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
-    public Flux<DefaultDocument> searchDocumentTitle(String text) {
-        return documentRepository.findByTitleContaining(text);
+    public Flux<DefaultDocument> searchDocumentTitle(String text, PagingInfo pagingInfo) {
+        return documentRepository.findByTitleContaining(text, pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
-    public Flux<DocumentSearchResult> searchDocumentContent(String text) {
-        return documentRepository.findByContentTextContaining(text);
+    public Flux<DocumentSearchResult> searchDocumentContent(String text, PagingInfo pagingInfo) {
+        return documentRepository.findByContentTextContaining(text, pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
@@ -50,13 +51,13 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, FindDocumen
         return documentRepository.findTop10ByOrderByVersionDesc();
     }
 
-    public Flux<DefaultDocument> getDocumentMostRevision() {
-        return documentRepository.findAllByOrderByVersionDesc();
+    public Flux<DefaultDocument> getDocumentMostRevision(PagingInfo pagingInfo) {
+        return documentRepository.findAllByOrderByVersion(pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
-    public Flux<DefaultDocument> getDocumentOrderByView() {
-        return documentRepository.findAllByOrderByViewDesc();
+    public Flux<DefaultDocument> getDocumentOrderByView(PagingInfo pagingInfo) {
+        return documentRepository.findAllByOrderByView(pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
     @Override
