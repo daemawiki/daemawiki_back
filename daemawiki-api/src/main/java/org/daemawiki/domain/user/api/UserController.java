@@ -52,13 +52,14 @@ public class UserController {
             @RequestParam(required = false) Integer gen,
             @RequestParam(required = false) String major,
             @RequestParam(required = false) String club,
-            @RequestParam(required = false) String orderBy,
-            @RequestParam(required = false) String sortDirection,
-            @RequestParam Integer page,
-            @RequestParam Integer size
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "1" ) Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
         return getUserUsecase.getUserByGenAndMajorAndClub(
-                gen, major, club, orderBy, sortDirection, page, size);
+                gen, major, club, sortBy, sortDirection, page, size
+        );
     }
 
     @GetMapping
