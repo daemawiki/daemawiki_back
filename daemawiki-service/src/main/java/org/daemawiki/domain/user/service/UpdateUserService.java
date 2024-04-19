@@ -38,10 +38,18 @@ public class UpdateUserService implements UpdateUserUsecase {
         return findUserPort.currentUser()
                 .doOnNext(user -> user.update(request.name(), request.detail()))
                 .flatMap(saveUserPort::save)
-                .flatMap(user -> findDocumentPort.getDocumentById(user.getDocumentId())
-                        .doOnNext(document -> setDocumentForUpdateUser(document, user))
-                        .flatMap(document -> saveDocumentPort.save(document)
-                                    .then(createRevision(document))));
+                .flatMap(this::updateUserDocument);
+    }
+
+    private Mono<Void> updateUserDocument(User user) {
+        return findDocumentPort.getDocumentById(user.getDocumentId())
+                .doOnNext(document -> setDocumentForUpdateUser(document, user))
+                .flatMap(this::saveDocumentAndCreateRevision);
+    }
+
+    private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
+        return saveDocumentPort.save(document)
+                .then(createRevision(document));
     }
 
     private void setDocumentForUpdateUser(DefaultDocument document, User user) {

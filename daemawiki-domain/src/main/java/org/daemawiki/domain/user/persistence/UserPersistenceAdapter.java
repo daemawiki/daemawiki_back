@@ -3,24 +3,33 @@ package org.daemawiki.domain.user.persistence;
 import org.daemawiki.domain.user.application.DeleteUserPort;
 import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
+import org.daemawiki.domain.user.dto.FindUserDto;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.type.major.MajorType;
 import org.daemawiki.domain.user.repository.UserRepository;
 import org.daemawiki.exception.h404.UserNotFoundException;
+import org.daemawiki.utils.MongoQueryUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.security.Principal;
 
 @Component
 public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
     private final UserRepository userRepository;
+    private final MongoQueryUtils mongoQueryUtils;
 
-    public UserPersistenceAdapter(UserRepository userRepository) {
+    public UserPersistenceAdapter(UserRepository userRepository, MongoQueryUtils mongoQueryUtils) {
         this.userRepository = userRepository;
+        this.mongoQueryUtils = mongoQueryUtils;
     }
 
     @Override
@@ -43,18 +52,32 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
     }
 
     @Override
-    public Flux<User> findAllByDetail_GenOrderByNameAsc(Integer gen) {
-        return userRepository.findAllByDetail_GenOrderByNameAsc(gen);
-    }
+    public Flux<User> findAllByGenAndMajorAndClub(FindUserDto request) {
+        Query query = new Query();
 
-    @Override
-    public Flux<User> findAllByDetail_MajorOrderByNameAsc(MajorType major) {
-        return userRepository.findAllByDetail_MajorOrderByNameAsc(major);
-    }
+        if(request.gen() != null) {
+            query.addCriteria(Criteria.where("detail.gen").is(request.gen()));
+        }
+        if(request.major() != null && !request.major().isBlank()) {
+            query.addCriteria(Criteria.where("detail.major").is(MajorType.valueOf(request.major()).getMajor()));
+        }
+        if(request.club() != null && !request.club().isBlank()) {
+            query.addCriteria(Criteria.where("detail.club").is(request.club()));
+        }
+        var sortBy = request.pagingInfo().sortBy();
+        if ((sortBy != null && !sortBy.isBlank())) {
+            var sortDirection = request.pagingInfo().sortDirection();
+            if (sortDirection != null && sortDirection.equals(1)) {
+                query.with(Sort.by(Sort.Direction.ASC, sortBy));
+            } else {
+                query.with(Sort.by(Sort.Direction.DESC, sortBy));
+            }
+        }
 
-    @Override
-    public Flux<User> findAllByDetail_ClubOrderByNameAsc(String club) {
-        return userRepository.findAllByDetail_ClubOrderByNameAsc(club);
+        query.with(PageRequest.of(request.pagingInfo().page(), request.pagingInfo().size()));
+
+        return mongoQueryUtils.find(query, User.class)
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
@@ -66,4 +89,5 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
     public Mono<Void> delete(User user) {
         return userRepository.delete(user);
     }
+
 }

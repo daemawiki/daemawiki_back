@@ -12,7 +12,7 @@ import org.daemawiki.domain.user.application.FindUserPort;
 import org.daemawiki.domain.user.application.SaveUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.UserDetail;
-import org.daemawiki.domain.user.type.major.component.GetMajorType;
+import org.daemawiki.domain.user.model.type.major.MajorType;
 import org.daemawiki.exception.h403.UnVerifiedEmailException;
 import org.daemawiki.exception.h409.EmailAlreadyExistsException;
 import org.daemawiki.exception.h500.ExecuteFailedException;
@@ -27,18 +27,16 @@ public class SignupService implements SignupUsecase {
     private final FindAuthMailPort findAuthMailPort;
     private final DeleteAuthMailPort deleteAuthMailPort;
     private final PasswordEncoder passwordEncoder;
-    private final GetMajorType getMajorType;
     private final CreateDocumentUsecase createDocumentUsecase;
     private final DefaultProfileConfig defaultProfile;
     private final FindAdminAccountPort findAdminAccountPort;
     private final SaveAdminAccountPort saveAdminAccountPort;
 
-    public SignupService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, GetMajorType getMajorType, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile, FindAdminAccountPort findAdminAccountPort, SaveAdminAccountPort saveAdminAccountPort) {
+    public SignupService(FindUserPort findUserPort, SaveUserPort saveUserPort, FindAuthMailPort findAuthMailPort, DeleteAuthMailPort deleteAuthMailPort, PasswordEncoder passwordEncoder, CreateDocumentUsecase createDocumentUsecase, DefaultProfileConfig defaultProfile, FindAdminAccountPort findAdminAccountPort, SaveAdminAccountPort saveAdminAccountPort) {
         this.findUserPort = findUserPort;
         this.saveUserPort = saveUserPort;
         this.findAuthMailPort = findAuthMailPort;
         this.passwordEncoder = passwordEncoder;
-        this.getMajorType = getMajorType;
         this.deleteAuthMailPort = deleteAuthMailPort;
         this.createDocumentUsecase = createDocumentUsecase;
         this.defaultProfile = defaultProfile;
@@ -78,17 +76,26 @@ public class SignupService implements SignupUsecase {
      * @return 저장된 유저
      */
     private Mono<User> saveUserAndCreateDocument(User user) {
-        return saveUserPort.save(user)
-                .flatMap(savedUser -> createDocumentUsecase.createByUser(savedUser)
-                        .doOnNext(document -> savedUser.setDocumentId(document.getId()))
-                        .flatMap(document -> saveUserPort.save(savedUser)
-                                .flatMap(u -> findAdminAccountPort.findByEmail(u.getEmail())
-                                        .doOnNext(admin -> admin.setUserId(u.getId()))
-                                        .flatMap(saveAdminAccountPort::save)
-                                        .thenReturn(u)
-                                )
-                        )
-                );
+        return saveUser(user)
+                .flatMap(this::createDocumentAndUpdateUser);
+    }
+
+    private Mono<User> createDocumentAndUpdateUser(User savedUser) {
+        return createDocumentUsecase.createByUser(savedUser)
+                .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                .flatMap(document -> saveUser(savedUser))
+                .flatMap(this::updateAdminAccount);
+    }
+
+    private Mono<User> updateAdminAccount(User user) {
+        return findAdminAccountPort.findByEmail(user.getEmail())
+                .doOnNext(admin -> admin.setUserId(user.getId()))
+                .flatMap(saveAdminAccountPort::save)
+                .thenReturn(user);
+    }
+
+    private Mono<User> saveUser(User user) {
+        return saveUserPort.save(user);
     }
 
     /**
@@ -100,18 +107,22 @@ public class SignupService implements SignupUsecase {
      */
     private Mono<User> createUser(SignupRequest request, String password) {
         return findAdminAccountPort.existsByEmail(request.email())
-                .map(exists -> User.builder()
-                            .name(request.name())
-                            .email(request.email())
-                            .password(password)
-                            .profile(defaultProfile.defaultUserProfile())
-                            .detail(UserDetail.builder()
-                                    .gen(request.gen())
-                                    .major(getMajorType.execute(request.major().toLowerCase()))
-                                    .club("*")
-                                    .build())
-                            .role(exists ? User.Role.MANAGER : User.Role.USER)
-                            .build());
+                .map(exists -> createUser(request, password, exists));
+    }
+
+    private User createUser(SignupRequest request, String password, Boolean exists) {
+        return User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(password)
+                .profile(defaultProfile.defaultUserProfile())
+                .detail(UserDetail.builder()
+                        .gen(request.gen())
+                        .major(MajorType.valueOf(request.major()))
+                        .club("")
+                        .build())
+                .role(exists ? User.Role.MANAGER : User.Role.USER)
+                .build();
     }
 
 }

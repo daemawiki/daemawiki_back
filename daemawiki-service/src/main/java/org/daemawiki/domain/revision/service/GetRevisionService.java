@@ -6,8 +6,11 @@ import org.daemawiki.domain.revision.mapper.RevisionMapper;
 import org.daemawiki.domain.revision.model.RevisionHistory;
 import org.daemawiki.domain.revision.persistence.RevisionPersistenceAdapter;
 import org.daemawiki.domain.revision.usecase.GetRevisionUsecase;
+import org.daemawiki.utils.PagingInfo;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Service
 public class GetRevisionService implements GetRevisionUsecase {
@@ -20,24 +23,24 @@ public class GetRevisionService implements GetRevisionUsecase {
     }
 
     @Override
-    public Flux<SimpleDocumentResponse> getUpdatedTop10Revision() {
-        return revisionPersistenceAdapter.getUpdatedTop10Revision()
+    public Flux<SimpleDocumentResponse> getRevisionOrderByUpdated(List<String> types, PagingInfo pagingInfo) {
+        return revisionPersistenceAdapter.getRevisionOrderByUpdated(pagingInfo, types)
                 .flatMap(revisionMapper::revisionToRevisionSimpleDocumentResponse);
     }
 
     @Override
-    public Flux<RevisionHistory> getAllRevisionPaging(String lastRevisionId) {
-        return revisionPersistenceAdapter.getAllRevisionPaging(lastRevisionId);
+    public Flux<RevisionHistory> getAllRevisionPaging(PagingInfo pagingInfo) {
+        return revisionPersistenceAdapter.getAllRevisionPaging(pagingInfo);
     }
 
     @Override
-    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, String lastRevisionId) {
-        return revisionPersistenceAdapter.getAllRevisionByDocument(documentId, lastRevisionId);
+    public Flux<RevisionHistory> getAllRevisionByDocument(String documentId, PagingInfo pagingInfo) {
+        return revisionPersistenceAdapter.getAllRevisionByDocument(documentId, pagingInfo);
     }
 
     @Override
-    public Flux<GetRevisionByUserResponse> getAllRevisionByUser(String userId, String lastRevisionId) {
-        return revisionPersistenceAdapter.getAllRevisionByUser(userId, lastRevisionId)
+    public Flux<GetRevisionByUserResponse> getAllRevisionByUser(String userId, PagingInfo pagingInfo) {
+        return revisionPersistenceAdapter.getAllRevisionByUser(userId, pagingInfo)
                 .map(GetRevisionByUserResponse::of);
     }
 

@@ -1,9 +1,6 @@
 package org.daemawiki.domain.user.api;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.daemawiki.domain.user.dto.request.ChangePasswordRequest;
 import org.daemawiki.domain.user.dto.request.UpdateUserRequest;
 import org.daemawiki.domain.user.dto.response.GetUserResponse;
@@ -50,24 +47,19 @@ public class UserController {
         return changeUserPasswordUsecase.nonLoggedInUser(request);
     }
 
-    @GetMapping("/generation/{generation}")
-    public Flux<GetUserResponse> getUserByGen(@NotNull @PathVariable Integer generation) {
-        return getUserUsecase.getUserByGen(generation);
-    }
-
-    @GetMapping("/major/{major}")
-    public Flux<GetUserResponse> getUserByMajor(@NotBlank @PathVariable String major) {
-        return getUserUsecase.getUserByMajor(major);
-    }
-
-    @GetMapping("/club/{club}")
-    public Flux<GetUserResponse> getUserByClub(@NotNull @PathVariable String club) {
-        return getUserUsecase.getUserByClub(club);
-    }
-
     @GetMapping("/find")
-    public Flux<GetUserResponse> getUser(@Nullable @RequestParam Integer gen, @Nullable @RequestParam String major, @Nullable @RequestParam String club, @RequestParam String orderBy, @Nullable @RequestParam String sort) {
-        return getUserUsecase.getUserByGenAndMajorAndClub(gen, major, club, orderBy, sort);
+    public Flux<GetUserResponse> getUser(
+            @RequestParam(required = false) Integer gen,
+            @RequestParam(required = false) String major,
+            @RequestParam(required = false) String club,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "1" ) Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return getUserUsecase.getUserByGenAndMajorAndClub(
+                gen, major, club, sortBy, sortDirection, page, size
+        );
     }
 
     @GetMapping

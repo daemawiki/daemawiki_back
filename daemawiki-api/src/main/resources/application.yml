@@ -35,3 +35,10 @@ daemawiki:
     secret: ${SEC_SECRET}
     issuer: ${SEC_ISSUER}
     expiration: ${SEC_EXPIRATION}
+    
+profile:
+  image:
+    url: ${DEFAULT_PROFILE_IMAGE}
+    id: ${DEFAULT_PROFILE_ID}
+    name: ${DEFAULT_PROFILE_NAME}
+    type: ${DEFAULT_PROFILE_TYPE}
