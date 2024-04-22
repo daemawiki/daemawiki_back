@@ -43,9 +43,13 @@ public class UpdateDocumentService implements UpdateDocumentUsecase {
         return findUserPort.currentUser()
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .map(tuple -> checkPermissionAndUpdateDocument(tuple, request))
-                .flatMap(document -> saveDocumentPort.save(document)
-                        .then(createRevision(document)))
+                .flatMap(this::saveDocumentAndCreateRevision)
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
+        return saveDocumentPort.save(document)
+                .then(createRevision(document));
     }
 
     private DefaultDocument checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, SaveDocumentRequest request) {

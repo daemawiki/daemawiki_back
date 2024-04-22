@@ -49,8 +49,12 @@ public class UpdateContentTableTitleService implements UpdateContentTableTitleUs
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .subscribeOn(scheduler)
-                .flatMap(document -> saveDocumentPort.save(document)
-                        .then(createRevision(document)));
+                .flatMap(this::saveDocumentAndCreateRevision);
+    }
+
+    private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
+        return saveDocumentPort.save(document)
+                .then(createRevision(document));
     }
 
     private Mono<DefaultDocument> checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, EditContentTableTitleRequest request) {

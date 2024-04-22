@@ -42,9 +42,13 @@ public class RemoveContentTableService implements RemoveContentTableUsecase {
         return findUserPort.currentUser()
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .map(tuple -> checkPermissionAndDeleteDocumentContentTable(tuple, request))
-                .flatMap(document -> saveDocumentPort.save(document)
-                        .then(createRevision(document)))
+                .flatMap(this::saveDocumentAndCreateRevision)
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
+        return saveDocumentPort.save(document)
+                .then(createRevision(document));
     }
 
     private DefaultDocument checkPermissionAndDeleteDocumentContentTable(Tuple2<User, DefaultDocument> tuple, DeleteContentRequest request) {
