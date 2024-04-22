@@ -36,7 +36,7 @@ public class ChangeUserPasswordService implements ChangeUserPasswordUsecase {
     @Override
     public Mono<Void> nonLoggedInUser(ChangePasswordRequest request) {
         return findUserPort.findByEmail(request.email())
-                .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(UserNotFoundException.EXCEPTION)))
                 .flatMap(user -> findAuthMailPort.findByMail(request.email())
                         .flatMap(verified -> {
                             if (!verified) {

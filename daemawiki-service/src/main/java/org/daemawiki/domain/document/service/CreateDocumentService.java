@@ -35,7 +35,7 @@ public class CreateDocumentService implements CreateDocumentUsecase {
     public Mono<Void> create(SaveDocumentRequest request) {
         return findUserPort.currentUser()
                 .filter(user -> !user.getIsBlocked())
-                .switchIfEmpty(Mono.error(NoEditPermissionUserException.EXCEPTION))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(NoEditPermissionUserException.EXCEPTION)))
                 .flatMap(user -> createDocumentFacade.create(request, user))
                 .flatMap(this::saveDocumentAndCreateRevision)
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);

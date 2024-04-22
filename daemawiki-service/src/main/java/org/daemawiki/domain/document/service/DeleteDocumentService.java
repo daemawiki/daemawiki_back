@@ -36,7 +36,7 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
     public Mono<Void> delete(String documentId) {
         return findUserPort.currentUser()
                 .filter(user -> !user.getIsBlocked())
-                .switchIfEmpty(Mono.error(NoEditPermissionUserException.EXCEPTION))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(NoEditPermissionUserException.EXCEPTION)))
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(this::getDefaultDocumentMono)
                 .flatMap(this::deleteDocument)
