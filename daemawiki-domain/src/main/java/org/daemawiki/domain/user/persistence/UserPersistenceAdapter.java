@@ -43,7 +43,7 @@ public class UserPersistenceAdapter implements FindUserPort, SaveUserPort, Delet
     @Override
     public Mono<User> findById(String id) {
         return userRepository.findById(id)
-                .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(UserNotFoundException.EXCEPTION)));
     }
 
     @Override
