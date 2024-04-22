@@ -23,7 +23,7 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, FindDocumen
     @Override
     public Mono<DefaultDocument> getDocumentById(String id) {
         return documentRepository.findById(id)
-                .switchIfEmpty(Mono.error(DocumentNotFoundException.EXCEPTION));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(DocumentNotFoundException.EXCEPTION)));
     }
 
     @Override
