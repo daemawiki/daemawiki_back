@@ -55,12 +55,6 @@ public class GetDocumentService implements GetDocumentUsecase {
     }
 
     @Override
-    public Flux<SimpleDocumentResponse> getDocumentMostRevisionTop10() {
-        return findDocumentPort.getDocumentTop10()
-                .map(SimpleDocumentResponse::of);
-    }
-
-    @Override
     public Flux<SimpleDocumentResponse> getDocumentsMostRevision(PagingInfo pagingInfo) {
         return findDocumentPort.getDocumentMostRevision(pagingInfo).map(SimpleDocumentResponse::of);
     }
@@ -68,12 +62,6 @@ public class GetDocumentService implements GetDocumentUsecase {
     @Override
     public Flux<GetMostViewDocumentResponse> getDocumentOrderByView(PagingInfo pagingInfo) {
         return findDocumentPort.getDocumentOrderByView(pagingInfo).map(GetMostViewDocumentResponse::of);
-    }
-
-    @Override
-    public Flux<GetMostViewDocumentResponse> getDocumentOrderByViewTop10() {
-        return findDocumentPort.getDocumentOrderByViewTop10()
-                .map(GetMostViewDocumentResponse::of);
     }
 
 }
