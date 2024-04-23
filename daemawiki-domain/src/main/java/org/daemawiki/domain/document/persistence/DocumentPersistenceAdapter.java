@@ -46,11 +46,6 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, FindDocumen
         return documentRepository.findByContentTextContaining(text, pagingInfo.sortBy(), pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
 
-    @Override
-    public Flux<DefaultDocument> getDocumentTop10() {
-        return documentRepository.findTop10ByOrderByVersionDesc();
-    }
-
     public Flux<DefaultDocument> getDocumentMostRevision(PagingInfo pagingInfo) {
         return documentRepository.findAllByOrderByVersion(pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
     }
@@ -58,11 +53,6 @@ public class DocumentPersistenceAdapter implements SaveDocumentPort, FindDocumen
     @Override
     public Flux<DefaultDocument> getDocumentOrderByView(PagingInfo pagingInfo) {
         return documentRepository.findAllByOrderByView(pagingInfo.sortDirection(), pagingInfo.page() * pagingInfo.size(), pagingInfo.size());
-    }
-
-    @Override
-    public Flux<DefaultDocument> getDocumentOrderByViewTop10() {
-        return documentRepository.findTop10ByOrderByViewDesc();
     }
 
     @Override

@@ -40,8 +40,6 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
     @Aggregation("{ $sample: {'size':  1} }")
     Mono<DefaultDocument> findRandomDocument();
 
-    Flux<DefaultDocument> findTop10ByOrderByVersionDesc();
-
     @Aggregation(pipeline = {
             "{ $sort: { 'view': ?0 } }",
             "{ $skip: ?1 }",
@@ -55,8 +53,6 @@ public interface DocumentRepository extends ReactiveMongoRepository<DefaultDocum
             "{ $limit: ?2 }"
     })
     Flux<DefaultDocument> findAllByOrderByVersion(Integer sortDirection, Integer skip, Integer limit);
-
-    Flux<DefaultDocument> findTop10ByOrderByViewDesc();
 
     default Mono<DefaultDocument> increaseView(DefaultDocument document) {
         return Mono.justOrEmpty(document)

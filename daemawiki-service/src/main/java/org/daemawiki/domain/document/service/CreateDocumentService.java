@@ -38,7 +38,7 @@ public class CreateDocumentService implements CreateDocumentUsecase {
                 .switchIfEmpty(Mono.defer(() -> Mono.error(NoEditPermissionUserException.EXCEPTION)))
                 .flatMap(user -> createDocumentFacade.create(request, user))
                 .flatMap(this::saveDocumentAndCreateRevision)
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+                .onErrorMap(e -> e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
     }
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {

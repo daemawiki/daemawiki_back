@@ -90,28 +90,24 @@ public class DocumentController {
         return getDocumentUsecase.searchDocumentContent(text, PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
-    @GetMapping("/most-revision/top-10")
-    public Flux<SimpleDocumentResponse> getDocumentsOrderByVersionTop10() {
-        return getDocumentUsecase.getDocumentMostRevisionTop10();
-    }
-
     @GetMapping("/most-revision")
     public Flux<SimpleDocumentResponse> getDocumentsOrderByVersion(
-            @RequestBody PagingInfo pagingInfo
+            @RequestParam(defaultValue = "dateTime.created") String sortBy,
+            @RequestParam(defaultValue = "1") Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
-        return getDocumentUsecase.getDocumentsMostRevision(pagingInfo);
+        return getDocumentUsecase.getDocumentsMostRevision(PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/most-view")
     public Flux<GetMostViewDocumentResponse> getDocumentsOrderByView(
-            @RequestBody PagingInfo pagingInfo
+            @RequestParam(defaultValue = "dateTime.created") String sortBy,
+            @RequestParam(defaultValue = "1") Integer sortDirection,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
-        return getDocumentUsecase.getDocumentOrderByView(pagingInfo);
-    }
-
-    @GetMapping("/most-view/top-10")
-    public Flux<GetMostViewDocumentResponse> getDocumentsOrderByViewTop10() {
-        return getDocumentUsecase.getDocumentOrderByViewTop10();
+        return getDocumentUsecase.getDocumentOrderByView(PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @DeleteMapping("/{documentId}")

@@ -12,9 +12,7 @@ public interface FindDocumentPort {
     Flux<DocumentSearchResult> searchDocument(String text, PagingInfo pagingInfo);
     Flux<DefaultDocument> searchDocumentTitle(String text, PagingInfo pagingInfo);
     Flux<DocumentSearchResult> searchDocumentContent(String text, PagingInfo pagingInfo);
-    Flux<DefaultDocument> getDocumentTop10();
     Flux<DefaultDocument> getDocumentMostRevision(PagingInfo pagingInfo);
     Flux<DefaultDocument> getDocumentOrderByView(PagingInfo pagingInfo);
-    Flux<DefaultDocument> getDocumentOrderByViewTop10();
 
 }
