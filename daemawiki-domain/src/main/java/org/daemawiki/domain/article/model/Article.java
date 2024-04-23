@@ -1,15 +1,12 @@
 package org.daemawiki.domain.article.model;
 
 import lombok.Getter;
-import org.daemawiki.domain.article.comment.model.Comment;
 import org.daemawiki.domain.user.model.Writer;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter
 @Document
@@ -24,7 +21,6 @@ public class Article {
     private LocalDateTime createdAt;
     private Long recommend = 0L;
     private Long view = 0L;
-    private List<Comment> comments = new CopyOnWriteArrayList<>();
 
     public void increaseView() {
         view++;
