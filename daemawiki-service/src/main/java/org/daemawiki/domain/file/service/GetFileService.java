@@ -21,7 +21,7 @@ public class GetFileService implements GetFileUsecase {
     @Override
     public Mono<File> getFileById(String id) {
         return findFilePort.findById(UUID.fromString(id))
-                .switchIfEmpty(Mono.error(FileNotFoundException.EXCEPTION));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(FileNotFoundException.EXCEPTION)));
     }
 
     @Override

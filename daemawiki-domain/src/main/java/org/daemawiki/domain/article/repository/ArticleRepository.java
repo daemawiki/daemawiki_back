@@ -11,8 +11,17 @@ public interface ArticleRepository extends ReactiveMongoRepository<Article, Stri
                     "{ 'title': { $regex: '?0', $options: 'i' } }, " +
                     "{ 'content': { $regex: '?0', $options: 'i' } }" +
                     "] } }",
-            "{ $sort: { ?1: 1 } }"
+            "{ $sort: { ?1: '?2' } }",
+            "{ $skip: ?3 }",
+            "{ $limit: ?4 }"
     })
-    Flux<Article> search(String keyword, String sortBy);
+    Flux<Article> search(String keyword, String sortBy, Integer sortDirection, Integer skip, Integer limit);
+
+    @Aggregation(pipeline = {
+            "{ $sort: { ?0: '?1' } }",
+            "{ $skip: ?2 }",
+            "{ $limit: ?3 }"
+    })
+    Flux<Article> findAll(String sortBy, Integer sortDirection, Integer skip, Integer limit);
 
 }

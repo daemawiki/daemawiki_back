@@ -35,20 +35,28 @@ public class CreateDocumentService implements CreateDocumentUsecase {
     public Mono<Void> create(SaveDocumentRequest request) {
         return findUserPort.currentUser()
                 .filter(user -> !user.getIsBlocked())
-                .switchIfEmpty(Mono.error(NoEditPermissionUserException.EXCEPTION))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(NoEditPermissionUserException.EXCEPTION)))
                 .flatMap(user -> createDocumentFacade.create(request, user))
-                .flatMap(document -> saveDocumentPort.save(document)
-                        .then(createRevision(document)))
-                .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+                .flatMap(this::saveDocumentAndCreateRevision)
+                .onErrorMap(e -> e instanceof NoEditPermissionUserException ? e : ExecuteFailedException.EXCEPTION);
+    }
+
+    private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
+        return saveDocumentPort.save(document)
+                .then(createRevision(document));
     }
 
     @Override
     public Mono<DefaultDocument> createByUser(User user) {
         return createDocument(user)
                 .flatMap(saveDocumentPort::save)
-                .flatMap(document -> createRevision(document)
-                        .thenReturn(document))
+                .flatMap(this::createRevisionByDocument)
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION);
+    }
+
+    private Mono<DefaultDocument> createRevisionByDocument(DefaultDocument document) {
+        return createRevision(document)
+                .thenReturn(document);
     }
 
     private Mono<DefaultDocument> createDocument(User user) {

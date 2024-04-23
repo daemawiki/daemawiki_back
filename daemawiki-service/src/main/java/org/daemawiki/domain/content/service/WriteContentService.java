@@ -48,9 +48,13 @@ public class WriteContentService implements WriteContentUsecase {
         return findUserPort.currentUser()
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(tuple -> checkPermissionAndWriteContent(tuple, request))
-                .flatMap(document -> saveDocumentPort.save(document)
-                        .then(createRevision(document)))
+                .flatMap(this::saveDocumentAndCreateRevision)
                 .onErrorMap(this::mapException);
+    }
+
+    private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
+        return saveDocumentPort.save(document)
+                .then(createRevision(document));
     }
 
     private Mono<DefaultDocument> checkPermissionAndWriteContent(Tuple2<User, DefaultDocument> tuple, WriteContentRequest request) {

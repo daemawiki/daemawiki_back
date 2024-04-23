@@ -26,7 +26,7 @@ public class ReissueService implements ReissueUsecase {
     public Mono<TokenResponse> reissue(String token ) {
         return tokenizer.reissue(tokenParse(token))
                 .map(TokenResponse::create)
-                .switchIfEmpty(Mono.error(TokenReissueFailedException.EXCEPTION));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(TokenReissueFailedException.EXCEPTION)));
     }
 
     private String tokenParse(String token) {

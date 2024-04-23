@@ -31,11 +31,15 @@ public class AddDocumentEditorService implements AddDocumentEditorUsecase {
         return findUserPort.currentUser()
                 .zipWith(findDocumentPort.getDocumentById(documentId))
                 .flatMap(this::checkPermission)
-                .zipWith(findUserPort.findByEmail(request.email())
-                        .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION)))
+                .zipWith(findUser(request))
                 .map(this::updateDocument)
                 .flatMap(saveDocumentPort::save)
                 .then();
+    }
+
+    private Mono<User> findUser(AddEditorRequest request) {
+        return findUserPort.findByEmail(request.email())
+                .switchIfEmpty(Mono.defer(() -> Mono.error(UserNotFoundException.EXCEPTION)));
     }
 
     private DefaultDocument updateDocument(Tuple2<DefaultDocument, User> tuple) {

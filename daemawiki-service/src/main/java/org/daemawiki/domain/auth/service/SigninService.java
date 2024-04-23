@@ -33,7 +33,7 @@ public class SigninService implements SigninUsecase {
     @Override
     public Mono<TokenResponse> signin(LoginRequest request) {
         return findUserPort.findByEmail(request.email())
-                .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(UserNotFoundException.EXCEPTION)))
                 .flatMap(user -> validateUserWithPassword(user, request.password()))
                 .flatMap(this::generateTokenResponse);
     }
@@ -59,7 +59,7 @@ public class SigninService implements SigninUsecase {
     private Mono<User> validateUserWithPassword(User user, String inputPassword) {
         return Mono.just(user)
                 .filter(u -> passwordEncoder.matches(inputPassword, u.getPassword()))
-                .switchIfEmpty(Mono.error(PasswordMismatchException.EXCEPTION));
+                .switchIfEmpty(Mono.defer(() -> Mono.error(PasswordMismatchException.EXCEPTION)));
     }
 
 }

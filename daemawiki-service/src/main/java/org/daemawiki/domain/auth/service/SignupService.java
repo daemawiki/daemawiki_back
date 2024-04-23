@@ -61,7 +61,7 @@ public class SignupService implements SignupUsecase {
     private Mono<Void> checkAndCreateUser(SignupRequest request) {
         return findAuthMailPort.findByMail(request.email())
                 .filter(verified -> verified)
-                .switchIfEmpty(Mono.error(UnVerifiedEmailException.EXCEPTION))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(UnVerifiedEmailException.EXCEPTION)))
                 .map(verified -> passwordEncoder.encode(request.password()))
                 .flatMap(password -> createUser(request, password))
                 .flatMap(this::saveUserAndCreateDocument)

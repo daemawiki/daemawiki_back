@@ -33,8 +33,8 @@ public class UserMailVerifyService implements UserMailVerifyUsecase {
                         .then(deleteAuthCodePort.delete(authCode))
                         .thenReturn(ResponseEntity.status(200)
                                 .body(getResponse(true))))
-                .switchIfEmpty(Mono.justOrEmpty(ResponseEntity.status(401)
-                                .body(getResponse(false))));
+                .switchIfEmpty(Mono.defer(() -> Mono.justOrEmpty(ResponseEntity.status(401)
+                                .body(getResponse(false)))));
     }
 
     private static final String SUCCESS = "인증에 성공했습니다.";

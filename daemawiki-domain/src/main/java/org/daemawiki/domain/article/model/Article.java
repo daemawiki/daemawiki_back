@@ -1,7 +1,6 @@
 package org.daemawiki.domain.article.model;
 
 import lombok.Getter;
-import org.daemawiki.domain.user.model.User;
 import org.daemawiki.domain.user.model.Writer;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -24,21 +23,23 @@ public class Article {
     private Long view = 0L;
 
     public void increaseView() {
-        this.view++;
+        view++;
     }
 
     public void increaseRecommend() {
-        this.recommend++;
+        recommend++;
     }
 
-    public Article(String title, String content, Writer writer) {
+    protected Article() {}
+
+    protected Article(String title, String content, Writer writer) {
         this.title = title;
         this.content = content;
         this.writer = writer;
     }
 
-    public static Article create(String title, String content, User user) {
-        return new Article(title, content, Writer.of(user));
+    public static Article create(String title, String content, Writer writer) {
+        return new Article(title, content, writer);
     }
 
 }
