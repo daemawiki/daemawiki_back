@@ -90,7 +90,7 @@ public class S3UploadObjectImpl implements S3UploadObject {
                                         .onErrorMap(e -> FileUploadFailedException.EXCEPTION);
                             });
                 })
-                .flatMap(response -> createFile(key, URLDecoder.decode(filename), type.orElse(null), fileType.toLowerCase()))
+                .flatMap(response -> createFile(key, URLDecoder.decode(filename), type.orElseGet(null), fileType.toLowerCase()))
                 .onErrorMap(e -> e instanceof FileUploadFailedException ? e : ExecuteFailedException.EXCEPTION);
     }
 
