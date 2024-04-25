@@ -1,5 +1,6 @@
 package org.daemawiki.domain.article.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.daemawiki.domain.user.model.Writer;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,13 +15,28 @@ public class Article {
 
     @Id
     private String id;
+
     private String title;
+
     private String content;
+
     private Writer writer;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     private Long recommend = 0L;
+
     private Long view = 0L;
+
+    protected Article() {}
+
+    @Builder
+    public Article(String title, String content, Writer writer) {
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
 
     public void increaseView() {
         view++;
@@ -28,18 +44,6 @@ public class Article {
 
     public void increaseRecommend() {
         recommend++;
-    }
-
-    protected Article() {}
-
-    protected Article(String title, String content, Writer writer) {
-        this.title = title;
-        this.content = content;
-        this.writer = writer;
-    }
-
-    public static Article create(String title, String content, Writer writer) {
-        return new Article(title, content, writer);
     }
 
 }
