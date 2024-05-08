@@ -38,7 +38,7 @@ public class CreateRevisionService implements CreateRevisionUsecase {
                 .documentId(request.documentId())
                 .version(request.version())
                 .title(request.title())
-                .editor(Editor.create(user.getName(), user.getId()))
+                .editor(Editor.of(user.getName(), user.getId()))
                 .createdDateTime(LocalDateTime.now())
                 .data(request.data())
                 .build();

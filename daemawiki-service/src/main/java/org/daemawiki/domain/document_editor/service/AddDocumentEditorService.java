@@ -46,7 +46,7 @@ public class AddDocumentEditorService implements AddDocumentEditorUsecase {
         DefaultDocument document = tuple.getT1();
         User user = tuple.getT2();
 
-        document.getEditor().addEditor(Editor.create(user.getName(), user.getId()));
+        document.getEditor().addEditor(Editor.of(user.getName(), user.getId()));
 
         return document;
     }
