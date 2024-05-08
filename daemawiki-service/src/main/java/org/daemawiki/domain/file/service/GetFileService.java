@@ -1,6 +1,6 @@
 package org.daemawiki.domain.file.service;
 
-import org.daemawiki.domain.file.application.FindFilePort;
+import org.daemawiki.domain.file.port.FindFilePort;
 import org.daemawiki.domain.file.model.File;
 import org.daemawiki.domain.file.usecase.GetFileUsecase;
 import org.daemawiki.exception.h404.FileNotFoundException;

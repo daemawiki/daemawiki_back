@@ -38,6 +38,10 @@ public class Article {
         this.writer = writer;
     }
 
+    public static Article of(String title, String content, Writer writer) {
+        return new Article(title, content, writer);
+    }
+
     public void increaseView() {
         view++;
     }

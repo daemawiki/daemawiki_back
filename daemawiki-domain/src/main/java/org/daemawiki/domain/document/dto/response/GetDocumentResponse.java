@@ -1,11 +1,11 @@
 package org.daemawiki.domain.document.dto.response;
 
 import org.daemawiki.datetime.model.EditDateTime;
-import org.daemawiki.domain.content.model.Content;
+import org.daemawiki.domain.document_content.model.Content;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.type.DocumentType;
-import org.daemawiki.domain.editor.model.DocumentEditor;
-import org.daemawiki.domain.info.model.Info;
+import org.daemawiki.domain.document_editor.model.DocumentEditor;
+import org.daemawiki.domain.document_info.model.Info;
 import lombok.Builder;
 
 import java.util.List;

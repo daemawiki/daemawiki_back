@@ -1,17 +1,16 @@
 package org.daemawiki.domain.document.service;
 
 import org.daemawiki.domain.common.UserFilter;
-import org.daemawiki.domain.document.application.FindDocumentPort;
-import org.daemawiki.domain.document.application.SaveDocumentPort;
-import org.daemawiki.domain.document.model.type.DocumentType;
-import org.daemawiki.domain.document.usecase.UpdateDocumentComponent;
+import org.daemawiki.domain.document.port.FindDocumentPort;
+import org.daemawiki.domain.document.port.SaveDocumentPort;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
+import org.daemawiki.domain.document.model.type.DocumentType;
+import org.daemawiki.domain.document.component.UpdateDocumentComponent;
 import org.daemawiki.domain.document.usecase.UpdateDocumentUsecase;
-import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
-import org.daemawiki.domain.revision.model.type.RevisionType;
-import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.document_revision.component.CreateRevisionComponent;
+import org.daemawiki.domain.document_revision.model.type.RevisionType;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h400.VersionMismatchException;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
@@ -25,23 +24,23 @@ public class UpdateDocumentService implements UpdateDocumentUsecase {
     private final SaveDocumentPort saveDocumentPort;
     private final FindDocumentPort findDocumentPort;
     private final FindUserPort findUserPort;
-    private final CreateRevisionUsecase createRevisionUsecase;
     private final UpdateDocumentComponent updateDocumentComponent;
     private final UserFilter userFilter;
+    private final CreateRevisionComponent createRevisionComponent;
 
-    public UpdateDocumentService(SaveDocumentPort saveDocumentPort, FindDocumentPort findDocumentPort, FindUserPort findUserPort, CreateRevisionUsecase createRevisionUsecase, UpdateDocumentComponent updateDocumentComponent, UserFilter userFilter) {
+    public UpdateDocumentService(SaveDocumentPort saveDocumentPort, FindDocumentPort findDocumentPort, FindUserPort findUserPort, UpdateDocumentComponent updateDocumentComponent, UserFilter userFilter, CreateRevisionComponent createRevisionComponent) {
         this.saveDocumentPort = saveDocumentPort;
         this.findDocumentPort = findDocumentPort;
         this.findUserPort = findUserPort;
-        this.createRevisionUsecase = createRevisionUsecase;
         this.updateDocumentComponent = updateDocumentComponent;
         this.userFilter = userFilter;
+        this.createRevisionComponent = createRevisionComponent;
     }
 
     @Override
     public Mono<Void> update(SaveDocumentRequest request, String documentId) {
         return findUserPort.currentUser()
-                .zipWith(findDocumentPort.getDocumentById(documentId))
+                .zipWith(findDocumentPort.findById(documentId))
                 .map(tuple -> checkPermissionAndUpdateDocument(tuple, request))
                 .flatMap(this::saveDocumentAndCreateRevision)
                 .onErrorMap(this::mapException);
@@ -49,7 +48,7 @@ public class UpdateDocumentService implements UpdateDocumentUsecase {
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
         return saveDocumentPort.save(document)
-                .then(createRevision(document));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
     }
 
     private DefaultDocument checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, SaveDocumentRequest request) {
@@ -67,11 +66,6 @@ public class UpdateDocumentService implements UpdateDocumentUsecase {
         updateDocumentComponent.updateEditorAndUpdatedDate(document, user);
 
         return document;
-    }
-
-    private Mono<Void> createRevision(DefaultDocument document) {
-        return createRevisionUsecase.saveHistory(SaveRevisionHistoryRequest
-                .create(RevisionType.UPDATE, document.getId(), document.getTitle()));
     }
 
     private Throwable mapException(Throwable e) {

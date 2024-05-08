@@ -1,9 +1,6 @@
 package org.daemawiki.domain.mail.repository;
 
 import org.daemawiki.config.RedisKey;
-import org.daemawiki.domain.mail.application.mail.DeleteAuthMailPort;
-import org.daemawiki.domain.mail.application.mail.FindAuthMailPort;
-import org.daemawiki.domain.mail.application.mail.SaveAuthMailPort;
 import org.daemawiki.domain.mail.model.AuthMail;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.RedisConnectFailedException;
@@ -15,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Repository
-public class AuthMailRepository implements FindAuthMailPort, SaveAuthMailPort, DeleteAuthMailPort {
+public class AuthMailRepository {
 
     private final ReactiveRedisOperations<String, String> redisOperations;
 
@@ -23,31 +20,26 @@ public class AuthMailRepository implements FindAuthMailPort, SaveAuthMailPort, D
         this.redisOperations = redisOperations;
     }
 
-    private static final String AUTHMAIL = RedisKey.AUTH_MAIL.getKey();
+    private static final String AUTH_MAIL = RedisKey.AUTH_MAIL.getKey();
 
-    @Override
-    public Mono<Void> save(AuthMail authMail) {
+    public Mono<Boolean> save(AuthMail authMail) {
         return redisOperations.opsForValue()
-                .set(AUTHMAIL + authMail.getMail(),
+                .set(AUTH_MAIL + authMail.getMail(),
                         authMail.getMail(),
                         Duration.ofHours(3))
-                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION)
-                .then();
+                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION);
     }
 
-    @Override
     public Mono<Boolean> findByMail(String mail) {
         return redisOperations.opsForValue()
-                .get(AUTHMAIL + mail)
+                .get(AUTH_MAIL + mail)
                 .hasElement()
                 .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION);
     }
 
-    @Override
-    public Mono<Void> delete(String mail) {
-        return redisOperations.delete(AUTHMAIL + mail)
-                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION)
-                .then();
+    public Mono<Long> delete(String mail) {
+        return redisOperations.delete(AUTH_MAIL + mail)
+                .onErrorMap(e -> e instanceof RedisConnectionFailureException ? RedisConnectFailedException.EXCEPTION : ExecuteFailedException.EXCEPTION);
     }
 
 }

@@ -12,9 +12,9 @@ public interface GetDocumentUsecase {
     Mono<GetDocumentResponse> getDocumentById(String id);
     Mono<GetDocumentResponse> getDocumentByRandom();
     Flux<DocumentSearchResult> searchDocument(String text, PagingInfo pagingInfo);
-    Flux<DocumentSearchResult> searchDocumentTitle(String text, PagingInfo pagingInfo);
-    Flux<DocumentSearchResult> searchDocumentContent(String text, PagingInfo pagingInfo);
-    Flux<SimpleDocumentResponse> getDocumentsMostRevision(PagingInfo pagingInfo);
-    Flux<GetMostViewDocumentResponse> getDocumentOrderByView(PagingInfo pagingInfo);
+    Flux<DocumentSearchResult> searchDocumentsByTitle(String text, PagingInfo pagingInfo);
+    Flux<DocumentSearchResult> searchDocumentsByContent(String text, PagingInfo pagingInfo);
+    Flux<SimpleDocumentResponse> getDocumentsSortByMostRevision(PagingInfo pagingInfo);
+    Flux<GetMostViewDocumentResponse> getDocumentsSortByView(PagingInfo pagingInfo);
 
 }

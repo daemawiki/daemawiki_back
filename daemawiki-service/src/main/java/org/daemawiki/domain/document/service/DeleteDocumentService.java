@@ -1,14 +1,13 @@
 package org.daemawiki.domain.document.service;
 
-import org.daemawiki.domain.document.application.DeleteDocumentPort;
-import org.daemawiki.domain.document.application.FindDocumentPort;
+import org.daemawiki.domain.document.port.DeleteDocumentPort;
+import org.daemawiki.domain.document.port.FindDocumentPort;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.type.DocumentType;
 import org.daemawiki.domain.document.usecase.DeleteDocumentUsecase;
-import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
-import org.daemawiki.domain.revision.model.type.RevisionType;
-import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.document_revision.component.CreateRevisionComponent;
+import org.daemawiki.domain.document_revision.model.type.RevisionType;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
 import org.daemawiki.exception.h403.NoPermissionUserException;
@@ -22,14 +21,14 @@ import reactor.util.function.Tuple2;
 public class DeleteDocumentService implements DeleteDocumentUsecase {
     private final FindDocumentPort findDocumentPort;
     private final DeleteDocumentPort deleteDocumentPort;
-    private final CreateRevisionUsecase createRevisionUsecase;
     private final FindUserPort findUserPort;
+    private final CreateRevisionComponent createRevisionComponent;
 
-    public DeleteDocumentService(FindDocumentPort findDocumentPort, DeleteDocumentPort deleteDocumentPort, CreateRevisionUsecase createRevisionUsecase, FindUserPort findUserPort) {
+    public DeleteDocumentService(FindDocumentPort findDocumentPort, DeleteDocumentPort deleteDocumentPort, FindUserPort findUserPort, CreateRevisionComponent createRevisionComponent) {
         this.findDocumentPort = findDocumentPort;
         this.deleteDocumentPort = deleteDocumentPort;
-        this.createRevisionUsecase = createRevisionUsecase;
         this.findUserPort = findUserPort;
+        this.createRevisionComponent = createRevisionComponent;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
         return findUserPort.currentUser()
                 .filter(user -> !user.getIsBlocked())
                 .switchIfEmpty(Mono.defer(() -> Mono.error(NoEditPermissionUserException.EXCEPTION)))
-                .zipWith(findDocumentPort.getDocumentById(documentId))
+                .zipWith(findDocumentPort.findById(documentId))
                 .flatMap(this::getDefaultDocumentMono)
                 .flatMap(this::deleteDocument)
                 .onErrorMap(this::mapException);
@@ -45,7 +44,7 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
 
     private Mono<Void> deleteDocument(DefaultDocument document) {
         return deleteDocumentPort.delete(document)
-                .then(createRevision(document));
+                .then(createRevisionComponent.create(document, RevisionType.DELETE));
     }
 
     private Mono<DefaultDocument> getDefaultDocumentMono(Tuple2<User, DefaultDocument> tuple) {
@@ -57,11 +56,6 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
         }
 
         return Mono.just(tuple.getT2());
-    }
-
-    private Mono<Void> createRevision(DefaultDocument document) {
-        return createRevisionUsecase.saveHistory(SaveRevisionHistoryRequest
-                .create(RevisionType.DELETE, document.getId(), document.getTitle()));
     }
 
     private Throwable mapException(Throwable e) {

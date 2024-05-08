@@ -2,14 +2,13 @@ package org.daemawiki.domain.admin.service;
 
 import org.daemawiki.domain.admin.application.DeleteAdminAccountPort;
 import org.daemawiki.domain.admin.application.FindAdminAccountPort;
+import org.daemawiki.domain.admin.component.ValidateAdminComponent;
 import org.daemawiki.domain.admin.model.Admin;
 import org.daemawiki.domain.admin.usecase.RemoveAdminUsecase;
-import org.daemawiki.domain.user.application.FindUserPort;
-import org.daemawiki.domain.user.application.SaveUserPort;
+import org.daemawiki.domain.user.port.FindUserPort;
+import org.daemawiki.domain.user.port.SaveUserPort;
 import org.daemawiki.domain.user.model.User;
-import org.daemawiki.exception.h403.NoPermissionUserException;
 import org.daemawiki.exception.h404.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -19,20 +18,19 @@ public class RemoveAdminService implements RemoveAdminUsecase {
     private final FindAdminAccountPort findAdminAccountPort;
     private final FindUserPort findUserPort;
     private final SaveUserPort saveUserPort;
+    private final ValidateAdminComponent validateAdminComponent;
 
-    public RemoveAdminService(DeleteAdminAccountPort deleteAdminAccountPort, FindAdminAccountPort findAdminAccountPort, FindUserPort findUserPort, SaveUserPort saveUserPort) {
+    public RemoveAdminService(DeleteAdminAccountPort deleteAdminAccountPort, FindAdminAccountPort findAdminAccountPort, FindUserPort findUserPort, SaveUserPort saveUserPort, ValidateAdminComponent validateAdminComponent) {
         this.deleteAdminAccountPort = deleteAdminAccountPort;
         this.findAdminAccountPort = findAdminAccountPort;
         this.findUserPort = findUserPort;
         this.saveUserPort = saveUserPort;
+        this.validateAdminComponent = validateAdminComponent;
     }
-
-    @Value("${daemawiki.admin.email}")
-    private String adminEmail;
 
     @Override
     public Mono<Void> remove(String email) {
-        return validate()
+        return validateAdminComponent.validateSuperAdmin()
                 .flatMap(user -> findAdminAccountPort.findByEmail(email))
                 .switchIfEmpty(Mono.error(UserNotFoundException.EXCEPTION))
                 .flatMap(this::deleteAdmin);
@@ -54,12 +52,6 @@ public class RemoveAdminService implements RemoveAdminUsecase {
 
     private Mono<Void> deleteByEmail(String email) {
         return deleteAdminAccountPort.deleteByEmail(email);
-    }
-
-    private Mono<User> validate() {
-        return findUserPort.currentUser()
-                .filter(user -> user.getEmail().equals(adminEmail))
-                .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION));
     }
 
 }

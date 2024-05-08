@@ -2,13 +2,13 @@ package org.daemawiki.domain.document.component.facade;
 
 import org.daemawiki.config.DefaultProfileConfig;
 import org.daemawiki.datetime.model.EditDateTime;
-import org.daemawiki.domain.content.model.Content;
+import org.daemawiki.domain.document_content.model.Content;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.model.type.DocumentType;
-import org.daemawiki.domain.editor.model.DocumentEditor;
-import org.daemawiki.domain.editor.model.Editor;
-import org.daemawiki.domain.info.model.Info;
+import org.daemawiki.domain.document_editor.model.DocumentEditor;
+import org.daemawiki.domain.document_editor.model.Editor;
+import org.daemawiki.domain.document_info.model.Info;
 import org.daemawiki.domain.user.dto.response.UserDetailResponse;
 import org.daemawiki.domain.user.model.User;
 import org.eclipse.collections.api.factory.Lists;

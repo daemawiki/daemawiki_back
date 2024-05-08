@@ -1,8 +1,8 @@
 package org.daemawiki.domain.user.service;
 
 import org.daemawiki.domain.file.model.type.FileType;
-import org.daemawiki.domain.user.application.FindUserPort;
-import org.daemawiki.domain.user.application.SaveUserPort;
+import org.daemawiki.domain.user.port.FindUserPort;
+import org.daemawiki.domain.user.port.SaveUserPort;
 import org.daemawiki.domain.user.usecase.UploadUserProfileImageUsecase;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.FileUploadFailedException;

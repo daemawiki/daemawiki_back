@@ -1,31 +1,25 @@
 package org.daemawiki.domain.admin.service;
 
 import org.daemawiki.domain.admin.application.SaveAdminAccountPort;
+import org.daemawiki.domain.admin.component.ValidateAdminComponent;
 import org.daemawiki.domain.admin.model.Admin;
 import org.daemawiki.domain.admin.usecase.AddAdminUsecase;
-import org.daemawiki.domain.user.application.FindUserPort;
-import org.daemawiki.domain.user.model.User;
-import org.daemawiki.exception.h403.NoPermissionUserException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 public class AddAdminService implements AddAdminUsecase {
     private final SaveAdminAccountPort saveAdminAccountPort;
-    private final FindUserPort findUserPort;
+    private final ValidateAdminComponent validateAdminComponent;
 
-    public AddAdminService(SaveAdminAccountPort saveAdminAccountPort, FindUserPort findUserPort) {
+    public AddAdminService(SaveAdminAccountPort saveAdminAccountPort, ValidateAdminComponent validateAdminComponent) {
         this.saveAdminAccountPort = saveAdminAccountPort;
-        this.findUserPort = findUserPort;
+        this.validateAdminComponent = validateAdminComponent;
     }
-
-    @Value("${daemawiki.admin.email}")
-    private String adminEmail;
 
     @Override
     public Mono<Void> add(String email) {
-        return validate()
+        return validateAdminComponent.validateSuperAdmin()
                 .then(createAdminAccount(email));
     }
 
@@ -33,12 +27,6 @@ public class AddAdminService implements AddAdminUsecase {
         return saveAdminAccountPort.save(
                 Admin.create(email)
         ).then();
-    }
-
-    private Mono<User> validate() {
-        return findUserPort.currentUser()
-                .filter(user -> user.getEmail().equals(adminEmail))
-                .switchIfEmpty(Mono.error(NoPermissionUserException.EXCEPTION));
     }
 
 }
