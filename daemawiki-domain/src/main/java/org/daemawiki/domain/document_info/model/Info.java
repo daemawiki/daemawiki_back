@@ -1,14 +1,12 @@
 package org.daemawiki.domain.document_info.model;
 
-import org.daemawiki.domain.file.model.File;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import org.daemawiki.domain.file.model.File;
 
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 public class Info {
 

@@ -1,14 +1,12 @@
 package org.daemawiki.domain.document_editor.model;
 
-import org.daemawiki.domain.user.dto.response.UserDetailResponse;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import org.daemawiki.domain.user.dto.response.UserDetailResponse;
 
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 public class DocumentEditor {
     private final UserDetailResponse createdUser;
