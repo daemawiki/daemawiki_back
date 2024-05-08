@@ -1,8 +1,8 @@
 package org.daemawiki.domain.mail.service;
 
-import org.daemawiki.domain.mail.application.code.DeleteAuthCodePort;
-import org.daemawiki.domain.mail.application.code.FindAuthCodePort;
-import org.daemawiki.domain.mail.application.mail.SaveAuthMailPort;
+import org.daemawiki.domain.mail.port.code.DeleteAuthCodePort;
+import org.daemawiki.domain.mail.port.code.FindAuthCodePort;
+import org.daemawiki.domain.mail.port.mail.SaveAuthMailPort;
 import org.daemawiki.domain.mail.dto.AuthCodeVerifyRequest;
 import org.daemawiki.domain.mail.dto.AuthCodeVerifyResponse;
 import org.daemawiki.domain.mail.model.AuthCode;

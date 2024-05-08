@@ -11,9 +11,9 @@ import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
 import org.daemawiki.domain.document.usecase.DeleteDocumentUsecase;
 import org.daemawiki.domain.document.usecase.GetDocumentUsecase;
 import org.daemawiki.domain.document.usecase.UpdateDocumentUsecase;
-import org.daemawiki.domain.info.dto.UpdateInfoRequest;
-import org.daemawiki.domain.info.usecase.UpdateDocumentInfoUsecase;
-import org.daemawiki.domain.info.usecase.UploadDocumentImageUsecase;
+import org.daemawiki.domain.document_info.dto.UpdateInfoRequest;
+import org.daemawiki.domain.document_info.usecase.UpdateDocumentInfoUsecase;
+import org.daemawiki.domain.document_info.usecase.UploadDocumentImageUsecase;
 import org.daemawiki.utils.PagingInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -76,7 +76,7 @@ public class DocumentController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        return getDocumentUsecase.searchDocumentTitle(text, PagingInfo.of(sortBy, sortDirection, page, size));
+        return getDocumentUsecase.searchDocumentsByTitle(text, PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/search/content")
@@ -87,7 +87,7 @@ public class DocumentController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        return getDocumentUsecase.searchDocumentContent(text, PagingInfo.of(sortBy, sortDirection, page, size));
+        return getDocumentUsecase.searchDocumentsByContent(text, PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/most-revision")
@@ -97,7 +97,7 @@ public class DocumentController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        return getDocumentUsecase.getDocumentsMostRevision(PagingInfo.of(sortBy, sortDirection, page, size));
+        return getDocumentUsecase.getDocumentsSortByMostRevision(PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @GetMapping("/most-view")
@@ -107,7 +107,7 @@ public class DocumentController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        return getDocumentUsecase.getDocumentOrderByView(PagingInfo.of(sortBy, sortDirection, page, size));
+        return getDocumentUsecase.getDocumentsSortByView(PagingInfo.of(sortBy, sortDirection, page, size));
     }
 
     @DeleteMapping("/{documentId}")

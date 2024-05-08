@@ -1,14 +1,13 @@
 package org.daemawiki.domain.document.service;
 
-import org.daemawiki.domain.document.application.SaveDocumentPort;
+import org.daemawiki.domain.document.port.SaveDocumentPort;
 import org.daemawiki.domain.document.component.facade.CreateDocumentFacade;
 import org.daemawiki.domain.document.dto.request.SaveDocumentRequest;
 import org.daemawiki.domain.document.model.DefaultDocument;
 import org.daemawiki.domain.document.usecase.CreateDocumentUsecase;
-import org.daemawiki.domain.revision.dto.request.SaveRevisionHistoryRequest;
-import org.daemawiki.domain.revision.model.type.RevisionType;
-import org.daemawiki.domain.revision.usecase.CreateRevisionUsecase;
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.document_revision.component.CreateRevisionComponent;
+import org.daemawiki.domain.document_revision.model.type.RevisionType;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
 import org.daemawiki.exception.h500.ExecuteFailedException;
@@ -22,13 +21,13 @@ public class CreateDocumentService implements CreateDocumentUsecase {
     private final SaveDocumentPort saveDocumentPort;
     private final FindUserPort findUserPort;
     private final CreateDocumentFacade createDocumentFacade;
-    private final CreateRevisionUsecase createRevisionUsecase;
+    private final CreateRevisionComponent createRevisionComponent;
 
-    public CreateDocumentService(SaveDocumentPort saveDocumentPort, FindUserPort findUserPort, CreateDocumentFacade createDocumentFacade, CreateRevisionUsecase createRevisionUsecase) {
+    public CreateDocumentService(SaveDocumentPort saveDocumentPort, FindUserPort findUserPort, CreateDocumentFacade createDocumentFacade, CreateRevisionComponent createRevisionComponent) {
         this.saveDocumentPort = saveDocumentPort;
         this.findUserPort = findUserPort;
         this.createDocumentFacade = createDocumentFacade;
-        this.createRevisionUsecase = createRevisionUsecase;
+        this.createRevisionComponent = createRevisionComponent;
     }
 
     @Override
@@ -43,7 +42,8 @@ public class CreateDocumentService implements CreateDocumentUsecase {
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
         return saveDocumentPort.save(document)
-                .then(createRevision(document));
+                .flatMap(this::createRevisionByDocument)
+                .then();
     }
 
     @Override
@@ -55,13 +55,13 @@ public class CreateDocumentService implements CreateDocumentUsecase {
     }
 
     private Mono<DefaultDocument> createRevisionByDocument(DefaultDocument document) {
-        return createRevision(document)
+        return createRevisionComponent.create(document, RevisionType.CREATE, null)
                 .thenReturn(document);
     }
 
     private Mono<DefaultDocument> createDocument(User user) {
         List<List<String>> groups = List.of(
-                List.of("학생", user.getDetail().getGen() + "기", user.getName()),
+                List.of("학생", String.format("%s기", user.getDetail().getGen()), user.getName()),
                 List.of("전공", user.getDetail().getMajor().getMajor())
         );
 
@@ -69,11 +69,6 @@ public class CreateDocumentService implements CreateDocumentUsecase {
                 .create(user.getName(),
                         "student",
                         groups), user);
-    }
-
-    private Mono<Void> createRevision(DefaultDocument document) {
-        return createRevisionUsecase.saveHistory(SaveRevisionHistoryRequest
-                .create(RevisionType.CREATE, document.getId(), document.getTitle()));
     }
 
 }

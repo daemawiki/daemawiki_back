@@ -2,7 +2,7 @@ package org.daemawiki.security;
 
 import io.jsonwebtoken.*;
 import org.daemawiki.config.SecurityProperties;
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.exception.h400.InvalidTokenException;
 import org.daemawiki.exception.h404.UserNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

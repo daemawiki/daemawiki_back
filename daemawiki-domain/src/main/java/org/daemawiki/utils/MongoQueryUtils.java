@@ -2,10 +2,10 @@ package org.daemawiki.utils;
 
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
-@Service
+@Component
 public class MongoQueryUtils {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 

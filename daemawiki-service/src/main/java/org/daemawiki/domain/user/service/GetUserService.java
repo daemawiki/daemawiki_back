@@ -1,6 +1,6 @@
 package org.daemawiki.domain.user.service;
 
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.domain.user.dto.FindUserDto;
 import org.daemawiki.domain.user.dto.response.GetUserResponse;
 import org.daemawiki.domain.user.usecase.GetUserUsecase;
@@ -26,8 +26,8 @@ public class GetUserService implements GetUserUsecase {
     @Override
     public Flux<GetUserResponse> getUserByGenAndMajorAndClub(Integer gen, String major, String club, String sortBy, Integer sortDirection, Integer page, Integer size) {
         return findUserPort.findAllByGenAndMajorAndClub(
-                FindUserDto.of(gen, major, club, PagingInfo.of(sortBy, sortDirection, page, size))
-        ).map(GetUserResponse::of);
+                FindUserDto.of(gen, major, club, PagingInfo.of(sortBy, sortDirection, page, size)))
+                .map(GetUserResponse::of);
     }
 
 }

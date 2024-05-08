@@ -4,7 +4,7 @@ import org.daemawiki.domain.article.dto.WriteArticleRequest;
 import org.daemawiki.domain.article.model.Article;
 import org.daemawiki.domain.article.port.SaveArticlePort;
 import org.daemawiki.domain.article.usecase.WriteArticleUseCase;
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.domain.user.model.Writer;
 import org.daemawiki.exception.h403.NoPermissionUserException;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class WriteArticleService implements WriteArticleUseCase {
                 .filter(user -> !user.getIsBlocked())
                 .switchIfEmpty(Mono.defer(() -> Mono.error(NoPermissionUserException.EXCEPTION)))
                 .flatMap(user -> {
-                    Article article = Article.create(request.title(), request.content(), Writer.of(user));
+                    Article article = Article.of(request.title(), request.content(), Writer.of(user));
                     return saveArticlePort.save(article);
                 })
                 .then();

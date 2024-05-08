@@ -3,12 +3,13 @@ package org.daemawiki.domain.mail.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.daemawiki.domain.mail.application.code.SaveAuthCodePort;
+import lombok.extern.slf4j.Slf4j;
+import org.daemawiki.domain.mail.port.code.SaveAuthCodePort;
 import org.daemawiki.domain.mail.dto.AuthCodeRequest;
 import org.daemawiki.domain.mail.model.AuthCode;
 import org.daemawiki.domain.mail.model.type.MailType;
 import org.daemawiki.domain.mail.usecase.UserMailSendUsecase;
-import org.daemawiki.domain.user.application.FindUserPort;
+import org.daemawiki.domain.user.port.FindUserPort;
 import org.daemawiki.exception.h409.EmailAlreadyExistsException;
 import org.daemawiki.exception.h500.ExecuteFailedException;
 import org.daemawiki.exception.h500.MailSendFailedException;
@@ -25,6 +26,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class UserMailSendService implements UserMailSendUsecase {
     private final SaveAuthCodePort saveAuthCodePort;
@@ -56,6 +58,8 @@ public class UserMailSendService implements UserMailSendUsecase {
                 })
                 .then(Mono.defer(() -> {
                     String authCode = getRandomCode();
+
+                    log.info("authCode: {} to: {}", authCode, mail);
 
                     sendMail(mail, authCode)
                             .subscribeOn(scheduler)

@@ -1,13 +1,12 @@
 package org.daemawiki.domain.document.model;
 
-import org.daemawiki.datetime.model.EditDateTime;
-import org.daemawiki.domain.content.model.Content;
-import org.daemawiki.domain.document.model.type.DocumentType;
-import org.daemawiki.domain.editor.model.DocumentEditor;
-import org.daemawiki.domain.info.model.Info;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.daemawiki.datetime.model.EditDateTime;
+import org.daemawiki.domain.document_content.model.Content;
+import org.daemawiki.domain.document.model.type.DocumentType;
+import org.daemawiki.domain.document_editor.model.DocumentEditor;
+import org.daemawiki.domain.document_info.model.Info;
 import org.eclipse.collections.api.factory.Lists;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @Getter
 @Document
-@NoArgsConstructor
 public class DefaultDocument {
 
     @Id
@@ -39,6 +37,8 @@ public class DefaultDocument {
     private Long view = 0L;
 
     private Long version = 0L;
+
+    protected DefaultDocument() {}
 
     public static DefaultDocument create(String title, DocumentType type, EditDateTime dateTime, Info info, List<List<String>> groups, DocumentEditor editor, List<Content> content) {
         return DefaultDocument.builder()
