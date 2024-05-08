@@ -70,7 +70,7 @@ public class WriteContentService implements WriteContentUsecase {
         }
 
         Content content = contentsMap.get(request.index());
-        content.setDetail(request.content());
+        content.changeDetail(request.content());
         setDocument(document, user);
 
         return Mono.just(document);

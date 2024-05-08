@@ -12,9 +12,7 @@ public class ArticleComment {
 
     @Id
     private String id;
-
     private String content;
-
     private Writer writer;
 
     @CreatedDate

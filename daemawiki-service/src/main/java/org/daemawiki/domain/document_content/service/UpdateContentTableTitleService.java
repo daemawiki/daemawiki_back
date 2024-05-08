@@ -72,7 +72,7 @@ public class UpdateContentTableTitleService implements UpdateContentTableTitleUs
             return Mono.error(ContentNotFoundException.EXCEPTION);
         }
 
-        content.setTitle(request.newTitle());
+        content.changeTitle(request.newTitle());
 
         document.increaseVersion();
         updateDocumentComponent.updateEditorAndUpdatedDate(document, user);

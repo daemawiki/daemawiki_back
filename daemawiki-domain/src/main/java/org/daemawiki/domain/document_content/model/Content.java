@@ -1,26 +1,29 @@
 package org.daemawiki.domain.document_content.model;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Builder
 public class Content {
-
     private String index;
-
     private String title;
-
     private String detail;
 
-    public static Content create(String index, String title, String detail) {
-        return Content.builder()
-                .index(index)
-                .title(title)
-                .detail(detail)
-                .build();
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeDetail(String detail) {
+        this.detail = detail;
+    }
+
+    private Content(String index, String title, String detail) {
+        this.index = index;
+        this.title = title;
+        this.detail = detail;
+    }
+
+    public static Content of(String index, String title, String detail) {
+        return new Content(index, title, detail);
     }
 
 }

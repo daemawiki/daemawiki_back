@@ -75,7 +75,7 @@ public class AddContentTableService implements AddContentTableUsecase {
     }
 
     private Content createContent(String index, String title) {
-        return Content.create(index, title, "빈 내용");
+        return Content.of(index, title, "빈 내용");
     }
 
     private static final Comparator<Content> customComparator = (c1, c2) -> {

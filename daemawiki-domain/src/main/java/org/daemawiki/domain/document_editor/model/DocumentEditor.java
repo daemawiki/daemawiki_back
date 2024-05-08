@@ -11,15 +11,13 @@ import java.util.List;
 @Setter
 @Builder
 public class DocumentEditor {
-
     private final UserDetailResponse createdUser;
-
     private UserDetailResponse updatedUser;
-
     private List<Editor> canEdit;
 
     public boolean hasEditPermission(String email) {
-        return this.canEdit.stream().noneMatch(editor -> editor.user().equals(email));
+        return this.canEdit.stream()
+                .noneMatch(editor -> editor.user().equals(email));
     }
 
     public void addEditor(Editor editor) {
