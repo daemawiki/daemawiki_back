@@ -82,7 +82,7 @@ public class SignupService implements SignupUsecase {
 
     private Mono<User> createDocumentAndUpdateUser(User savedUser) {
         return createDocumentUsecase.createByUser(savedUser)
-                .doOnNext(document -> savedUser.setDocumentId(document.getId()))
+                .doOnNext(document -> savedUser.updateDocumentId(document.getId()))
                 .flatMap(document -> saveUser(savedUser))
                 .flatMap(this::updateAdminAccount);
     }

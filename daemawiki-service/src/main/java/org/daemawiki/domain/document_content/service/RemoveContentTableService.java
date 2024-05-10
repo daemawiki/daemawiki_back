@@ -47,7 +47,7 @@ public class RemoveContentTableService implements RemoveContentTableUsecase {
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
         return saveDocumentPort.save(document)
-                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE, null));
     }
 
     private DefaultDocument checkPermissionAndDeleteDocumentContentTable(Tuple2<User, DefaultDocument> tuple, DeleteContentRequest request) {

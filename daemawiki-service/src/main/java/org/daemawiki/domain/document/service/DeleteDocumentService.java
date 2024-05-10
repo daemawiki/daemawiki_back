@@ -44,7 +44,7 @@ public class DeleteDocumentService implements DeleteDocumentUsecase {
 
     private Mono<Void> deleteDocument(DefaultDocument document) {
         return deleteDocumentPort.delete(document)
-                .then(createRevisionComponent.create(document, RevisionType.DELETE));
+                .then(createRevisionComponent.create(document, RevisionType.DELETE, null));
     }
 
     private Mono<DefaultDocument> getDefaultDocumentMono(Tuple2<User, DefaultDocument> tuple) {

@@ -10,7 +10,7 @@ import org.daemawiki.domain.document_info.usecase.UpdateDocumentInfoUsecase;
 import org.daemawiki.domain.document_revision.component.CreateRevisionComponent;
 import org.daemawiki.domain.document_revision.model.type.RevisionType;
 import org.daemawiki.domain.user.port.FindUserPort;
-import org.daemawiki.domain.user.dto.response.UserDetailResponse;
+import org.daemawiki.domain.user.dto.response.UserDetailVo;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h400.VersionMismatchException;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
@@ -55,11 +55,11 @@ public class UpdateDocumentInfoService implements UpdateDocumentInfoUsecase {
         setDocument(document, user, request.subTitle(), request.details());
 
         return saveDocumentPort.save(document)
-                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE, null));
     }
 
     private void setDocument(DefaultDocument document, User user, String subTitle, List<Detail> details) {
-        document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
+        document.getEditor().updateUpdatedUser(UserDetailVo.create(user));
         document.getInfo().update(subTitle, details);
         document.increaseVersion();
     }

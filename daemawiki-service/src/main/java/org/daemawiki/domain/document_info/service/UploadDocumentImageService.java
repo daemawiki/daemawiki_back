@@ -48,10 +48,10 @@ public class UploadDocumentImageService implements UploadDocumentImageUsecase {
         DefaultDocument document = tuple.getT1();
         File file = tuple.getT2();
 
-        document.getInfo().setDocumentImage(file);
+        document.getInfo().updateDocumentImage(file);
 
         return saveDocumentPort.save(document)
-                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE, null));
     }
 
     private DefaultDocument checkPermission(Tuple2<User, DefaultDocument> tuple) {

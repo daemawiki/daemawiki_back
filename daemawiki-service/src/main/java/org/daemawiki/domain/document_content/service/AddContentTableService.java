@@ -11,7 +11,7 @@ import org.daemawiki.domain.document_content.usecase.AddContentTableUsecase;
 import org.daemawiki.domain.document_revision.component.CreateRevisionComponent;
 import org.daemawiki.domain.document_revision.model.type.RevisionType;
 import org.daemawiki.domain.user.port.FindUserPort;
-import org.daemawiki.domain.user.dto.response.UserDetailResponse;
+import org.daemawiki.domain.user.dto.response.UserDetailVo;
 import org.daemawiki.domain.user.model.User;
 import org.daemawiki.exception.h400.VersionMismatchException;
 import org.daemawiki.exception.h403.NoEditPermissionUserException;
@@ -53,7 +53,7 @@ public class AddContentTableService implements AddContentTableUsecase {
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
         return saveDocumentPort.save(document)
-                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE, null));
     }
 
     private DefaultDocument checkPermissionAndAddDocumentContentTable(Tuple2<User, DefaultDocument> tuple, AddContentRequest request) {
@@ -108,7 +108,7 @@ public class AddContentTableService implements AddContentTableUsecase {
     }
 
     private void setDocument(DefaultDocument document, User user) {
-        document.getEditor().setUpdatedUser(UserDetailResponse.create(user));
+        document.getEditor().updateUpdatedUser(UserDetailVo.create(user));
         sortContents(document);
         document.increaseVersion();
     }

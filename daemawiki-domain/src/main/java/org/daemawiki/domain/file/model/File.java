@@ -1,6 +1,5 @@
 package org.daemawiki.domain.file.model;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -22,7 +21,6 @@ public class File {
 
     protected File() {}
 
-    @Builder
     public File(UUID id, String fileName, String fileType, FileDetail detail) {
         this.id = id;
         this.fileName = fileName;
@@ -31,12 +29,7 @@ public class File {
     }
 
     public static File create(UUID id, String fileName, String fileType, FileDetail detail) {
-        return File.builder()
-                .id(id)
-                .fileName(fileName)
-                .fileType(fileType)
-                .detail(detail)
-                .build();
+        return new File(id, fileName, fileType, detail);
     }
 
 }

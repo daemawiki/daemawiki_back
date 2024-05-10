@@ -9,7 +9,7 @@ import org.daemawiki.domain.document.model.type.DocumentType;
 import org.daemawiki.domain.document_editor.model.DocumentEditor;
 import org.daemawiki.domain.document_editor.model.Editor;
 import org.daemawiki.domain.document_info.model.Info;
-import org.daemawiki.domain.user.dto.response.UserDetailResponse;
+import org.daemawiki.domain.user.dto.response.UserDetailVo;
 import org.daemawiki.domain.user.model.User;
 import org.eclipse.collections.api.factory.Lists;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class CreateDocumentFacadeImpl implements CreateDocumentFacade{
 
     @Override
     public Mono<DefaultDocument> create(SaveDocumentRequest request, User user) {
-        UserDetailResponse userDetail = UserDetailResponse.create(user);
+        UserDetailVo userDetail = UserDetailVo.create(user);
 
         return Mono.just(DefaultDocument.create(
                         request.title(),

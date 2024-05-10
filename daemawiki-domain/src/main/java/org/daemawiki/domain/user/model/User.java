@@ -3,7 +3,6 @@ package org.daemawiki.domain.user.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.daemawiki.domain.file.model.File;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Document
 public class User {
 
@@ -55,6 +53,26 @@ public class User {
     public void update(String name, UserDetail detail) {
         this.name = name;
         this.detail = detail;
+    }
+
+    public void updateDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public void updateProfile(File profile) {
+        this.profile = profile;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setIsBlocked(Boolean blocked) {
+        this.isBlocked = blocked;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public enum Role {

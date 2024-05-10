@@ -28,7 +28,7 @@ public class UploadUserProfileImageService implements UploadUserProfileImageUsec
     public Mono<Void> upload(FilePart filePart) {
         return findUserPort.currentUser()
                 .zipWith(s3UploadObject.uploadObject(filePart, FileType.PROFILE.toString()), (user, file) -> {
-                    user.setProfile(file);
+                    user.updateProfile(file);
                     return user;
                 })
                 .flatMap(saveUserPort::save)

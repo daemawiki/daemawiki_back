@@ -1,11 +1,9 @@
 package org.daemawiki.domain.user.model;
 
-import org.daemawiki.domain.user.model.type.major.MajorType;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import org.daemawiki.domain.user.model.type.major.MajorType;
 
-@Setter
 @Getter
 @Builder
 public class UserDetail {

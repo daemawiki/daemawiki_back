@@ -53,7 +53,7 @@ public class UpdateContentTableTitleService implements UpdateContentTableTitleUs
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
         return saveDocumentPort.save(document)
-                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE, null));
     }
 
     private Mono<DefaultDocument> checkPermissionAndUpdateDocument(Tuple2<User, DefaultDocument> tuple, EditContentTableTitleRequest request) {

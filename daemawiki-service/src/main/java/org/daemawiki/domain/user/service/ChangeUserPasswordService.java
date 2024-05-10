@@ -50,7 +50,7 @@ public class ChangeUserPasswordService implements ChangeUserPasswordUsecase {
     private Mono<Void> changePasswordAndSaveUser(String newPassword, User user) {
         return encodePassword(newPassword)
                 .flatMap(password -> {
-                    user.setPassword(password);
+                    user.updatePassword(password);
                     return saveUserPort.save(user);
                 })
                 .onErrorMap(e -> ExecuteFailedException.EXCEPTION)

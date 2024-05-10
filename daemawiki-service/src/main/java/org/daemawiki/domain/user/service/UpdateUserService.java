@@ -48,7 +48,7 @@ public class UpdateUserService implements UpdateUserUsecase {
 
     private Mono<Void> saveDocumentAndCreateRevision(DefaultDocument document) {
         return saveDocumentPort.save(document)
-                .then(createRevisionComponent.create(document, RevisionType.UPDATE));
+                .then(createRevisionComponent.create(document, RevisionType.UPDATE, null));
     }
 
     private void setDocumentForUpdateUser(DefaultDocument document, User user) {

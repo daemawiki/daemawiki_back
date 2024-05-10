@@ -15,6 +15,10 @@ public class Info {
 
     private List<Detail> details;
 
+    public void updateDocumentImage(File documentImage) {
+        this.documentImage = documentImage;
+    }
+
     public void update(String subTitle, List<Detail> details) {
         this.subTitle = subTitle;
         this.details = details;
