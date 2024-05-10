@@ -68,9 +68,9 @@ public class UserAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
         if ((sortBy != null && !sortBy.isBlank())) {
             var sortDirection = request.pagingInfo().sortDirection();
             if (sortDirection != null && sortDirection.equals(1)) {
-                query.with(Sort.by(Sort.Direction.ASC, sortBy));
+                query.with(sortBy(Sort.Direction.ASC, sortBy));
             } else {
-                query.with(Sort.by(Sort.Direction.DESC, sortBy));
+                query.with(sortBy(Sort.Direction.DESC, sortBy));
             }
         }
 
@@ -78,6 +78,10 @@ public class UserAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
 
         return mongoQueryUtils.find(query, User.class)
                 .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Sort sortBy(Sort.Direction direction, String sortBy) {
+        return Sort.by(direction, sortBy);
     }
 
     @Override
