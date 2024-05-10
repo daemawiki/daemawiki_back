@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Component
 public class UserAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
@@ -53,35 +54,38 @@ public class UserAdapter implements FindUserPort, SaveUserPort, DeleteUserPort {
 
     @Override
     public Flux<User> findAllByGenAndMajorAndClub(FindUserDto request) {
-        Query query = new Query();
-
-        if(request.gen() != null) {
-            query.addCriteria(Criteria.where("detail.gen").is(request.gen()));
-        }
-        if(request.major() != null && !request.major().isBlank()) {
-            query.addCriteria(Criteria.where("detail.major").is(MajorType.valueOf(request.major()).getMajor()));
-        }
-        if(request.club() != null && !request.club().isBlank()) {
-            query.addCriteria(Criteria.where("detail.club").is(request.club()));
-        }
-        var sortBy = request.pagingInfo().sortBy();
-        if ((sortBy != null && !sortBy.isBlank())) {
-            var sortDirection = request.pagingInfo().sortDirection();
-            if (sortDirection != null && sortDirection.equals(1)) {
-                query.with(sortBy(Sort.Direction.ASC, sortBy));
-            } else {
-                query.with(sortBy(Sort.Direction.DESC, sortBy));
-            }
-        }
-
+        Query query = buildQuery(request);
         query.with(PageRequest.of(request.pagingInfo().page(), request.pagingInfo().size()));
 
         return mongoQueryUtils.find(query, User.class)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
-    private Sort sortBy(Sort.Direction direction, String sortBy) {
-        return Sort.by(direction, sortBy);
+    private Query buildQuery(FindUserDto request) {
+        Query query = new Query();
+
+        Optional.ofNullable(request.gen())
+                .ifPresent(gen -> query.addCriteria(Criteria.where("detail.gen").is(gen)));
+
+        if (isNotBlank(request.major())){
+            query.addCriteria(Criteria.where("detail.major").is(MajorType.valueOf(request.major()).getMajor()));
+        }
+
+        if (isNotBlank(request.club())){
+            query.addCriteria(Criteria.where("detail.club").is(request.club()));
+        }
+
+        Optional.ofNullable(request.pagingInfo().sortBy())
+                .ifPresent(sortBy -> {
+                    Sort.Direction direction = request.pagingInfo().sortDirection() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC;
+                    query.with(Sort.by(direction, sortBy));
+                });
+
+        return query;
+    }
+
+    private boolean isNotBlank(String str) {
+        return !str.isBlank();
     }
 
     @Override
